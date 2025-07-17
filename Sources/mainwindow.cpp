@@ -88,7 +88,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Se hace despues de descargar el nuevo cards json o cuando se sabe que no hay
     //uno nuevo que descargar.
-    //initHSRCards();//-->DraftHandler -->SecretHandler -->PopularCardsHandler
+    //initWRCards();//-->DraftHandler -->SecretHandler -->PopularCardsHandler
 
     readSettings();
     checkFirstRunNewVersion();

@@ -27,6 +27,12 @@ void ScoreButton::mousePressEvent(QMouseEvent *event)
             "https://www.heartharena.com/tierlist"
             ));
     }
+    else if(scoreSource == Score_Fire)
+    {
+        QDesktopServices::openUrl(QUrl(
+            "https://www.firestoneapp.com"
+            ));
+    }
     else if(scoreSource == Score_HSReplay)
     {
         emit showHSRwebPicks();

@@ -2005,14 +2005,7 @@ void DraftHandler::showNewRatings(const QString &cardName1, const QString &cardN
         if(draftMethod == FireStone)
         {
             QString text = QString::number(static_cast<double>(ratings[i])) + "%";
-            if(includedDecks[i] >= 0 && includedDecks[i] < MIN_HSR_DECKS)
-            {
-                text += " -- " + QString::number(includedDecks[i]) + " played";
-            }
-            else if(includedDecks[i] >= MIN_HSR_DECKS)
-            {
-                text += " -- " + QString::number(round(includedDecks[i]/100.0)/10.0) + "K played";
-            }
+            text += " -- " + QString::number(round(includedDecks[i]/100.0)/10.0) + "K played";
 
             labelLFscore[i]->setText(text);
             labelLFscore[i]->setToolTip(cardNames[i] + " - FireStone");
@@ -2022,14 +2015,7 @@ void DraftHandler::showNewRatings(const QString &cardName1, const QString &cardN
         {
             QString text = QString::number(static_cast<double>(ratings[i])) + "% -- " +
                     QString::number(static_cast<double>(tierScore[i])) + "%";
-            if(includedDecks[i] >= 0 && includedDecks[i] < MIN_HSR_DECKS)
-            {
-                text += " -- " + QString::number(includedDecks[i]) + " played";
-            }
-            else if(includedDecks[i] >= MIN_HSR_DECKS)
-            {
-                text += " -- " + QString::number(round(includedDecks[i]/100.0)/10.0) + "K played";
-            }
+            text += " -- " + QString::number(round(includedDecks[i]/100.0)/10.0) + "K played";
 
             labelHSRscore[i]->setText(text);
             labelHSRscore[i]->setToolTip(cardNames[i] + " - HSReplay");

@@ -32,12 +32,12 @@ public:
 private:
     QNetworkAccessManager *networkManager;
     QRegularExpressionMatch *match;
-    QFutureWatcher<QMap<QString, float> *> futureHSRPickrates;
-    QFutureWatcher<QMap<QString, float> *> futureHSRWR;
-    QFutureWatcher<QMap<QString, int> *> futureHSRSamples;
-    QFutureWatcher<QMap<QString, float> *> futureHSRPlayedWR;
+    QFutureWatcher<QMap<QString, float>> futureHSRPickrates[NUM_HEROS];
+    QFutureWatcher<QMap<QString, float>> futureHSRWR[NUM_HEROS];
+    QFutureWatcher<QMap<QString, int>> futureHSRSamples[NUM_HEROS];
+    QFutureWatcher<QMap<QString, float>> futureHSRPlayedWR[NUM_HEROS];
     QFutureWatcher<FireData> futureFire[NUM_HEROS];
-    int HSRdataThreads, fireDataThreads;
+    int hsrdataPickratesThreads, hsrdataWRThreads, hsrdataSamplesThreads, hsrdataPlayedThreads, fireDataThreads;
     QMap<QString, float> *hsrPickratesMap;
     QMap<QString, float> *hsrWRMap;
     QMap<QString, int> *hsrSamplesMap;
@@ -60,6 +60,7 @@ private:
     void processHSRHeroesWinrate(const QJsonObject &jsonObject);
     void showDataProgressBar();
     int url2classOrder(QString url);
+    int runningThreads();
 
 public:
     void initWRCards();

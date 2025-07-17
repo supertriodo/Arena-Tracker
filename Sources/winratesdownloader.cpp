@@ -6,11 +6,11 @@
 
 WinratesDownloader::WinratesDownloader(QObject *parent) : QObject(parent)
 {
-    HSRdataThreads = fireDataThreads = 0;
-    hsrPickratesMap = nullptr;
-    hsrWRMap = nullptr;
-    hsrSamplesMap = nullptr;
-    hsrPlayedWRMap = nullptr;
+    hsrdataPickratesThreads = hsrdataWRThreads = hsrdataSamplesThreads = hsrdataPlayedThreads = fireDataThreads = 0;
+    hsrPickratesMap = new QMap<QString, float>[NUM_HEROS];
+    hsrWRMap = new QMap<QString, float>[NUM_HEROS];
+    hsrSamplesMap = new QMap<QString, int>[NUM_HEROS];
+    hsrPlayedWRMap = new QMap<QString, float>[NUM_HEROS];
 
     fireWRMap = new QMap<QString, float>[NUM_HEROS];
     fireSamplesMap = new QMap<QString, int>[NUM_HEROS];
@@ -41,14 +41,13 @@ WinratesDownloader::~WinratesDownloader()
 
 void WinratesDownloader::waitFinishThreads()
 {
-    if(futureHSRPickrates.isRunning())  futureHSRPickrates.waitForFinished();
-    if(futureHSRWR.isRunning())         futureHSRWR.waitForFinished();
-    if(futureHSRSamples.isRunning())    futureHSRSamples.waitForFinished();
-    if(futureHSRPlayedWR.isRunning())   futureHSRPlayedWR.waitForFinished();
-
     for(int i=0; i<NUM_HEROS; i++)
     {
-        if(futureFire[i].isRunning())   futureFire[i].waitForFinished();
+        if(futureHSRPickrates[i].isRunning())   futureHSRPickrates[i].waitForFinished();
+        if(futureHSRWR[i].isRunning())          futureHSRWR[i].waitForFinished();
+        if(futureHSRSamples[i].isRunning())     futureHSRSamples[i].waitForFinished();
+        if(futureHSRPlayedWR[i].isRunning())    futureHSRPlayedWR[i].waitForFinished();
+        if(futureFire[i].isRunning())           futureFire[i].waitForFinished();
     }
 }
 
@@ -144,10 +143,17 @@ void WinratesDownloader::replyFinished(QNetworkReply *reply)
 }
 
 
+int WinratesDownloader::runningThreads()
+{
+    return hsrdataPickratesThreads + hsrdataWRThreads + hsrdataSamplesThreads + hsrdataPlayedThreads + fireDataThreads;
+}
+
+
 void WinratesDownloader::showDataProgressBar()
 {
-    emit advanceProgressBar(HSRdataThreads + fireDataThreads);
-    if((HSRdataThreads + fireDataThreads) == 0) emit showMessageProgressBar("WR data ready");
+    int numThreads = runningThreads();
+    emit advanceProgressBar(numThreads);
+    if(numThreads == 0) emit showMessageProgressBar("WR data ready");
 }
 
 
@@ -209,9 +215,8 @@ void WinratesDownloader::processHSRHeroesWinrate(const QJsonObject &jsonObject)
 
 void WinratesDownloader::initWRCards()
 {
-    HSRdataThreads = 4;
-    fireDataThreads = NUM_HEROS;
-    emit startProgressBar(HSRdataThreads + fireDataThreads, "Building WR data...");
+    hsrdataPickratesThreads = hsrdataWRThreads = hsrdataSamplesThreads = hsrdataPlayedThreads = fireDataThreads = NUM_HEROS;
+    emit startProgressBar(runningThreads(), "Building WR data...");
 
     initHSRCards();
     initFireCards();
@@ -220,49 +225,65 @@ void WinratesDownloader::initWRCards()
 
 void WinratesDownloader::initHSRCards()
 {
-    connect(&futureHSRPickrates, &QFutureWatcher<QMap<QString, float> *>::finished, this,
-            [this]()
+    for(int i=0; i<NUM_HEROS; i++)
+    {
+        connect(&futureHSRPickrates[i], &QFutureWatcher<QMap<QString, float>>::finished, this,[this,i]()
+        {
+            emit pDebug("HSR cards (Pickrates: " + Utility::classOrder2classLName(i) + ") --> Thread end.");
+            this->hsrPickratesMap[i] = futureHSRPickrates[i].result();
+
+            hsrdataPickratesThreads--;
+            if(hsrdataPickratesThreads == 0)
             {
-                emit pDebug("HSR cards (Pickrates) --> Thread end.");
-                this->hsrPickratesMap = futureHSRPickrates.result();
+                emit pDebug("HSR cards (Pickrates) ready.");
                 emit readyHSRPickratesMap(hsrPickratesMap);
-                HSRdataThreads--;
-                showDataProgressBar();
             }
-            );
+            showDataProgressBar();
+        });
 
-    connect(&futureHSRWR, &QFutureWatcher<QMap<QString, float> *>::finished, this,
-            [this]()
+        connect(&futureHSRWR[i], &QFutureWatcher<QMap<QString, float>>::finished, this,[this,i]()
+        {
+            emit pDebug("HSR cards (IncludedWinrate: " + Utility::classOrder2classLName(i) + ") --> Thread end.");
+            this->hsrWRMap[i] = futureHSRWR[i].result();
+
+            hsrdataWRThreads--;
+            if(hsrdataWRThreads == 0)
             {
-                emit pDebug("HSR cards (IncludedWinrate) --> Thread end.");
-                this->hsrWRMap = futureHSRWR.result();
+                emit pDebug("HSR cards (IncludedWinrate) ready.");
                 emit readyHSRWRMap(hsrWRMap);
-                HSRdataThreads--;
-                showDataProgressBar();
             }
-            );
+            showDataProgressBar();
+        });
 
-    connect(&futureHSRSamples, &QFutureWatcher<QMap<QString, int> *>::finished, this,
-            [this]()
+        connect(&futureHSRSamples[i], &QFutureWatcher<QMap<QString, int>>::finished, this,[this,i]()
+        {
+            emit pDebug("HSR cards (TimesPlayed: " + Utility::classOrder2classLName(i) + ") --> Thread end.");
+            this->hsrSamplesMap[i] = futureHSRSamples[i].result();
+
+            hsrdataSamplesThreads--;
+            if(hsrdataSamplesThreads == 0)
             {
-                emit pDebug("HSR cards (TimesPlayed) --> Thread end.");
-                this->hsrSamplesMap = futureHSRSamples.result();
+                emit pDebug("HSR cards (TimesPlayed) ready.");
                 emit readyHSRSamplesMap(hsrSamplesMap);
-                HSRdataThreads--;
-                showDataProgressBar();
             }
-            );
+            showDataProgressBar();
+        });
 
-    connect(&futureHSRPlayedWR, &QFutureWatcher<QMap<QString, float> *>::finished, this,
-            [this]()
+        connect(&futureHSRPlayedWR[i], &QFutureWatcher<QMap<QString, float>>::finished, this,[this,i]()
+        {
+            emit pDebug("HSR cards (PlayedWinrate: " + Utility::classOrder2classLName(i) + ") --> Thread end.");
+            this->hsrPlayedWRMap[i] = futureHSRPlayedWR[i].result();
+
+            hsrdataPlayedThreads--;
+            if(hsrdataPlayedThreads == 0)
             {
-                emit pDebug("HSR cards (PlayedWinrate) --> Thread end.");
-                this->hsrPlayedWRMap = futureHSRPlayedWR.result();
+                emit pDebug("HSR cards (PlayedWinrate) ready.");
                 emit readyHSRPlayedWRMap(hsrPlayedWRMap);
-                HSRdataThreads--;
-                showDataProgressBar();
             }
-            );
+            showDataProgressBar();
+        });
+    }
+
 
     QFileInfo fi(Utility::extraPath() + "/HSRcards.json");
     if(fi.exists() && (fi.lastModified().addDays(1)>QDateTime::currentDateTime()))
@@ -319,79 +340,40 @@ void WinratesDownloader::processHSRCardClassInt(const QJsonArray &jsonArray, con
 
 void WinratesDownloader::startProcessHSRCards(const QJsonObject &jsonObject)
 {
-    if(futureHSRPickrates.isRunning() || futureHSRWR.isRunning() ||
-        futureHSRSamples.isRunning() || futureHSRPlayedWR.isRunning())   return;
+    for(int i=0; i<NUM_HEROS; i++)
+    {
+        if(futureHSRPickrates[i].isRunning() || futureHSRWR[i].isRunning() ||
+            futureHSRSamples[i].isRunning() || futureHSRPlayedWR[i].isRunning())   return;
 
-    const QJsonObject &data = jsonObject.value("series").toObject().value("data").toObject();
+        const QString hero = Utility::classEnum2classUName((CardClass)i);
+        const QJsonArray &data = jsonObject.value("series").toObject().value("data").toObject().value(hero).toArray();
 
-    QFuture<QMap<QString, float> *> future1 = QtConcurrent::run([this,data]()->QMap<QString, float> *{
-        QMap<QString, float> * map = new QMap<QString, float>[NUM_HEROS];
-        //--------------------------------------------------------
-        //----NEW HERO CLASS
-        //--------------------------------------------------------
-        processHSRCardClassDouble(data.value("DEATHKNIGHT").toArray(), "included_popularity", map[DEATHKNIGHT]);
-        processHSRCardClassDouble(data.value("DEMONHUNTER").toArray(), "included_popularity", map[DEMONHUNTER]);
-        processHSRCardClassDouble(data.value("DRUID").toArray(), "included_popularity", map[DRUID]);
-        processHSRCardClassDouble(data.value("HUNTER").toArray(), "included_popularity", map[HUNTER]);
-        processHSRCardClassDouble(data.value("MAGE").toArray(), "included_popularity", map[MAGE]);
-        processHSRCardClassDouble(data.value("PALADIN").toArray(), "included_popularity", map[PALADIN]);
-        processHSRCardClassDouble(data.value("PRIEST").toArray(), "included_popularity", map[PRIEST]);
-        processHSRCardClassDouble(data.value("ROGUE").toArray(), "included_popularity", map[ROGUE]);
-        processHSRCardClassDouble(data.value("SHAMAN").toArray(), "included_popularity", map[SHAMAN]);
-        processHSRCardClassDouble(data.value("WARLOCK").toArray(), "included_popularity", map[WARLOCK]);
-        processHSRCardClassDouble(data.value("WARRIOR").toArray(), "included_popularity", map[WARRIOR]);
-        return map;
-    });
-    futureHSRPickrates.setFuture(future1);
-
-    QFuture<QMap<QString, float> *> future2 = QtConcurrent::run([this,data]()->QMap<QString, float> *{
-        QMap<QString, float> * map = new QMap<QString, float>[NUM_HEROS];
-        processHSRCardClassDouble(data.value("DEATHKNIGHT").toArray(), "included_winrate", map[DEATHKNIGHT], true);
-        processHSRCardClassDouble(data.value("DEMONHUNTER").toArray(), "included_winrate", map[DEMONHUNTER], true);
-        processHSRCardClassDouble(data.value("DRUID").toArray(), "included_winrate", map[DRUID], true);
-        processHSRCardClassDouble(data.value("HUNTER").toArray(), "included_winrate", map[HUNTER], true);
-        processHSRCardClassDouble(data.value("MAGE").toArray(), "included_winrate", map[MAGE], true);
-        processHSRCardClassDouble(data.value("PALADIN").toArray(), "included_winrate", map[PALADIN], true);
-        processHSRCardClassDouble(data.value("PRIEST").toArray(), "included_winrate", map[PRIEST], true);
-        processHSRCardClassDouble(data.value("ROGUE").toArray(), "included_winrate", map[ROGUE], true);
-        processHSRCardClassDouble(data.value("SHAMAN").toArray(), "included_winrate", map[SHAMAN], true);
-        processHSRCardClassDouble(data.value("WARLOCK").toArray(), "included_winrate", map[WARLOCK], true);
-        processHSRCardClassDouble(data.value("WARRIOR").toArray(), "included_winrate", map[WARRIOR], true);
-        return map;
-    });
-    futureHSRWR.setFuture(future2);
-    QFuture<QMap<QString, int> *> future3 = QtConcurrent::run([this,data]()->QMap<QString, int> *{
-        QMap<QString, int> * map = new QMap<QString, int>[NUM_HEROS];
-        processHSRCardClassInt(data.value("DEATHKNIGHT").toArray(), "times_played", map[DEATHKNIGHT]);
-        processHSRCardClassInt(data.value("DEMONHUNTER").toArray(), "times_played", map[DEMONHUNTER]);
-        processHSRCardClassInt(data.value("DRUID").toArray(), "times_played", map[DRUID]);
-        processHSRCardClassInt(data.value("HUNTER").toArray(), "times_played", map[HUNTER]);
-        processHSRCardClassInt(data.value("MAGE").toArray(), "times_played", map[MAGE]);
-        processHSRCardClassInt(data.value("PALADIN").toArray(), "times_played", map[PALADIN]);
-        processHSRCardClassInt(data.value("PRIEST").toArray(), "times_played", map[PRIEST]);
-        processHSRCardClassInt(data.value("ROGUE").toArray(), "times_played", map[ROGUE]);
-        processHSRCardClassInt(data.value("SHAMAN").toArray(), "times_played", map[SHAMAN]);
-        processHSRCardClassInt(data.value("WARLOCK").toArray(), "times_played", map[WARLOCK]);
-        processHSRCardClassInt(data.value("WARRIOR").toArray(), "times_played", map[WARRIOR]);
-        return map;
+        QFuture<QMap<QString, float>> future1 = QtConcurrent::run([this,data]()->QMap<QString, float>{
+            QMap<QString, float> map;
+            processHSRCardClassDouble(data, "included_popularity", map);
+            return map;
         });
-    futureHSRSamples.setFuture(future3);
-    QFuture<QMap<QString, float> *> future4 = QtConcurrent::run([this,data]()->QMap<QString, float> *{
-        QMap<QString, float> * map = new QMap<QString, float>[NUM_HEROS];
-        processHSRCardClassDouble(data.value("DEATHKNIGHT").toArray(), "winrate_when_played", map[DEATHKNIGHT], true);
-        processHSRCardClassDouble(data.value("DEMONHUNTER").toArray(), "winrate_when_played", map[DEMONHUNTER], true);
-        processHSRCardClassDouble(data.value("DRUID").toArray(), "winrate_when_played", map[DRUID], true);
-        processHSRCardClassDouble(data.value("HUNTER").toArray(), "winrate_when_played", map[HUNTER], true);
-        processHSRCardClassDouble(data.value("MAGE").toArray(), "winrate_when_played", map[MAGE], true);
-        processHSRCardClassDouble(data.value("PALADIN").toArray(), "winrate_when_played", map[PALADIN], true);
-        processHSRCardClassDouble(data.value("PRIEST").toArray(), "winrate_when_played", map[PRIEST], true);
-        processHSRCardClassDouble(data.value("ROGUE").toArray(), "winrate_when_played", map[ROGUE], true);
-        processHSRCardClassDouble(data.value("SHAMAN").toArray(), "winrate_when_played", map[SHAMAN], true);
-        processHSRCardClassDouble(data.value("WARLOCK").toArray(), "winrate_when_played", map[WARLOCK], true);
-        processHSRCardClassDouble(data.value("WARRIOR").toArray(), "winrate_when_played", map[WARRIOR], true);
-        return map;
-    });
-    futureHSRPlayedWR.setFuture(future4);
+        futureHSRPickrates[i].setFuture(future1);
+
+        QFuture<QMap<QString, float>> future2 = QtConcurrent::run([this,data]()->QMap<QString, float>{
+            QMap<QString, float> map;
+            processHSRCardClassDouble(data, "included_winrate", map, true);
+            return map;
+        });
+        futureHSRWR[i].setFuture(future2);
+        QFuture<QMap<QString, int>> future3 = QtConcurrent::run([this,data]()->QMap<QString, int>{
+            QMap<QString, int> map;
+            processHSRCardClassInt(data, "times_played", map);
+            return map;
+            });
+        futureHSRSamples[i].setFuture(future3);
+        QFuture<QMap<QString, float>> future4 = QtConcurrent::run([this,data]()->QMap<QString, float>{
+            QMap<QString, float> map;
+            processHSRCardClassDouble(data, "winrate_when_played", map, true);
+            return map;
+        });
+        futureHSRPlayedWR[i].setFuture(future4);
+    }
 }
 
 
@@ -474,17 +456,6 @@ void WinratesDownloader::startProcessFireCards(const QJsonObject &jsonObject, co
     });
     futureFire[classOrder].setFuture(future);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
