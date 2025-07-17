@@ -1773,7 +1773,7 @@ void MainWindow::readSettings()
     bool draftShowDrops = settings.value("draftShowDrops", true).toBool();
     QString draftAvg = settings.value("draftAvg", "HSReplay").toString();
     bool draftMethodHA = settings.value("draftMethodHA", true).toBool();
-    bool draftMethodLF = settings.value("draftMethodLF", true).toBool();
+    bool draftMethodLF = settings.value("draftMethodFire", true).toBool();
     bool draftMethodHSR = settings.value("draftMethodHSR", true).toBool();
     int tooltipScale = settings.value("tooltipScale", 10).toInt();
     bool autoSize = false;//settings.value("autoSize", false).toBool();//Disable autoSize
@@ -1839,7 +1839,7 @@ void MainWindow::writeSettings()
     QString draftAvg = ui->configComboDraftAvg->currentText();
     if(!draftAvg.isEmpty()) settings.setValue("draftAvg", draftAvg);
     settings.setValue("draftMethodHA", ui->configCheckHA->isChecked());
-    settings.setValue("draftMethodLF", ui->configCheckLF->isChecked());
+    settings.setValue("draftMethodFire", ui->configCheckLF->isChecked());
     settings.setValue("draftMethodHSR", ui->configCheckHSR->isChecked());
     settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
     settings.setValue("autoSize", ui->configCheckAutoSize->isChecked());
