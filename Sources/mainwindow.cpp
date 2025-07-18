@@ -4814,8 +4814,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    // testHeroPortraits();
-    // testSynergies();
+    testHeroPortraits();
+    testSynergies();
     // testTierlists();
     // testDownloadRotation(true/*, "SC_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
@@ -4877,14 +4877,14 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 33.0 Patch Notes
+//|-Synergy / Code  --> 33.0.3 Patch Notes
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
     //Prelanzamiento - No quitar antiguo - Incluir nuevo (set "PLACEHOLDER_202204")
     //Json set CORE actualizado - Eliminar CORE_* - Incluir nuevo (set "CORE)
 
-///New leaderboard season
+//New leaderboard season
 //|-En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
 
 

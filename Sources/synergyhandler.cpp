@@ -5124,8 +5124,8 @@ TREANT: treantGen/treantSyn
 LACKEY: lackeyGen/lackeySyn
 
     - Drop2 (Derrota 2/2 --> 3+/1+, 2/2+, 1/4+)
-    - Drop3 (Derrota 3/3 --> 3+/2+, 2/4+, 1/7+), no health 1
-    - Drop4 (Derrota 4/4 --> 5+/2+, 4/3+, 3/5+, 2/5+, no 1/x), no health 1
+    - Drop3 (Derrota 3/3 --> 3+/2+?, 2/4+, 1/7+), no health 1, ? debe hacer algo mas (facilmente) aunque no sea en board
+    - Drop4 (Derrota 4/4 --> 5+/2+, 4/3+?, 3/5+, 2/5+, no 1/x), no health 1
 
     +pingGen (NO RANDOM/NO DEATHRATTLE)
     +damageMinionsGen/destroyGen (SI RANDOM/NO DEATHRATTLE)
