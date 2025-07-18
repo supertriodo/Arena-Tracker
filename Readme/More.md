@@ -21,17 +21,15 @@ Next you can check a brief explanation of its features divided in free and premi
 * Import/export your deck with Hearthstone.
 
 ![Decks](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DecksCollection.png)
-* Keep your arena stats locally, divided by leaderboard 2-month periods.
+* Keep your arena stats locally, divided by 2-month periods.
 
 ![StatsPeriod](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsPeriod.png)
 * Check hsreplay.net hero winrates when choosing your arena class.
 
 ![DraftHeroes](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftHeroes.png)
-* Draft your arena with HSReplay winrates and HearthArena scores.
+* Draft your arena with Firestone/HSReplay/Heartharena scores.
 
 ![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftCombined.png)
-
-![DraftHsr](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/hsrCards.png)
 * Do you stream Hearthstone? Let your viewers vote during drafts.
 
 ![DraftTwitch](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftTwitch.png)
@@ -46,10 +44,10 @@ Next you can check a brief explanation of its features divided in free and premi
 
 ![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bgDraftMechanicsHelp.png)
 ![DraftDrops](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bgDraftMechanicsHelpDrops.png)
-* When redrafting after a loss in Underground Arena, AT will display card scores in the deck tab for each card currently in your deck. It will also highlight the 5 weakest cards (per draft assistant HA/HSR), so you know which ones are the weakest links.
+* When redrafting after a loss in Underground Arena, AT will display card scores in the deck tab for each card currently in your deck. It will also highlight the 5 weakest cards (per draft assistant Firestone/HSReplay/Heartharena), so you know which ones are the weakest links.
 
 ![StatsScoreAVG](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresDeck.png)
-* Show your deck average score for each run (HA/HSR). And the deck average score of your arena opponent, taken from their played cards.
+* Show your deck average score for each run (Firestone/HSReplay/Heartharena). And the deck average score of your arena opponent, taken from their played cards.
 
 ![StatsScoreAVG](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsScoreAVG.png)
 * Show your enemy's rank on the leaderboard on each game.
