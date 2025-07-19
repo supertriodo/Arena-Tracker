@@ -959,34 +959,49 @@ void MainWindow::swapSizePlan(bool sizePlan)
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
     QSize newSize;
+    QPoint newPos;
 
     if(this->planWindow == nullptr)
     {
-        if(!sizePlan)
+        if(!sizePlan)//sizePlan --> size
         {
             settings.setValue("sizePlan", this->size());
             newSize = settings.value("size", QSize(255, 600)).toSize();
+
+            settings.setValue("posPlan", this->pos());
+            newPos = settings.value("pos", QPoint(0, 0)).toPoint();
         }
         else
         {
             settings.setValue("size", this->size());
             newSize = settings.value("sizePlan", QSize(400, 400)).toSize();
+
+            settings.setValue("pos", this->pos());
+            newPos = settings.value("posPlan", QPoint(0, 0)).toPoint();
         }
         this->resize(newSize);
+        this->moveInScreen(newPos, newSize);
     }
     else
     {
-        if(!sizePlan)
+        if(!sizePlan)//sizePlan --> size
         {
             settings.setValue("sizePlan", planWindow->size());
             newSize = settings.value("sizeWindowReplay", QSize(255, 600)).toSize();
+
+            settings.setValue("posPlan", planWindow->pos());
+            newPos = settings.value("posWindowReplay", QPoint(0, 0)).toPoint();
         }
         else
         {
             settings.setValue("sizeWindowReplay", planWindow->size());
             newSize = settings.value("sizePlan", QSize(400, 400)).toSize();
+
+            settings.setValue("posWindowReplay", planWindow->pos());
+            newPos = settings.value("posPlan", QPoint(0, 0)).toPoint();
         }
         planWindow->resize(newSize);
+        planWindow->moveInScreen(newPos, newSize);
     }
 }
 
@@ -2111,14 +2126,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_5)  draftHandler->endDraftShowMechanicsWindow();
 #ifdef Q_OS_LINUX
             else if(event->key() == Qt::Key_S)  askLinuxShortcut();
-            else if(event->key() == Qt::Key_8)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 0);
-            else if(event->key() == Qt::Key_9)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 1);
-            else if(event->key() == Qt::Key_0)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 2);
-#endif
-#ifdef QT_DEBUG
-            else if(event->key() == Qt::Key_6)  draftHandler->beginHeroDraft();
-            else if(event->key() == Qt::Key_7)
-                draftHandler->beginDraft(Utility::classEnum2classLogNumber(WARLOCK), deckHandler->getDeckCardList(), true);
             else if(event->key() == Qt::Key_D)  createDebugPack();
             else if(event->key() == Qt::Key_Z)
             {
@@ -2141,6 +2148,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 this->resize(QSize(300, 800));
                 this->move(1920+1080+graveyardWindow->width(), 0);
             }
+#endif
+#ifdef QT_DEBUG
+            else if(event->key() == Qt::Key_8)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 0);
+            else if(event->key() == Qt::Key_9)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 1);
+            else if(event->key() == Qt::Key_0)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 2);
+            else if(event->key() == Qt::Key_6)  draftHandler->beginHeroDraft();
+            else if(event->key() == Qt::Key_7)
+                draftHandler->beginDraft(Utility::classEnum2classLogNumber(WARLOCK), deckHandler->getDeckCardList(), true);
 #endif
         }
     }
