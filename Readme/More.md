@@ -1,20 +1,20 @@
 Arena Tracker reads the Hearthstone log to give you all the info you need. Arena Tracker works in Arena, Standard, Wild, Adventures and Tavern Brawl, but it was created from the ground up with arena players in mind.
 
-Arena Tracker is free and open source. To support its development, I have created a [Patreon account](https://www.patreon.com/triodo) which will unlocks the full potential of this tracker for 3€ a month, the premium version.
+Arena Tracker is free and open source. To support its development, I have created a [Patreon account](https://www.patreon.com/triodo) which will unlock the full potential of this tracker for 3€ a month, the premium version.
 
-Below is a brief overview of its features divided into free and premium versions of the tracker. For a more extended explanation you can take a look at the [user guide](https://triodo.gitbook.io/arena-tracker-documentation/en).
+Below is a brief overview of its features divided into free and premium versions of the tracker. For more details you can take a look at the [User Guide](https://triodo.gitbook.io/arena-tracker-documentation/en).
 
 # Free version features:
 
 * Go over your deck while you play.
 * Track your enemy's deck
-* Get detailed info about enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
+* Get detailed info about the enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
 * Test enemy secrets. Watch the remaining possibilities while you make your moves.
 * Check new cards drawn before the animation even begins in Hearthstone.
 * Check the total attack of all your minions and enemy minions.
 
 ![InGame](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/inGame.png)
-* When playing arena, secrets are ordered by their popularity acording to hsreplay.net, know what to test first.
+* When playing arena, secrets are ordered by their popularity according to hsreplay.net, know what to test first.
 
 ![EnemyHandWithSecretHSR](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/enemyHandWithSecretHSR.png)
 * Save and organize your constructed decks.
@@ -59,7 +59,7 @@ Below is a brief overview of its features divided into free and premium versions
 * When picking hero, show your personal winrates and arena runs for each hero, along with HSReplay global ones.
 
 ![DraftHeroesWR](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftHeroesWR.png)
-* Replay your matches after or during the game. AT's unique replay system let you see each turn in one simple window so you can go quickly through different turns and review the whole game in a matter of seconds. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/replay-tab)
+* Replay your matches after or during the game. AT's unique replay system lets you see each turn in one simple window so you can go quickly through different turns and review the whole game in a matter of seconds. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/replay-tab)
 
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
 * Plan your turn beforehand. Use the advanced replay tab to organize your thoughts before making a move in Hearthstone. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/replay-tab#planning)
