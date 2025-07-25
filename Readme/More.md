@@ -1,17 +1,17 @@
-Arena Tracker reads the Hearthstone log to give your all the info you need. Arena Tracker works in arena, constructed, adventures and tavern-brawl, but it was created from the ground with arena players in mind.
+Arena Tracker reads the Hearthstone log to give you all the info you need. Arena Tracker works in Arena, Standard, Wild, Adventures and Tavern Brawl, but it was created from the ground up with arena players in mind.
 
-Arena Tracker is free and open source. To support its development I have created a [patreon account](https://www.patreon.com/triodo) which will put in your hands the full potential of this tracker for 3€ a month, the premium version.
+Arena Tracker is free and open source. To support its development, I have created a [Patreon account](https://www.patreon.com/triodo) which will unlocks the full potential of this tracker for 3€ a month, the premium version.
 
-Next you can check a brief explanation of its features divided in free and premium versions of the tracker. For a more extended explanation you can take a look at the [user guide](https://triodo.gitbook.io/arena-tracker-documentation/en).
+Below is a brief overview of its features divided into free and premium versions of the tracker. For a more extended explanation you can take a look at the [user guide](https://triodo.gitbook.io/arena-tracker-documentation/en).
 
 # Free version features:
 
 * Go over your deck while you play.
 * Track your enemy's deck
-* Get value info of enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
-* Test enemy secrets. Watch the remaining posibilities while you make your moves.
+* Get detailed info about enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
+* Test enemy secrets. Watch the remaining possibilities while you make your moves.
 * Check new cards drawn before the animation even begins in Hearthstone.
-* Check the total attack of all your minions and enemy ones.
+* Check the total attack of all your minions and enemy minions.
 
 ![InGame](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/inGame.png)
 * When playing arena, secrets are ordered by their popularity acording to hsreplay.net, know what to test first.
@@ -27,7 +27,7 @@ Next you can check a brief explanation of its features divided in free and premi
 * Check hsreplay.net hero winrates when choosing your arena class.
 
 ![DraftHeroes](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftHeroes.png)
-* Draft your arena with Firestone/HSReplay/Heartharena scores.
+* Draft your arena with Firestone/HSReplay/HearthArena scores.
 
 ![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftCombined.png)
 * Do you stream Hearthstone? Let your viewers vote during drafts.
@@ -40,7 +40,7 @@ Next you can check a brief explanation of its features divided in free and premi
 * While drafting, check the synergies of the next picks with the rest of your deck. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/drafting-tab#rateofcards)
 
 ![DraftSynergies](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresSynergiesOverlay.png)
-* While drafting, check the strenghts and weaknesses of your deck through the mechanics summary. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/drafting-tab#mechanics)
+* While drafting, check the strengths and weaknesses of your deck through the mechanics summary. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/drafting-tab#mechanics)
 
 ![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bgDraftMechanicsHelp.png)
 ![DraftDrops](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bgDraftMechanicsHelpDrops.png)
@@ -50,7 +50,7 @@ Next you can check a brief explanation of its features divided in free and premi
 * Show your deck average score for each run (Firestone/HSReplay/Heartharena). And the deck average score of your arena opponent, taken from their played cards.
 
 ![StatsScoreAVG](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsScoreAVG.png)
-* Show your enemy's rank on the leaderboard on each game.
+* Show your enemy's rank on the leaderboard for each game.
 
 ![EnemyRank](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/enemyRank.png)
 * Show your class winrates and your rank in the leaderboard.
@@ -59,7 +59,7 @@ Next you can check a brief explanation of its features divided in free and premi
 * When picking hero, show your personal winrates and arena runs for each hero, along with HSReplay global ones.
 
 ![DraftHeroesWR](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftHeroesWR.png)
-* Replay your matches after or during the game. AT unique replay system let you see each turn in one simple window so you can go quickly through different turns and review the whole game in a matter of seconds. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/replay-tab)
+* Replay your matches after or during the game. AT's unique replay system let you see each turn in one simple window so you can go quickly through different turns and review the whole game in a matter of seconds. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/replay-tab)
 
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
 * Plan your turn beforehand. Use the advanced replay tab to organize your thoughts before making a move in Hearthstone. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/replay-tab#planning)
