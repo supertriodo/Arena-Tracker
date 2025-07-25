@@ -44,10 +44,10 @@ Below is a brief overview of its features divided into free and premium versions
 
 ![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bgDraftMechanicsHelp.png)
 ![DraftDrops](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bgDraftMechanicsHelpDrops.png)
-* When redrafting after a loss in Underground Arena, AT will display card scores in the deck tab for each card currently in your deck. It will also highlight the 5 weakest cards (per draft assistant Firestone/HSReplay/Heartharena), so you know which ones are the weakest links.
+* When redrafting after a loss in Underground Arena, AT will display card scores in the deck tab for each card currently in your deck. It will also highlight the 5 weakest cards (per draft assistant Firestone/HSReplay/HearthArena), so you know which ones are the weakest links.
 
 ![StatsScoreAVG](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresDeck.png)
-* Show your deck average score for each run (Firestone/HSReplay/Heartharena). And the deck average score of your arena opponent, taken from their played cards.
+* Show your deck average score for each run (Firestone/HSReplay/HearthArena). And the deck average score of your arena opponent, taken from their played cards.
 
 ![StatsScoreAVG](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsScoreAVG.png)
 * Show your enemy's rank on the leaderboard for each game.
