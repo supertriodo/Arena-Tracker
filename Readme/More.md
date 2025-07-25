@@ -7,7 +7,7 @@ Below is a brief overview of its features divided into free and premium versions
 # Free version features:
 
 * Go over your deck while you play.
-* Track your enemy's deck
+* Track the enemy's deck
 * Get detailed info about the enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
 * Test enemy secrets. Watch the remaining possibilities while you make your moves.
 * Check new cards drawn before the animation even begins in Hearthstone.
@@ -56,7 +56,7 @@ Below is a brief overview of its features divided into free and premium versions
 * Show your class winrates and your rank in the leaderboard.
 
 ![StatsAdvanced](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsAdvanced.png)
-* When picking hero, show your personal winrates and arena runs for each hero, along with HSReplay global ones.
+* When picking a hero, show your personal winrates and arena runs for each hero, along with HSReplay global ones.
 
 ![DraftHeroesWR](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftHeroesWR.png)
 * Replay your matches after or during the game. AT's unique replay system lets you see each turn in one simple window so you can go quickly through different turns and review the whole game in a matter of seconds. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/replay-tab)
@@ -68,7 +68,7 @@ Below is a brief overview of its features divided into free and premium versions
 * Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/enemy-hand-tab#rng)
 
 ![Bomber](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bomber.png)
-* Check the most popular cards played by your enemy on his next turn. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/enemy-hand-tab#popularlist)
+* Check the most popular cards played by your enemy on their next turn. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/enemy-hand-tab#popularlist)
 
 ![PopularList](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/popularList.png)
 * Check the cards (minions, spells and weapons) that died during the game on each side of the board. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/graveyard-tab)
