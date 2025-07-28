@@ -2620,7 +2620,7 @@ ScreenDetection DraftHandler::findScreenRects()
         // for(int i=0; i<5; i++)
         // {
         //     QRect rect = screen->geometry();
-        //     QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+        //     QImage image = QGuiApplication::primaryScreen()->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
         //     cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
         //     cv::Rect rectSmall = screenDetection.screenRects[i];
         //     cv::Mat orig = mat(cv::Rect(rectSmall.x, rectSmall.y, rectSmall.width, rectSmall.height));
@@ -3703,8 +3703,11 @@ cv::Mat DraftHandler::getScreenMat()
     QScreen *screen = screens[screenIndex];
     if(!screen) return cv::Mat();
 
+    QScreen *primaryScreen = QGuiApplication::primaryScreen();
+    if(!primaryScreen)  return cv::Mat();
+
     QRect rect = screen->geometry();
-    QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+    QImage image = primaryScreen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
     cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<ulong>(image.bytesPerLine()));
     return mat.clone();
 }
