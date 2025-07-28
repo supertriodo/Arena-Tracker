@@ -2120,13 +2120,13 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         if(event->modifiers()&Qt::ControlModifier)
         {
             if(event->key() == Qt::Key_R)       resetSettings();
+            else if(event->key() == Qt::Key_D)  createDebugPack();
             else if(event->key() == Qt::Key_1)  draftHandler->pickCard("0");
             else if(event->key() == Qt::Key_2)  draftHandler->pickCard("1");
             else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
             else if(event->key() == Qt::Key_5)  draftHandler->endDraftShowMechanicsWindow();
 #ifdef Q_OS_LINUX
             else if(event->key() == Qt::Key_S)  askLinuxShortcut();
-            else if(event->key() == Qt::Key_D)  createDebugPack();
             else if(event->key() == Qt::Key_Z)
             {
                 if(this->planWindow == nullptr)    createDetachWindow(ui->tabPlan);
