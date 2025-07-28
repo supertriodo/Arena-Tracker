@@ -157,7 +157,6 @@ RESOURCES += \
     arenatracker.qrc
 
 linux{
-    LIBS += -L/home/triodo/Documentos/ArenaTracker/Libs
     QMAKE_LFLAGS += -no-pie
 }
 win32: RC_ICONS = ArenaTracker.ico

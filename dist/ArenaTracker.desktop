@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=ArenaTracker
+Comment=Hearthstone Arena Assistant
+Exec=ArenaTracker
+Icon=ArenaTracker
+Categories=Game;StrategyGame;

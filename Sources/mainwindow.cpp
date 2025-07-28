@@ -2846,11 +2846,11 @@ void MainWindow::createLinuxShortcut()
 #endif
 
     //Menu Item shortcut
-    QFile shortcutFile(QDir::homePath() + "/.local/share/applications/Arena Tracker.desktop");
+    QFile shortcutFile(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/ArenaTracker.desktop");
     if(shortcutFile.exists())   shortcutFile.remove();
     if(!shortcutFile.open(QIODevice::WriteOnly))
     {
-        pDebug("ERROR: Cannot create Arena Tracker.desktop", DebugLevel::Error);
+        pDebug("ERROR: Cannot create ArenaTracker.desktop", DebugLevel::Error);
         return;
     }
     shortcutFile.setPermissions(QFileDevice::ExeOwner | QFileDevice::ReadOwner | QFileDevice::WriteOwner);
@@ -2858,21 +2858,20 @@ void MainWindow::createLinuxShortcut()
     QTextStream out(&shortcutFile);
 
     out << "[Desktop Entry]" << endl;
-    out << "Comment=" << endl;
-    out << "Terminal=false" << endl;
-    out << "Name=Arena Tracker" << endl;
     out << "Type=Application" << endl;
-    out << "Categories=Utility" << endl;
+    out << "Name=ArenaTracker" << endl;
+    out << "Comment=Hearthstone Arena Assistant" << endl;
     out << "Exec=\"" + appImagePath + "\"" << endl;
     out << "Icon=" + Utility::extraPath() + "/icon.png" << endl;
+    out << "Categories=Game;StrategyGame;" << endl;
 
     shortcutFile.close();
 
     //Desktop shortcut
-    QString desktopShorcutFilename = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/Arena Tracker.desktop";
-    QFile desktopShortcut(desktopShorcutFilename);
-    if(desktopShortcut.exists())    desktopShortcut.remove();
-    shortcutFile.copy(desktopShorcutFilename);
+    QString appShorcutFilename = QDir::homePath() + "/.local/share/applications/ArenaTracker.desktop";
+    QFile appShortcut(appShorcutFilename);
+    if(appShortcut.exists())    appShortcut.remove();
+    shortcutFile.copy(appShorcutFilename);
 
     pDebug("Desktop and menu shorcut created pointing to " + appImagePath);
 }
