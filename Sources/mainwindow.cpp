@@ -4659,7 +4659,7 @@ void MainWindow::testSynergies()
 
 void MainWindow::testTierlists()
 {
-    // downloadHearthArenaTierlistOriginal();
+    downloadHearthArenaTierlistOriginal();
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
@@ -4709,7 +4709,7 @@ void MainWindow::testTierlists()
 
    // QSettings settings("Arena Tracker", "Arena Tracker");
    // QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
-   Utility::checkTierlistsCount(arenaSets);
+   // Utility::checkTierlistsCount(arenaSets);
 }
 
 /*
@@ -4841,8 +4841,8 @@ void MainWindow::testDelay()
     // Utility::checkMissingGoldenCards();
     // QTimer::singleShot(15000, this, SLOT(testPopularList()));
     // draftHandler->beginHeroDraft();
-    // QTimer::singleShot(10000, this, [=] () {
-    //    draftHandler->beginDraft(Utility::classEnum2classLogNumber(DRUID), deckHandler->getDeckCardList());});
+    // QTimer::singleShot(5000, this, [=] () {
+    //    draftHandler->beginDraft(Utility::classEnum2classLogNumber(WARLOCK), deckHandler->getDeckCardList());});
 
     // testArenaGames();
     // testPlan();
