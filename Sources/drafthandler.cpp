@@ -309,7 +309,6 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
         for(const QString &code: lfKeys)
         {
             QString name = Utility::cardEnNameFromCode(code);
-            if(name.contains("\"")) name.replace("\"", "&quot;");
             int score = jsonNamesObject.value(name).toInt();
             hearthArenaTiers[code] = score;
 
