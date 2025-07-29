@@ -309,6 +309,7 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
         for(const QString &code: lfKeys)
         {
             QString name = Utility::cardEnNameFromCode(code);
+            if(name.contains("\"")) name.replace("\"", "&quot;");
             int score = jsonNamesObject.value(name).toInt();
             hearthArenaTiers[code] = score;
 
@@ -2186,23 +2187,35 @@ cv::MatND DraftHandler::getHist(const QString &code)
     {
         if(code.endsWith("_premium"))
         {
-            if(fullCard.cols<(57+80) || fullCard.rows<(71+80))
+            if(fullCard.cols<(59+82) || fullCard.rows<(70+82))
             {
                 emit pDebug("Card premium cv::Rect overflow.");
                 cv::MatND emptyHist;
                 return emptyHist;
             }
-            srcBase = fullCard(cv::Rect(57,71,80,80));
+            srcBase = fullCard(cv::Rect(59,70,82,82));
+// #ifdef QT_DEBUG
+//             if(code.startsWith("TLC_465"))
+//             {
+//                 cv::imshow("SrcP", srcBase);
+//             }
+// #endif
         }
         else
         {
-            if(fullCard.cols<(60+80) || fullCard.rows<(71+80))
+            if(fullCard.cols<(59+82) || fullCard.rows<(70+82))
             {
                 emit pDebug("Card cv::Rect overflow.");
                 cv::MatND emptyHist;
                 return emptyHist;
             }
-            srcBase = fullCard(cv::Rect(60,71,80,80));
+            srcBase = fullCard(cv::Rect(59,70,82,82));
+// #ifdef QT_DEBUG
+//             if(code.startsWith("TLC_465"))
+//             {
+//                 cv::imshow("Src", srcBase);
+//             }
+// #endif
         }
     }
     else if(heroDrafting)
