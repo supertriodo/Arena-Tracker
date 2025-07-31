@@ -1,8 +1,8 @@
 #ifndef STATSYNERGIES_H
 #define STATSYNERGIES_H
 
+#include <QMap>
 #include <QObject>
-#include "../Cards/deckcard.h"
 
 
 enum SynergyStat {S_COST, S_ATTACK, S_HEALTH};
@@ -28,15 +28,15 @@ public:
 
 //Variables
 private:
-    QMap<int, QList<DeckCard>> statsMap, statsMapSyn;
+    QMap<int, QMap<QString, int>> statsMap, statsSynMap;
 
 //Metodos
 public:
     static QList<StatSyn> getStatsSynergiesFromJson(const QString &code, QMap<QString, QList<QString> > &synergyCodes);
     void clear();
     void qDebugContents();
-    void updateStatsMapSyn(const StatSyn &statSyn, QString &code);
-    void appendStatValue(bool appendToSyn, int statValue, QString &code);
+    void updateStatsMapSyn(const StatSyn &statSyn, const QString &code);
+    void appendStatValue(bool appendToSyn, int statValue, const QString &code);
     void insertStatCards(const StatSyn &statSyn, QMap<QString, int> &synergies);
     void insertCards(bool insertSyn, int statValue, QMap<QString, int> &synergies);
 };

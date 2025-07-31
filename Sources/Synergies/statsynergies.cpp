@@ -1,5 +1,8 @@
 #include "statsynergies.h"
-#include <QtWidgets>
+#include "qdebug.h"
+#include <Sources/utility.h>
+
+#define MAX_STAT 20
 
 StatSynergies::StatSynergies()
 {
@@ -10,11 +13,11 @@ StatSynergies::StatSynergies()
 void StatSynergies::clear()
 {
     this->statsMap.clear();
-    this->statsMapSyn.clear();
+    this->statsSynMap.clear();
 }
 
 
-void StatSynergies::updateStatsMapSyn(const StatSyn &statSyn, QString &code)
+void StatSynergies::updateStatsMapSyn(const StatSyn &statSyn, const QString &code)
 {
     switch(statSyn.op)
     {
@@ -28,7 +31,7 @@ void StatSynergies::updateStatsMapSyn(const StatSyn &statSyn, QString &code)
             }
         break;
         case S_HIGHER_EQUAL:
-            for(int i = statSyn.statValue; i <= 15; i++)
+            for(int i = statSyn.statValue; i <= MAX_STAT; i++)
             {
                 appendStatValue(true, i, code);
             }
@@ -37,17 +40,18 @@ void StatSynergies::updateStatsMapSyn(const StatSyn &statSyn, QString &code)
 }
 
 
-void StatSynergies::appendStatValue(bool appendToSyn, int statValue, QString &code)
+void StatSynergies::appendStatValue(bool appendToSyn, int statValue, const QString &code)
 {
-    QMap<int, QList<DeckCard>> &statsMap = (appendToSyn?this->statsMapSyn:this->statsMap);
+    if(statValue > MAX_STAT)    statValue = MAX_STAT;
+    QMap<int, QMap<QString, int>> &statsMap = (appendToSyn?this->statsSynMap:this->statsMap);
 
     bool duplicatedCard = false;
-    for(DeckCard &deckCard: statsMap[statValue])
+    const auto codes = statsMap[statValue].keys();
+    for(const QString &co: qAsConst(codes))
     {
-        if(deckCard.getCode() == code)
+        if(co == code)
         {
-            deckCard.total++;
-            deckCard.remaining = deckCard.total;
+            statsMap[statValue][co]++;
             duplicatedCard = true;
             break;
         }
@@ -55,7 +59,7 @@ void StatSynergies::appendStatValue(bool appendToSyn, int statValue, QString &co
 
     if(!duplicatedCard)
     {
-        statsMap[statValue].append(DeckCard(code));
+        statsMap[statValue][code] = 1;
     }
 }
 
@@ -74,7 +78,7 @@ void StatSynergies::insertStatCards(const StatSyn &statSyn, QMap<QString,int> &s
             }
         break;
         case S_HIGHER_EQUAL:
-            for(int i = statSyn.statValue; i <= 15; i++)
+            for(int i = statSyn.statValue; i <= MAX_STAT; i++)
             {
                 insertCards(false, i, synergies);
             }
@@ -85,15 +89,16 @@ void StatSynergies::insertStatCards(const StatSyn &statSyn, QMap<QString,int> &s
 
 void StatSynergies::insertCards(bool insertSyn, int statValue, QMap<QString,int> &synergies)
 {
-    QMap<int, QList<DeckCard>> &statsMap = (insertSyn?this->statsMapSyn:this->statsMap);
+    if(statValue > MAX_STAT)    statValue = MAX_STAT;
+    QMap<int, QMap<QString, int>> &statsMap = (insertSyn?this->statsSynMap:this->statsMap);
     if(!statsMap.contains(statValue))    return;
 
-    for(DeckCard &deckCard: statsMap[statValue])
+    const auto codes = statsMap[statValue].keys();
+    for(const QString &code: qAsConst(codes))
     {
-        QString code = deckCard.getCode();
         if(!synergies.contains(code))
         {
-            synergies[code] = deckCard.total;
+            synergies[code] = statsMap[statValue][code];
         }
     }
 }
@@ -101,25 +106,27 @@ void StatSynergies::insertCards(bool insertSyn, int statValue, QMap<QString,int>
 
 void StatSynergies::qDebugContents()
 {
-    qDebug()<<"**StatsMinions**";
-    const QList<int> keyList = statsMap.keys();
+    qDebug()<<"**StatsCards**";
+    const auto keyList = statsMap.keys();
     for(const int key: keyList)
     {
-        qDebug()<<'['<<key<<']'<<endl;
-        for(DeckCard &deckCard: statsMap[key])
+        qDebug()<<'['<<key<<']';
+        const auto codes = statsMap[key].keys();
+        for(const QString &code: qAsConst(codes))
         {
-            qDebug()<<'\t'<<deckCard.getName();
+            qDebug()<<'\t'<<code<<Utility::getCardAttribute(code, "name").toString();
         }
     }
 
     qDebug()<<"**StatsSynergies**";
-    const QList<int> keySynList = statsMapSyn.keys();
+    const auto keySynList = statsSynMap.keys();
     for(const int key: keySynList)
     {
-        qDebug()<<'['<<key<<']'<<endl;
-        for(DeckCard &deckCard: statsMapSyn[key])
+        qDebug()<<'['<<key<<']';
+        const auto codes = statsSynMap[key].keys();
+        for(const QString &code: qAsConst(codes))
         {
-            qDebug()<<'\t'<<deckCard.getName();
+            qDebug()<<'\t'<<code<<Utility::getCardAttribute(code, "name").toString();
         }
     }
 }
