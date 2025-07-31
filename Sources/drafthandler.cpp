@@ -3485,12 +3485,13 @@ QString * DraftHandler::reviewBestCards()
         int cardMana = draftCards[i].getCost();
         CardRarity cardRarity = draftCards[i].getRarity();
         bool signatureImage = draftCards[i].isGold() && isSignatureCard(draftCards[i].getCode());
-        if(cardRarity == FREE || signatureImage)    imgRarity = INVALID_RARITY;
+        bool validDraftCard = !(cardRarity == LEGENDARY && !posibleLegendaryPack());
+        if(validDraftCard && (cardRarity == FREE || signatureImage))    imgRarity = INVALID_RARITY;
 
-        if(cardMana<10 && (imgMana != cardMana || imgRarity != cardRarity))
+        if(imgMana != cardMana || imgRarity != cardRarity)
         {
             //Warning - Nueva carta
-            if(imgMana != -1)
+            if((cardMana < 10 || !validDraftCard) && (imgMana != -1))
             {
                 bestCards[i] = getBestMatchManaRarity(i, screenBig, imgMana, imgRarity);
 //                qDebug()<<"Warning Changed:"<<draftCards[i].getName()<<"->"<<bestCards[i].getName();
@@ -3508,6 +3509,17 @@ QString * DraftHandler::reviewBestCards()
         if(capturing)   return nullptr;
     }
     return new QString[3]{bestCards[0].getCode(), bestCards[1].getCode(), bestCards[2].getCode()};
+}
+
+
+bool DraftHandler::posibleLegendaryPack()
+{
+    int legendaries = 0;
+    for(int i=0; i<3; i++)
+    {
+        if(draftCards[i].getRarity() == LEGENDARY)  legendaries++;
+    }
+    return (legendaries > 1);
 }
 
 

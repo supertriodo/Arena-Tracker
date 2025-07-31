@@ -27,8 +27,8 @@
 #define CARD_ACCEPTED_THRESHOLD             0.35
 #define CARD_ACCEPTED_THRESHOLD_REDRAFT     0.4
 #define CARD_ACCEPTED_THRESHOLD_INCREASE    0.02
-#define CAPTURE_MIN_CANDIDATES                 7
-#define CAPTURE_EXTENDED_CANDIDATES            15
+#define CAPTURE_MIN_CANDIDATES                 15
+#define CAPTURE_EXTENDED_CANDIDATES            30
 
 #define MANA_L2_THRESHOLD       4.5
 #define RARITY_L2_THRESHOLD     9
@@ -217,6 +217,7 @@ private:
     void endRedraftReview();
     void captureDraftRedraftingReview();
     void beginRedraftReview();
+    bool posibleLegendaryPack();
 
 public:
     void setDeckScores();
