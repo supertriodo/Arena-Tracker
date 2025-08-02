@@ -38,6 +38,16 @@
 #define HISTOGRAM_EXT                   ".dat"
 
 
+class SDBasic
+{
+public:
+    std::vector<Point2f> screenPoints;
+    int goodMatches = 0;
+    int screenHeight = 1;
+    QPointF screenScale = QPointF(0,0);
+};
+
+
 class ScreenDetection
 {
 public:
@@ -218,6 +228,7 @@ private:
     void captureDraftRedraftingReview();
     void beginRedraftReview();
     bool posibleLegendaryPack();
+    bool areScreenPointsValid(std::vector<Point2f> screenPoints, int screenHeight);
 
 public:
     void setDeckScores();

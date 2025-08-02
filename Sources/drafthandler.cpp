@@ -1424,7 +1424,7 @@ void DraftHandler::captureDraftRedraftingReview()
     }
 
     // qDebug()<<cardsHist.keys();
-    // qDebug()<<endl;
+    // qDebug()<<Qt::endl;
     // for(int i=0; i<5; i++)
     // {
     //     qDebug()<<"BEST: "<<bestCodesRedraftingReview[i]<<bestMatches[i];
@@ -2165,7 +2165,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 //#ifdef QT_DEBUG
 //    for(int i=0; i<3; i++)
 //    {
-//        qDebug()<<endl;
+//        qDebug()<<Qt::endl;
 //        for(QString code: draftCardMaps[i].keys())
 //        {
 //            DraftCard card = draftCardMaps[i][code];
@@ -2173,7 +2173,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 //                      (static_cast<int>(card.getBestQualityMatches()*1000))/1000.0;
 //        }
 //    }
-//    qDebug()<<"Captured: "<<numCaptured<<endl;
+//    qDebug()<<"Captured: "<<numCaptured<<Qt::endl;
 //#endif
 }
 
@@ -2582,8 +2582,9 @@ ScreenDetection DraftHandler::findScreenRects()
         std::vector<Point2f> screenPoints;
         if(redraftingReview)
         {
+            int goodMatches;
             screenPoints = Utility::findTemplateOnScreen("redraftTemplate.png", screen, templatePoints,
-                                                        screenDetection.screenScale, screenDetection.screenHeight);
+                                                        screenDetection.screenScale, screenDetection.screenHeight, goodMatches);
             if(screenPoints.empty())    continue;
         }
         else
@@ -2592,11 +2593,37 @@ ScreenDetection DraftHandler::findScreenRects()
             if(heroDrafting)            arenaTemplate = "heroesTemplate";
             else /*if(drafting)*/       arenaTemplate = "arenaTemplate";
 
-            screenPoints = Utility::findTemplateOnScreen(arenaTemplate+".png", screen, templatePoints,
-                                                    screenDetection.screenScale, screenDetection.screenHeight);
-            if(screenPoints.empty())    screenPoints = Utility::findTemplateOnScreen(arenaTemplate+"2.png", screen, templatePoints,
-                                                        screenDetection.screenScale, screenDetection.screenHeight);
-            if(screenPoints.empty())    continue;
+            auto findTemplate1 = [arenaTemplate, screen, templatePoints]()
+            {
+                SDBasic sdb;
+                sdb.screenPoints = Utility::findTemplateOnScreen(arenaTemplate+".png", screen, templatePoints,
+                                    sdb.screenScale, sdb.screenHeight, sdb.goodMatches);
+                return sdb;
+            };
+            auto findTemplate2 = [arenaTemplate, screen, templatePoints]()
+            {
+                SDBasic sdb;
+                sdb.screenPoints = Utility::findTemplateOnScreen(arenaTemplate+"2.png", screen, templatePoints,
+                                    sdb.screenScale, sdb.screenHeight, sdb.goodMatches);
+                return sdb;
+            };
+
+            QFuture<SDBasic> future1 = QtConcurrent::run(findTemplate1);
+            QFuture<SDBasic> future2 = QtConcurrent::run(findTemplate2);
+            future1.waitForFinished();
+            future2.waitForFinished();
+
+            SDBasic sdb1 = future1.result();
+            SDBasic sdb2 = future2.result();
+            SDBasic &bestSdb = (sdb1.goodMatches > sdb2.goodMatches)?sdb1:sdb2;
+
+            screenPoints = bestSdb.screenPoints;
+            screenDetection.screenScale = bestSdb.screenScale;
+            screenDetection.screenHeight = bestSdb.screenHeight;
+
+            // qDebug()<<"GOOD MATCHES:"<<sdb1.goodMatches<<sdb2.goodMatches;
+
+            if(screenPoints.empty() || !areScreenPointsValid(screenPoints, screenDetection.screenHeight))   continue;
         }
 
         //Calculamos screenRects, manaRects y rarityRects
@@ -2645,6 +2672,29 @@ ScreenDetection DraftHandler::findScreenRects()
 
     screenDetection.screenIndex = -1;
     return screenDetection;
+}
+
+
+bool DraftHandler::areScreenPointsValid(std::vector<Point2f> screenPoints, int screenHeight)
+{
+    for(int i=0; i<3; i++)
+    {
+        int x1 = screenPoints[static_cast<ulong>(i*2)].x;
+        int y1 = screenPoints[static_cast<ulong>(i*2)].y;
+        int x2 = screenPoints[static_cast<ulong>(i*2+1)].x;
+        int y2 = screenPoints[static_cast<ulong>(i*2+1)].y;
+
+        // qDebug()<<"SCREENPOINTS"<<i<<":"<<x1<<y1<<"-"<<x2<<y2;
+
+        if(x1>x2 || y1>y2 ||
+            (((x2-x1)*15)<screenHeight) ||
+            (((y2-y1)*15)<screenHeight)
+            )
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 
@@ -3221,7 +3271,7 @@ void DraftHandler::buildHeroCodesList()
     {
         heroCodesList.append(code);
     }
-//    qDebug()<<endl<<"HERO CODES"<<heroCodesList.count()<<"!!!!!!!!!!!!!!!!!!!!!!!!"<<endl<<heroCodesList<<endl;
+//    qDebug()<<Qt::endl<<"HERO CODES"<<heroCodesList.count()<<"!!!!!!!!!!!!!!!!!!!!!!!!"<<Qt::endl<<heroCodesList<<Qt::endl;
 }
 
 
