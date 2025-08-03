@@ -2096,6 +2096,13 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 {
     bool newCardsFound = false;
     bool codesSameAsPrev = ((QDateTime::currentSecsSinceEpoch() - prevCodesTime)<PREV_CODES_TIME);
+
+#ifdef QT_DEBUG
+    #if DEBUG_ALLOW_SAME_TRIO
+        codesSameAsPrev = false;
+    #endif
+#endif
+
     const int numCandidates = (extendedCapture?CAPTURE_EXTENDED_CANDIDATES:CAPTURE_MIN_CANDIDATES);
 
     for(int i=0; i<3; i++)

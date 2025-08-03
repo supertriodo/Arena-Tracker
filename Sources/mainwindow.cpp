@@ -4841,8 +4841,8 @@ void MainWindow::testDelay()
     // Utility::checkMissingGoldenCards();
     // QTimer::singleShot(15000, this, SLOT(testPopularList()));
     // draftHandler->beginHeroDraft();
-    // QTimer::singleShot(5000, this, [=] () {
-    //    draftHandler->beginDraft(Utility::classEnum2classLogNumber(WARLOCK), deckHandler->getDeckCardList());});
+    // QTimer::singleShot(2000, this, [=] () {
+    //    draftHandler->beginDraft(Utility::classEnum2classLogNumber(SHAMAN), deckHandler->getDeckCardList());});
 
     // testArenaGames();
     // testPlan();
@@ -4947,11 +4947,8 @@ void MainWindow::testDelay()
 //}
 
 //FOR EACH C++
-//for(const QString &key: (const QStringList)jsonObject.keys())
-//qAsConst()
-
 //Warning allocating an unneeded temporary container [clazy-container-anti-pattern]
-//const QList<QString> codeList = map->keys();
+//const auto codeList = map->keys();
 //for(const QString &code: codeList)
 
 //Sin const

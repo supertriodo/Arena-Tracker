@@ -18,6 +18,8 @@
 
 #define DEBUG_REPLAY_AUTO_ADVANCE false
 #define DEBUG_OVERLAYS_LEFT false
+#define DEBUG_SHOW_MATCHES false
+#define DEBUG_ALLOW_SAME_TRIO false
 
 
 using namespace cv;
@@ -64,25 +66,20 @@ enum VisibleSchool {V_ARCANE, V_FEL, V_FIRE, V_FROST, V_HOLY, V_SHADOW, V_NATURE
                     V_SHADOW_ALL, V_NATURE_ALL, V_NUM_SCHOOLS};
 enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_SPELL_ALL, V_WEAPON_ALL, V_LOCATION, V_LOCATION_ALL, V_NUM_TYPES};
 enum VisibleDrop {V_DROP2, V_DROP3, V_DROP4, V_NUM_DROPS};
-enum VisibleMechanics {V_AOE, V_TAUNT, V_TAUNT_ALL,
-                       V_DISCOVER_DRAW, V_DISCOVER, V_DRAW, V_TOYOURHAND,
-                       V_PING, V_DAMAGE, V_DESTROY, V_REACH,
-                       V_OVERLOAD, V_OVERLOAD_ALL, V_JADE_GOLEM, V_SECRET, V_SECRET_ALL, V_FREEZE_ENEMY, V_DISCARD, V_EVOLVE,
-                       V_BATTLECRY, V_BATTLECRY_ALL, V_SILENCE, V_STEALTH, V_DEATHRATTLE, V_DEATHRATTLE_GOOD_ALL,
-                       V_TAUNT_GIVER, V_TOKEN, V_WINDFURY_MINION, V_ATTACK_BUFF, V_ATTACK_NERF, V_HEALTH_BUFF,
-                       V_RETURN, V_DIVINE_SHIELD, V_DIVINE_SHIELD_ALL, V_ENRAGED, V_SPELL_DAMAGE, V_SURVIVABILITY,
-                       V_RESTORE_FRIENDLY_HEROE, V_RESTORE_FRIENDLY_MINION, V_RESTORE_TARGET_MINION, V_ARMOR,
-                       V_TOKEN_CARD, V_COMBO, V_COMBO_ALL, V_LIFESTEAL_MINION, V_LIFESTEAL_ALL, V_SPAWN_ENEMY,
-                       V_EGG, V_RUSH, V_RUSH_ALL, V_ECHO, V_ECHO_ALL, V_DAMAGE_FRIENDLY_HERO, V_SPELL_BUFF,
-                       V_MAGNETIC, V_MAGNETIC_ALL, V_HAND_BUFF, V_ENEMY_DRAW, V_HERO_ATTACK, V_HERO_POWER,
-                       V_OTHER_CLASS, V_SILVER_HAND, V_TREANT, V_LACKEY, V_OUTCAST, V_OUTCAST_ALL, V_END_TURN,
-                       V_RUSH_GIVER, V_DREDGE, V_CORPSE, V_CHOOSEONE, V_CHOOSEONE_ALL, V_EXCAVATE, V_LIBRAM, V_LIBRAM_ALL,
-                       V_STARSHIP, V_STARSHIP_ALL, V_SHUFFLE,
-                       V_NUM_MECHANICS};
+enum VisibleMechanics {
+    V_DISCOVER_DRAW, V_SURVIVABILITY,//No guardan sinergias, solo contadores
+
+    V_DISCOVER, V_DRAW, V_TOYOURHAND,
+    V_RESTORE_FRIENDLY_HEROE, V_ARMOR,
+    V_REACH, V_TAUNT, V_TAUNT_ALL,
+    V_PING, V_DAMAGE, V_DESTROY, V_AOE,
+
+    V_DEATHRATTLE, V_DEATHRATTLE_GOOD_ALL,
+    V_JADE_GOLEM, V_HERO_POWER,
+    V_NUM_MECHANICS};
 enum MechanicIcons {M_DROP2, M_DROP3, M_DROP4,
                     M_REACH, M_TAUNT_ALL, M_SURVIVABILITY, M_DISCOVER_DRAW,
                     M_PING, M_DAMAGE, M_DESTROY, M_AOE, M_NUM_MECHANICS};
-//New Synergy Step 1
 
 
 class GameResultPost
@@ -145,7 +142,8 @@ public:
     static QPropertyAnimation *fadeOutWidget(QWidget *widget, bool force=false);
     static QString getLoadingScreenToString(LoadingScreenState loadingScreen);
     static LoadingScreenState getLoadingScreenFromString(const QString &loadingScreenString);
-    static std::vector<Point2f> findTemplateOnScreen(const QString &templateImage, QScreen *screen, const std::vector<Point2f> &templatePoints, QPointF &screenScale, int &screenHeight);
+    static std::vector<Point2f> findTemplateOnScreen(const QString &templateImage, QScreen *screen, const std::vector<Point2f> &templatePoints,
+                                                     QPointF &screenScale, int &screenHeight, int &goodMatches);
     static ulong findTemplateOnMat(const QString &templateImage, cv::Mat &mat, bool showMatches=false);
     static ulong findTemplateOnMat(const QString &templateImage, Mat &mat, const std::vector<Point2f> &templatePoints,
                                    std::vector<Point2f> &targetPoints, ulong minGoodMatches, bool showMatches=false);

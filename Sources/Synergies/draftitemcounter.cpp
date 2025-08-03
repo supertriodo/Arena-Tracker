@@ -1,6 +1,5 @@
 #include "draftitemcounter.h"
 #include "../themehandler.h"
-#include <QtWidgets>
 
 
 DraftItemCounter::DraftItemCounter(QObject *parent, QString synergyTag, QString synergyTagExtra,
@@ -231,7 +230,7 @@ bool DraftItemCounter::insertCode(const QString code, QMap<QString,int> &synergi
 }
 
 
-//Se usa en heroPowerGen(V_HERO_POWER), sinergia gen-gen, para evitar sinergias de una carta con ella misma
+//avoidCode: Se usa en heroPowerGen(V_HERO_POWER), sinergia gen-gen, para evitar sinergias de una carta con ella misma
 void DraftItemCounter::insertCards(QMap<QString, QMap<QString, int>> &synergyTagMap, QString avoidCode)
 {
     QMap<QString,int> synergies;

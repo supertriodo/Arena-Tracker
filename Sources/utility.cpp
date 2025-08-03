@@ -759,7 +759,7 @@ QString Utility::removeAccents(const QString &s)
 
 std::vector<Point2f> Utility::findTemplateOnScreen(const QString &templateImage, QScreen *screen,
                                                    const std::vector<Point2f> &templatePoints,
-                                                   QPointF &screenScale, int &screenHeight)
+                                                   QPointF &screenScale, int &screenHeight, int &goodMatches)
 {
     std::vector<Point2f> screenPoints;
     QScreen *primaryScreen = QGuiApplication::primaryScreen();
@@ -776,7 +776,7 @@ std::vector<Point2f> Utility::findTemplateOnScreen(const QString &templateImage,
 
     cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
 
-    findTemplateOnMat(templateImage, mat, templatePoints, screenPoints, 10/*, true*/);//Debug showMatches=true
+    goodMatches = findTemplateOnMat(templateImage, mat, templatePoints, screenPoints, 10, DEBUG_SHOW_MATCHES);
     return screenPoints;
 }
 
@@ -1225,7 +1225,7 @@ void Utility::checkTierlistsCount(QStringList &arenaSets)
         const QString heroString = Utility::classLogNumber2classUL_ULName(heroLog);
         const CardClass heroClass = Utility::classLogNumber2classEnum(heroLog);
 
-        qDebug()<<endl<<"--------------------"<<heroString<<"--------------------";
+        qDebug()<<Qt::endl<<"--------------------"<<heroString<<"--------------------";
         QMap<QString, QString> arenaMap;
 
         //Arena Codes List
@@ -1314,12 +1314,12 @@ void Utility::checkTierlistsCount(QStringList &arenaSets)
 
     arenaSets.sort();
     haSets.sort();
-    qDebug()<<endl<<"---------------------------------------------------------------------------"
+    qDebug()<<Qt::endl<<"---------------------------------------------------------------------------"
                 "SETS ---------------------------------------------------------------------------";
     qDebug()<<"Arena Sets:"<<arenaSets;
     qDebug()<<"HA    Sets:"<<haSets;
     qDebug()<<"---------------------------------------------------------------------------"
-                "SETS ---------------------------------------------------------------------------"<<endl;
+                "SETS ---------------------------------------------------------------------------"<<Qt::endl;
 }
 
 
