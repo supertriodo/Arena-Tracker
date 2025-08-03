@@ -4842,7 +4842,7 @@ void MainWindow::testDelay()
     // QTimer::singleShot(15000, this, SLOT(testPopularList()));
     // draftHandler->beginHeroDraft();
     // QTimer::singleShot(2000, this, [=] () {
-    //    draftHandler->beginDraft(Utility::classEnum2classLogNumber(SHAMAN), deckHandler->getDeckCardList());});
+    //    draftHandler->beginDraft(Utility::classEnum2classLogNumber(WARLOCK), deckHandler->getDeckCardList());});
 
     // testArenaGames();
     // testPlan();
@@ -4957,6 +4957,12 @@ void MainWindow::testDelay()
 
 //Warning pass a context object as 3rd connect parameter [clazy-connect-3arg-lambda]
 //https://www.kdab.com/nailing-13-signal-slot-mistakes-clazy-1-3/
+
+// PDEBUG
+// emit pDebug(QStringLiteral("Good matches: %1 Screen: %2 Template: %3")
+//             .arg(goodMatches)
+//             .arg(screenIndex)
+//             .arg(arenaTemplate));
 
 //Lambda
 //Connect, function def inline

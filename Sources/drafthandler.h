@@ -43,6 +43,7 @@ class SDBasic
 public:
     std::vector<Point2f> screenPoints;
     int goodMatches = 0;
+    int screenIndex = -1;
     int screenHeight = 1;
     QPointF screenScale = QPointF(0,0);
 };

@@ -2528,8 +2528,6 @@ void DraftHandler::finishFindScreenRects()
 
 ScreenDetection DraftHandler::findScreenRects()
 {
-    ScreenDetection screenDetection;
-
     std::vector<Point2f> templatePoints;
     if(heroDrafting)
     {
@@ -2580,59 +2578,68 @@ ScreenDetection DraftHandler::findScreenRects()
     }
 
 
+    QList<QFuture<SDBasic>> futureList;
     QList<QScreen *> screens = QGuiApplication::screens();
-    for(int screenIndex=0; screenIndex<screens.count(); screenIndex++)
+
+    QScreen *screen = nullptr;
+    int screenIndex=0;
+
+    auto findTemplate = [&](const QString& arenaTemplate) {
+        futureList.append(QtConcurrent::run([=]() { // <-- [=] captura por valor
+            SDBasic sdb;
+            sdb.screenPoints = Utility::findTemplateOnScreen(arenaTemplate, screen, templatePoints,
+                                                             sdb.screenScale, sdb.screenHeight, sdb.goodMatches);
+            sdb.screenIndex = screenIndex;
+            return sdb;
+        }));
+    };
+
+    for(screenIndex=0; screenIndex<screens.count(); screenIndex++)
     {
-        QScreen *screen = screens[screenIndex];
+        screen = screens[screenIndex];
         if (!screen)    continue;
 
-        std::vector<Point2f> screenPoints;
         if(redraftingReview)
         {
-            int goodMatches;
-            screenPoints = Utility::findTemplateOnScreen("redraftTemplate.png", screen, templatePoints,
-                                                        screenDetection.screenScale, screenDetection.screenHeight, goodMatches);
-            if(screenPoints.empty())    continue;
+            findTemplate("redraftTemplate.png");
         }
-        else
+        else if(heroDrafting)
         {
-            QString arenaTemplate;
-            if(heroDrafting)            arenaTemplate = "heroesTemplate";
-            else /*if(drafting)*/       arenaTemplate = "arenaTemplate";
-
-            auto findTemplate1 = [arenaTemplate, screen, templatePoints]()
-            {
-                SDBasic sdb;
-                sdb.screenPoints = Utility::findTemplateOnScreen(arenaTemplate+".png", screen, templatePoints,
-                                    sdb.screenScale, sdb.screenHeight, sdb.goodMatches);
-                return sdb;
-            };
-            auto findTemplate2 = [arenaTemplate, screen, templatePoints]()
-            {
-                SDBasic sdb;
-                sdb.screenPoints = Utility::findTemplateOnScreen(arenaTemplate+"2.png", screen, templatePoints,
-                                    sdb.screenScale, sdb.screenHeight, sdb.goodMatches);
-                return sdb;
-            };
-
-            QFuture<SDBasic> future1 = QtConcurrent::run(findTemplate1);
-            QFuture<SDBasic> future2 = QtConcurrent::run(findTemplate2);
-            future1.waitForFinished();
-            future2.waitForFinished();
-
-            SDBasic sdb1 = future1.result();
-            SDBasic sdb2 = future2.result();
-            SDBasic &bestSdb = (sdb1.goodMatches > sdb2.goodMatches)?sdb1:sdb2;
-
-            screenPoints = bestSdb.screenPoints;
-            screenDetection.screenScale = bestSdb.screenScale;
-            screenDetection.screenHeight = bestSdb.screenHeight;
-
-            // qDebug()<<"GOOD MATCHES:"<<sdb1.goodMatches<<sdb2.goodMatches;
-
-            if(screenPoints.empty() || !areScreenPointsValid(screenPoints, screenDetection.screenHeight))   continue;
+            findTemplate("heroesTemplate.png");
+            findTemplate("heroesTemplate2.png");
         }
+        else /*if(drafting)*/
+        {
+            findTemplate("arenaTemplate.png");
+            findTemplate("arenaTemplate2.png");
+        }
+    }
 
+    //Cogemos el mejor y verificamos si es valido
+    SDBasic bestSdb;
+    int bestGoodMatches = -1;
+    for(QFuture<SDBasic> &future: futureList)
+    {
+        future.waitForFinished();
+        SDBasic sdb = future.result();
+        // qDebug()<<"GOOD MATCHES:"<<sdb.goodMatches<<sdb.screenIndex;
+        if(sdb.goodMatches > bestGoodMatches)
+        {
+            bestGoodMatches = sdb.goodMatches;
+            bestSdb = sdb;
+        }
+    }
+
+    ScreenDetection screenDetection;
+    std::vector<Point2f> &screenPoints  = bestSdb.screenPoints;
+    screenDetection.screenScale = bestSdb.screenScale;
+    screenDetection.screenHeight = bestSdb.screenHeight;
+    screenDetection.screenIndex = bestSdb.screenIndex;
+
+
+    bool templateFound = (!screenPoints.empty() && areScreenPointsValid(screenPoints, screenDetection.screenHeight));
+    if(templateFound)
+    {
         //Calculamos screenRects, manaRects y rarityRects
         if(heroDrafting)
         {
@@ -2673,12 +2680,13 @@ ScreenDetection DraftHandler::findScreenRects()
         //     imshow(QString::number(i).toStdString() + "orig", orig);
         // }
 
-        screenDetection.screenIndex = screenIndex;
         return screenDetection;
     }
-
-    screenDetection.screenIndex = -1;
-    return screenDetection;
+    else
+    {
+        screenDetection.screenIndex = -1;
+        return screenDetection;
+    }
 }
 
 
