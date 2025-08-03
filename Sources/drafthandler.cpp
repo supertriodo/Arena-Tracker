@@ -1424,7 +1424,7 @@ void DraftHandler::captureDraftRedraftingReview()
     }
 
     // qDebug()<<cardsHist.keys();
-    // qDebug()<<Qt::endl;
+    // qDebug()<<endl;
     // for(int i=0; i<5; i++)
     // {
     //     qDebug()<<"BEST: "<<bestCodesRedraftingReview[i]<<bestMatches[i];
@@ -2172,7 +2172,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 //#ifdef QT_DEBUG
 //    for(int i=0; i<3; i++)
 //    {
-//        qDebug()<<Qt::endl;
+//        qDebug()<<endl;
 //        for(QString code: draftCardMaps[i].keys())
 //        {
 //            DraftCard card = draftCardMaps[i][code];
@@ -2180,7 +2180,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 //                      (static_cast<int>(card.getBestQualityMatches()*1000))/1000.0;
 //        }
 //    }
-//    qDebug()<<"Captured: "<<numCaptured<<Qt::endl;
+//    qDebug()<<"Captured: "<<numCaptured<<endl;
 //#endif
 }
 
@@ -3286,7 +3286,7 @@ void DraftHandler::buildHeroCodesList()
     {
         heroCodesList.append(code);
     }
-//    qDebug()<<Qt::endl<<"HERO CODES"<<heroCodesList.count()<<"!!!!!!!!!!!!!!!!!!!!!!!!"<<Qt::endl<<heroCodesList<<Qt::endl;
+//    qDebug()<<endl<<"HERO CODES"<<heroCodesList.count()<<"!!!!!!!!!!!!!!!!!!!!!!!!"<<endl<<heroCodesList<<endl;
 }
 
 
@@ -3620,8 +3620,8 @@ DraftCard DraftHandler::getBestMatchManaRarity(const int pos, const cv::Mat &scr
 DraftCard DraftHandler::getBestAllMatchManaRarity(const cv::MatND &screenCardHist, const int imgMana, const CardRarity imgRarity)
 {
     double bestMatch = 1;
-    QString bestCode;
-    bool bestGold;
+    QString bestCode = "";
+    bool bestGold = false;
 
     for(QMap<QString, cv::MatND>::const_iterator it=cardsHist.constBegin(); it!=cardsHist.constEnd(); it++)
     {

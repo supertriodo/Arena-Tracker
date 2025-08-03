@@ -1683,7 +1683,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
                 // qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
                 // qDebug()<<code+" "+Utility::cardEnNameFromCode(code);
                 // qDebug()<<code;
-                // qDebug()<<mechanics<<Qt::endl<<referencedTags;
+                // qDebug()<<mechanics<<endl<<referencedTags;
 
                 if(num>0 && num<=50)
                 {
@@ -1716,7 +1716,7 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
     if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
     else                                codeList.append(Utility::getSetCodes(set, true, onlyCollectible));
 
-    qDebug()<<Qt::endl<<"-----SynergiesNames.json-----"<<Qt::endl;
+    qDebug()<<endl<<"-----SynergiesNames.json-----"<<endl;
     for(const QString &code: codeList)
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
@@ -1725,7 +1725,7 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
         }
     }
 
-    qDebug()<<Qt::endl<<"-----Synergies.json-----"<<Qt::endl;
+    qDebug()<<endl<<"-----Synergies.json-----"<<endl;
     int num = 0;
     for(const QString &code: codeList)
     {

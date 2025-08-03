@@ -1225,7 +1225,7 @@ void Utility::checkTierlistsCount(QStringList &arenaSets)
         const QString heroString = Utility::classLogNumber2classUL_ULName(heroLog);
         const CardClass heroClass = Utility::classLogNumber2classEnum(heroLog);
 
-        qDebug()<<Qt::endl<<"--------------------"<<heroString<<"--------------------";
+        qDebug()<<endl<<"--------------------"<<heroString<<"--------------------";
         QMap<QString, QString> arenaMap;
 
         //Arena Codes List
@@ -1314,12 +1314,12 @@ void Utility::checkTierlistsCount(QStringList &arenaSets)
 
     arenaSets.sort();
     haSets.sort();
-    qDebug()<<Qt::endl<<"---------------------------------------------------------------------------"
+    qDebug()<<endl<<"---------------------------------------------------------------------------"
                 "SETS ---------------------------------------------------------------------------";
     qDebug()<<"Arena Sets:"<<arenaSets;
     qDebug()<<"HA    Sets:"<<haSets;
     qDebug()<<"---------------------------------------------------------------------------"
-                "SETS ---------------------------------------------------------------------------"<<Qt::endl;
+                "SETS ---------------------------------------------------------------------------"<<endl;
 }
 
 
