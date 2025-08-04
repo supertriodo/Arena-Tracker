@@ -32,6 +32,7 @@ public:
     void debugSynergiesSet(const QString &set, int openFrom=0, int openTo=-1, const QString &miniSet="", bool onlyCollectible=true);
     void debugSynergiesCode(QString code, int num=0);
     void debugMissingSynergiesAllSets();
+    void debugDrops();
     bool isValidSynergyCode(const QString &mechanic, QRegularExpressionMatch *match);
     void testSynergies(const QString &miniSet="");
     int getCounters(QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,

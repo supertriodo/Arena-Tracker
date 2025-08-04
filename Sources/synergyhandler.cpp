@@ -1927,6 +1927,96 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
 }
 
 
+void SynergyHandler::debugDrops()
+{
+    initSynergyCodes(true);
+
+    QString filename = "global.gz.json";
+    QFile file(Utility::extraPath() + "/" + filename);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        emit pDebug("ERROR: Failed to open " + filename);
+        return;
+    }
+    QByteArray jsonData = file.readAll();
+    file.close();
+
+    QMap<QString, QJsonObject> statsMap;
+
+    QList<QPair<QString, float>> dropRatioList;
+    const QJsonArray &data = QJsonDocument::fromJson(jsonData).object().value("stats").toArray();
+    for(const QJsonValue &card: data)
+    {
+        QJsonObject cardObject = card.toObject();
+        QString code = cardObject.value("cardId").toString();
+        if(!Utility::getCardAttribute(code, "collectible").toBool())    continue;
+        QJsonObject cardStatsObject = cardObject.value("stats").toObject();
+        int played = cardStatsObject.value("played").toInt();
+        if(played == 0) continue;
+        int onCurve = cardStatsObject.value("playedOnCurve").toInt();
+        float dropRatio = onCurve/(float)played;
+        dropRatioList << qMakePair(code, dropRatio);
+        statsMap.insert(code, cardStatsObject);
+    }
+
+    std::sort(dropRatioList.begin(), dropRatioList.end(), [](const QPair<QString, float> &a, const QPair<QString, float> &b) {
+        return a.second < b.second;
+    });
+
+    int num = 0;
+    for(const auto &pair: qAsConst(dropRatioList))
+    {
+        const auto &code = pair.first;
+        const auto &dropRatio = pair.second;
+        int attack = Utility::getCardAttribute(code, "attack").toInt();
+        int health = Utility::getCardAttribute(code, "health").toInt();
+        int cost = Utility::getCardAttribute(code, "cost").toInt();
+
+        //>0.2 drop
+        //0.2 - 0.15 duda
+        //<0.15 no drop
+        if(cost == 2)
+        // if(cost == 3)
+        // if(cost == 4)
+        {
+            int played = statsMap[code].value("played").toInt();
+            bool drop2 = isDrop2(code, cost, attack, health);
+            bool drop3 = isDrop3(code, cost, attack, health);
+            bool drop4 = isDrop4(code, cost, attack, health);
+            bool drop = drop2 || drop3 || drop4;
+            if(played>10000)
+            {
+                qDebug()<<(drop?"\t":"")<<pair<<(drop2?"YES":"-----")<<
+                    (drop3?"YES":"-----")<<
+                    (drop4?"YES":"-----");
+            }
+            else
+            {
+                qDebug()<<(drop?"\t":"")<<pair<<(drop2?"YES":"-----")<<
+                    (drop3?"YES":"-----")<<
+                    (drop4?"YES":"-----")<<
+                    "PLAYED:"<<played;
+            }
+
+            if(dropRatio > 0.15 && !drop)//Drop altos
+            // if(dropRatio < 0.2 && drop)//Drop bajos
+            {
+                num++;
+                if(num>0 && num<=50)
+                {
+                    QDesktopServices::openUrl(QUrl(
+                        "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+                        ));
+                    QThread::msleep(100);
+                }
+            }
+        }
+    }
+
+    clearSynergyLists();
+}
+
+
 //Increase counters
 bool SynergyHandler::isSpellGen(const QString &code)
 {
@@ -3194,8 +3284,8 @@ SILVER HAND: silverHand/silverHandSyn
 TREANT: treant/treantSyn
 LACKEY: lackey/lackeySyn
 
-    - Drop2 (Derrota 2/2 --> 3+/1+, 2/2+, 1/4+)
-    - Drop3 (Derrota 3/3 --> 3+/2+?, 2/4+, 1/7+), no health 1, ? debe hacer algo mas (facilmente) aunque no sea en board
+    - Drop2 (Derrota 2/2 --> 3+/1+, 2/1+?, 1/3+?) ? debe hacer algo mas (facilmente) aunque no sea en board
+    - Drop3 (Derrota 3/3 --> 3+/2+?, 2/3+?, 1/5+?), no health 1,
     - Drop4 (Derrota 4/4 --> 5+/2+, 4/3+?, 3/5+, 2/5+, no 1/x), no health 1
 
     +ping (NO RANDOM/NO DEATHRATTLE)

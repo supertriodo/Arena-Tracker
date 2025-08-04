@@ -4653,6 +4653,7 @@ void MainWindow::testSynergies()
 {
     // draftHandler->getSynergyHandler()->testSynergies(/*"SC_"*/);
     // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0/*, "SC_"*/);//PLACEHOLDER_202204
+    // draftHandler->getSynergyHandler()->debugDrops();
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
@@ -4890,6 +4891,7 @@ void MainWindow::testDelay()
 //|-Check synergies in the new set --> New synergy keys
 //|-Check evolveSyn cards
 //|-Check direct links
+//|-Check drops (https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/global.gz.json)
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
@@ -4978,6 +4980,13 @@ void MainWindow::testDelay()
 //QtConcurrent::run([=]() {
 //    // Code in this block will run in another thread
 //});
+
+//Sort QPair
+// QList<QPair<QString, float>> lista;
+// lista << qMakePair(code, score);
+// std::sort(lista.begin(), lista.end(), [](const QPair<QString, float> &a, const QPair<QString, float> &b) {
+//     return a.second < b.second;
+// });
 
 
 
