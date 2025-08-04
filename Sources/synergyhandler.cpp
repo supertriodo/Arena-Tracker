@@ -1651,6 +1651,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
                 KeySynergies::containsAll(text, "starship")
+                // KeySynergies::isKey("overload", code, mechanics, referencedTags, text, cardType, attack, cost)
                 // text.contains("kindred")
 //                mechanics.contains(QJsonValue("MAGNETIC"))
 //                referencedTags.contains(QJsonValue("CHOOSE_ONE"))
@@ -1658,11 +1659,10 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //                mechanics.contains(QJsonValue("CORRUPT"))
 //                && attack<4 && health<4
 //                cost > 5
-//                && isCorpseGen(code, mechanics, text)
 //                && !isTokenGen(code, mechanics, text)
 //                && !isDrop2(code, cost, attack, health)
 //                && !isDrop3(code, cost, attack, health)
-//                && !isDrop4(code, cost, attack, health)
+               // && !isDrop4(code, cost, attack, health)
 
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
@@ -3378,7 +3378,8 @@ REGLAS
         ya que lo que mata es un drop3 enemigo.
     No es un drop2 si preferimos crear un 1/1 con heropower a sacarlo.
     No poner un drop en un coste diferente de su mana a no ser que haya un razon de peso. El unico "Deadly Poison" y overload 1
-        1+1 = drop2 / 2+1 = drop3 / 3+1 = drop4 / Todo lo demas es drop de su coste (4+1 = drop4)
+        1+1 = drop2 / 2+1 = drop3 / 3+1 = drop4 / Todo lo demas es drop de su coste
+        excepto (4+1 = no drop4) ya que necesitaremos otro drop4 en turno 5
     Stats minimos sin ningun extra en tempo, considerar que las condiciones con cartas especificas no se cumplen,
         como secretos, razas, hechizos, quizas holding.
         - Drop2 (Derrota 2/2 --> 3+/1+, 2/2+, 1/4+)
