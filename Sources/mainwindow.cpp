@@ -346,27 +346,42 @@ void MainWindow::replyFinished(QNetworkReply *reply)
     }
     else
     {
-        //Cards version
+        //Cards version - Github
         if(endUrl == "cardsVersion.json")
         {
             int cardsVersion = QJsonDocument::fromJson(reply->readAll()).object().value("cardsVersion").toInt();
-            downloadCardsJson(cardsVersion);//0 force hearthsim - else force AT github
+            downloadCardsJson(cardsVersion);
         }
         //Cards json
         else if(endUrl == "cards.json")
         {
+            //Old redirection - HSR
             if(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302)
             {
                 checkCardsJsonVersion(reply->rawHeader("Location"));
             }
-            else
+            //Cards json - HSR (Debug)
+            else if(fullUrl == HSR_CARDS_URL)
             {
-                pDebug("Extra: Json Cards --> Download Success.");
-                if(fullUrl == HSR_CARDS_URL)    pDebug("Extra: Json Cards --> Redirection failed.");
+                qDebug() << "DEBUG CARDS: Json Cards --> Download Success.";
                 QSettings settings("Arena Tracker", "Arena Tracker");
                 settings.setValue("cardsJsonVersion", fullUrl);
+
                 QByteArray jsonData = reply->readAll();
-                Utility::dumpOnFile(jsonData, Utility::extraPath() + "/cards.json");
+                QString cardsJsonLocal = Utility::extraPath() + "/cards.json";
+                QString cardsJsonSource = QDir::homePath() + "/Documentos/ArenaTracker/CardsJson/cards.json";
+                Utility::dumpOnFile(jsonData, cardsJsonLocal);
+                Utility::dumpOnFile(jsonData, cardsJsonSource);
+                qDebug() << "DEBUG CARDS: cards.json created (source and local)";
+            }
+            //Cards json - Github
+            else//CARDS_URL + QString("/cards.json")
+            {
+                pDebug("Extra: Json Cards --> Download Success.");
+                QByteArray jsonData = reply->readAll();
+                QString cardsJsonLocal = Utility::extraPath() + "/cards.json";
+                Utility::dumpOnFile(jsonData, cardsJsonLocal);
+
                 createCardsJsonMap(jsonData);
                 initWRCards();
             }
@@ -2686,15 +2701,15 @@ void MainWindow::downloadCardsJsonVersion()
 }
 
 
+void MainWindow::testDownloadHSRCardsJson()
+{
+    networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_URL)));
+    qDebug() << "DEBUG CARDS: Json Cards --> Download from:" << QString(HSR_CARDS_URL);
+}
+
+
 void MainWindow::downloadCardsJson(int version)
 {
-    if(version < 1)
-    {
-        networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_URL)));
-        pDebug("Extra: Json Cards --> Trying: " + QString(HSR_CARDS_URL));
-        return;
-    }
-
     bool needDownload = false;
     QSettings settings("Arena Tracker", "Arena Tracker");
     int storedVersion = settings.value("cardsVersion", 0).toInt();
@@ -4833,7 +4848,9 @@ void MainWindow::testDelay()
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
     testHeroPortraits();
     testSynergies();
+
     // testTierlists();
+    // testDownloadHSRCardsJson();
     // testDownloadRotation(true/*, "SC_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
 
@@ -4867,7 +4884,7 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Json cards --> Update CardsJson/cards.json // Search: if(endUrl == "cardsVersion.json")
+//Update Json cards --> testDownloadHSRCardsJson();
 //Update Utility::isFromStandardSet(QString code) --> THE_LOST_CITY
 //Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
@@ -4895,7 +4912,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 33.0.3 Patch Notes
+//|-Synergy / Code  --> 33.2 Patch Notes
 
 //Rotacion CORE
 //|-Revisar cartas github CORE

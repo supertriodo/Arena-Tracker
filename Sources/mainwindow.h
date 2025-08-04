@@ -212,6 +212,7 @@ private:
     void initWantedMechanics(bool wantedMechanics[]);
     void downloadCardsJsonVersion();
     void downloadCardsJson(int version);
+    void testDownloadHSRCardsJson();
 
 protected:
     //Override events
