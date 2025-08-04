@@ -5042,10 +5042,7 @@ void MainWindow::testDelay()
 //TODO
 //Deathrattle cost sinergy
 //TEST
-//TESTED No prem - Pick bundle and 1 - dissapear
-//Prem - Hidden - Pick bundle and 1 - dissapear
-//Prem - Shown - Pick bundle and 1 - show
-
+//Drop4 + overload
 
 
 

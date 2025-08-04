@@ -1999,7 +1999,7 @@ void SynergyHandler::debugDrops()
             }
 
             if(dropRatio > 0.15 && !drop)//Drop altos
-            // if(dropRatio < 0.2 && drop)//Drop bajos
+            // if(dropRatio < 0.2 && drop)//Drop bajos, por debajo de 0.15 solo dejar drops perfectos (buenos stats) a no ser que su efecto sea tan potente que se desperdiciaria en drop.
             {
                 num++;
                 if(num>0 && num<=50)
@@ -3286,7 +3286,7 @@ LACKEY: lackey/lackeySyn
 
     - Drop2 (Derrota 2/2 --> 3+/1+, 2/1+?, 1/3+?) ? debe hacer algo mas (facilmente) aunque no sea en board
     - Drop3 (Derrota 3/3 --> 3+/2+?, 2/3+?, 1/5+?), no health 1,
-    - Drop4 (Derrota 4/4 --> 5+/2+, 4/3+?, 3/5+, 2/5+, no 1/x), no health 1
+    - Drop4 (Derrota 4/4 --> 5+/2+, 4/3+?, 3/4+?, 2/5+, no 1/x), no health 1
 
     +ping (NO RANDOM/NO DEATHRATTLE)
     +damageMinions/destroy (SI RANDOM/NO DEATHRATTLE)
