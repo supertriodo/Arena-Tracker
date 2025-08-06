@@ -6,13 +6,15 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 
-#define HSR_HEROES_WINRATE "https://hsreplay.net/api/v1/analytics/query/player_class_performance_summary/"
-#define HSR_CARDS_PATCH "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=UNDERGROUND_ARENA&TimeRange=CURRENT_PATCH"
-#define HSR_CARDS_EXP "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=UNDERGROUND_ARENA&TimeRange=CURRENT_EXPANSION"
-#define HSR_CARDS_14DAYS "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=UNDERGROUND_ARENA&TimeRange=LAST_14_DAYS"
-#define HSR_BUNDLES "https://hsreplay.net/api/v1/arena/card_packages/free/?format=json"
-#define FIRE_CARDS "https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/"
+#define HSR_HEROES_WINRATE_URL "https://hsreplay.net/api/v1/analytics/query/player_class_performance_summary/"
+#define HSR_CARDS_PATCH_URL "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=UNDERGROUND_ARENA&TimeRange=CURRENT_PATCH"
+#define HSR_CARDS_EXP_URL "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=UNDERGROUND_ARENA&TimeRange=CURRENT_EXPANSION"
+#define HSR_CARDS_14DAYS_URL "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=UNDERGROUND_ARENA&TimeRange=LAST_14_DAYS"
+#define HSR_BUNDLES_URL "https://hsreplay.net/api/v1/arena/card_packages/free/?format=json"
+#define FIRE_CARDS_URL "https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/"
 
+#define HSR_HEROES_FILE "HSRheroes.json"
+#define HSR_CARDS_FILE "HSRcards.json"
 #define HSR_BUNDLES_FILE "HSRbundles.json"
 
 

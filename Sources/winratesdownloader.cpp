@@ -58,7 +58,7 @@ void WinratesDownloader::waitFinishThreads()
 int WinratesDownloader::url2classOrder(QString url)
 {
     int classOrder = -1;
-    static const auto re = QRegularExpression(QString(FIRE_CARDS) + "(\\w+)\\.gz\\.json");
+    static const auto re = QRegularExpression(QString(FIRE_CARDS_URL) + "(\\w+)\\.gz\\.json");
     if(url.contains(re, match))
     {
         QString hero = match->captured(1);
@@ -78,31 +78,31 @@ void WinratesDownloader::replyFinished(QNetworkReply *reply)
     {
         emit pDebug(reply->url().toString() + " --> Failed.");
 
-        if(fullUrl.startsWith(FIRE_CARDS))
+        if(fullUrl.startsWith(FIRE_CARDS_URL))
         {
             int classOrder = url2classOrder(fullUrl);
             if(classOrder == -1)    emit pDebug("ERROR: Fail retrieving class from url:" + fullUrl);
             else                    localFireCards(classOrder);
         }
-        else if(fullUrl == HSR_CARDS_14DAYS)
+        else if(fullUrl == HSR_CARDS_14DAYS_URL)
         {
-            emit pDebug("HSR cards --> Download from: " + QString(HSR_CARDS_EXP));
-            networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_EXP)));
+            emit pDebug("HSR cards --> Download from: " + QString(HSR_CARDS_EXP_URL));
+            networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_EXP_URL)));
         }
-        else if(fullUrl == HSR_CARDS_EXP)
+        else if(fullUrl == HSR_CARDS_EXP_URL)
         {
-            emit pDebug("HSR cards --> Download from: " + QString(HSR_CARDS_PATCH));
-            networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_PATCH)));
+            emit pDebug("HSR cards --> Download from: " + QString(HSR_CARDS_PATCH_URL));
+            networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_PATCH_URL)));
         }
-        else if(fullUrl == HSR_CARDS_PATCH)
+        else if(fullUrl == HSR_CARDS_PATCH_URL)
         {
             localHSRCards();
         }
-        else if(fullUrl == HSR_HEROES_WINRATE)
+        else if(fullUrl == HSR_HEROES_WINRATE_URL)
         {
             localHSRHeroesWinrate();
         }
-        else if(fullUrl == HSR_BUNDLES)
+        else if(fullUrl == HSR_BUNDLES_URL)
         {
             localHSRBundles();
         }
@@ -115,7 +115,7 @@ void WinratesDownloader::replyFinished(QNetworkReply *reply)
     else
     {
         //Fire Cards Winrate/Samples
-        if(fullUrl.startsWith(FIRE_CARDS))
+        if(fullUrl.startsWith(FIRE_CARDS_URL))
         {
             emit pDebug("Fire cards --> Download Success from: " + fullUrl);
 
@@ -132,23 +132,23 @@ void WinratesDownloader::replyFinished(QNetworkReply *reply)
             startProcessFireCards(QJsonDocument::fromJson(jsonData).object(), classOrder);
         }
         //HSR Heroes Winrate
-        else if(fullUrl == HSR_HEROES_WINRATE)
+        else if(fullUrl == HSR_HEROES_WINRATE_URL)
         {
             emit pDebug("Heroes winrate --> Download Success.");
             QByteArray jsonData = reply->readAll();
-            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/HSRheroes.json");
+            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/" + HSR_HEROES_FILE);
             processHSRHeroesWinrate(QJsonDocument::fromJson(jsonData).object());
         }
         //HSR Cards Pickrate/Winrate
-        else if(fullUrl == HSR_CARDS_PATCH || fullUrl == HSR_CARDS_EXP || fullUrl == HSR_CARDS_14DAYS)
+        else if(fullUrl == HSR_CARDS_PATCH_URL || fullUrl == HSR_CARDS_EXP_URL || fullUrl == HSR_CARDS_14DAYS_URL)
         {
             emit pDebug("HSR cards --> Download Success from: " + fullUrl);
             QByteArray jsonData = reply->readAll();
-            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/HSRcards.json");
+            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/" + HSR_CARDS_FILE);
             startProcessHSRCards(QJsonDocument::fromJson(jsonData).object());
         }
         //HSR Bundles
-        else if(fullUrl == HSR_BUNDLES)
+        else if(fullUrl == HSR_BUNDLES_URL)
         {
             emit pDebug("HSR bundles --> Download Success from: " + fullUrl);
             QByteArray jsonData = reply->readAll();
@@ -175,27 +175,27 @@ void WinratesDownloader::showDataProgressBar()
 
 void WinratesDownloader::initHSRHeroesWinrate()
 {
-    QFileInfo fi(Utility::extraPath() + "/HSRheroes.json");
+    QFileInfo fi(Utility::extraPath() + "/" + HSR_HEROES_FILE);
     if(fi.exists() && (fi.lastModified().addDays(1)>QDateTime::currentDateTime()))
     {
         localHSRHeroesWinrate();
     }
     else
     {
-        emit pDebug("Heroes winrate --> Download from: " + QString(HSR_HEROES_WINRATE));
-        networkManager->get(QNetworkRequest(QUrl(HSR_HEROES_WINRATE)));
+        emit pDebug("Heroes winrate --> Download from: " + QString(HSR_HEROES_WINRATE_URL));
+        networkManager->get(QNetworkRequest(QUrl(HSR_HEROES_WINRATE_URL)));
     }
 }
 
 
 void WinratesDownloader::localHSRHeroesWinrate()
 {
-    emit pDebug("Heroes winrate --> Use local HSRheroes.json");
+    emit pDebug(QStringLiteral("Heroes winrate --> Use local %1").arg(HSR_HEROES_FILE));
 
-    QFile file(Utility::extraPath() + "/HSRheroes.json");
+    QFile file(Utility::extraPath() + "/" + HSR_HEROES_FILE);
     if(!file.open(QIODevice::ReadOnly))
     {
-        emit pDebug("ERROR: Failed to open HSRheroes.json");
+        emit pDebug(QStringLiteral("ERROR: Failed to open %1").arg(HSR_HEROES_FILE));
         return;
     }
     QByteArray jsonData = file.readAll();
@@ -267,8 +267,8 @@ void WinratesDownloader::initHSRBundles()
     }
     else
     {
-        emit pDebug("HSR bundles --> Download from: " + QString(HSR_BUNDLES));
-        networkManager->get(QNetworkRequest(QUrl(HSR_BUNDLES)));
+        emit pDebug("HSR bundles --> Download from: " + QString(HSR_BUNDLES_URL));
+        networkManager->get(QNetworkRequest(QUrl(HSR_BUNDLES_URL)));
     }
 }
 
@@ -384,27 +384,27 @@ void WinratesDownloader::initHSRCards()
     }
 
 
-    QFileInfo fi(Utility::extraPath() + "/HSRcards.json");
+    QFileInfo fi(Utility::extraPath() + "/" + HSR_CARDS_FILE);
     if(fi.exists() && (fi.lastModified().addDays(1)>QDateTime::currentDateTime()))
     {
         localHSRCards();
     }
     else
     {
-        emit pDebug("HSR cards --> Download from: " + QString(HSR_CARDS_14DAYS));
-        networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_14DAYS)));
+        emit pDebug("HSR cards --> Download from: " + QString(HSR_CARDS_14DAYS_URL));
+        networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_14DAYS_URL)));
     }
 }
 
 
 void WinratesDownloader::localHSRCards()
 {
-    emit pDebug("HSR cards --> Use local HSRcards.json");
+    emit pDebug(QStringLiteral("HSR cards --> Use local %1").arg(HSR_CARDS_FILE));
 
-    QFile file(Utility::extraPath() + "/HSRcards.json");
+    QFile file(Utility::extraPath() + "/" + HSR_CARDS_FILE);
     if(!file.open(QIODevice::ReadOnly))
     {
-        emit pDebug("ERROR: Failed to open HSRcards.json");
+        emit pDebug(QStringLiteral("ERROR: Failed to open %1").arg(HSR_CARDS_FILE));
         return;
     }
     QByteArray jsonData = file.readAll();
@@ -505,7 +505,7 @@ void WinratesDownloader::initFireCards()
         }
         else
         {
-            QString url = FIRE_CARDS + hero + ".gz.json";
+            QString url = FIRE_CARDS_URL + hero + ".gz.json";
             emit pDebug("Fire cards --> Download from: " + QString(url));
             networkManager->get(QNetworkRequest(QUrl(url)));
         }
