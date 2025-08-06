@@ -190,6 +190,7 @@ public:
     static QString otherCodeConstant(const QString &code);
     static void mergeHSRwithFireCards();
     static void shrinkText(QFont &font, const QString &text, int startFontSize, int maxLong);
+    static void buildDbfIdMap(QMap<int, QString> *map);
 };
 
 #endif // UTILITY_H

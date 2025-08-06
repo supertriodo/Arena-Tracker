@@ -51,6 +51,7 @@ private:
     QMap<QString, QStringList> *hsrBundlesMap;
     QMap<QString, float> *fireWRMap;
     QMap<QString, int> *fireSamplesMap;
+    QMap<int, QString> *dbfIdMap;
 
 
 //Metodos
@@ -71,6 +72,7 @@ private:
     void showDataProgressBar();
     int url2classOrder(QString url);
     int runningThreads();
+    void deleteDbfIdMap();
 
 public:
     void initWRCards();

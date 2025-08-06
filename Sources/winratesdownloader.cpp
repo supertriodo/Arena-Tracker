@@ -18,6 +18,8 @@ WinratesDownloader::WinratesDownloader(QObject *parent) : QObject(parent)
     fireWRMap = new QMap<QString, float>[NUM_HEROS];
     fireSamplesMap = new QMap<QString, int>[NUM_HEROS];
 
+    dbfIdMap = new QMap<int, QString>;
+
     match = new QRegularExpressionMatch();
 
     networkManager = new QNetworkAccessManager(this);
@@ -40,6 +42,8 @@ WinratesDownloader::~WinratesDownloader()
     //Delete Fire maps
     if(fireWRMap != nullptr)        delete[] fireWRMap;
     if(fireSamplesMap != nullptr)   delete[] fireSamplesMap;
+
+    deleteDbfIdMap();//Ya deberia estar borrado, solo por seguridad.
 }
 
 
@@ -167,11 +171,17 @@ int WinratesDownloader::runningThreads()
 }
 
 
+//Show threads progres
+//If all threads done, show message and delete dbfIdMap
 void WinratesDownloader::showDataProgressBar()
 {
     int numThreads = runningThreads();
     emit advanceProgressBar(numThreads);
-    if(numThreads == 0) emit showMessageProgressBar("WR data ready");
+    if(numThreads == 0)
+    {
+        emit showMessageProgressBar("WR data ready");
+        deleteDbfIdMap();
+    }
 }
 
 
@@ -237,8 +247,10 @@ void WinratesDownloader::initWRCards()
     emit startProgressBar(runningThreads(), "Building WR data...");
 
     initHSRBundles();
-    initHSRCards();
     initFireCards();
+
+    Utility::buildDbfIdMap(dbfIdMap);
+    initHSRCards();
 }
 
 
@@ -320,6 +332,16 @@ void WinratesDownloader::startProcessHSRBundles(const QJsonObject &jsonObject)
             return map;
         });
         futureHSRBundles[i].setFuture(future);
+    }
+}
+
+
+void WinratesDownloader::deleteDbfIdMap()
+{
+    if(dbfIdMap != nullptr)
+    {
+        delete dbfIdMap;
+        dbfIdMap = nullptr;
     }
 }
 
@@ -420,10 +442,11 @@ void WinratesDownloader::processHSRCardClassDouble(const QJsonArray &jsonArray, 
     for(const QJsonValue &card: jsonArray)
     {
         QJsonObject cardObject = card.toObject();
-        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
+        int dbfId = cardObject.value("dbf_id").toInt();
+        QString code = dbfIdMap->value(dbfId);
         double value = cardObject.value(tag).toDouble();
         if(trunk)   value = round(value * 10)/10.0;
-        cardsMap[code] = static_cast<float>(value);
+        cardsMap.insert(code, static_cast<float>(value));
     }
 }
 
@@ -433,8 +456,10 @@ void WinratesDownloader::processHSRCardClassInt(const QJsonArray &jsonArray, con
     for(const QJsonValue &card: jsonArray)
     {
         QJsonObject cardObject = card.toObject();
-        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
-        cardsMap[code] = cardObject.value(tag).toInt();
+        int dbfId = cardObject.value("dbf_id").toInt();
+        QString code = dbfIdMap->value(dbfId);
+        int value = cardObject.value(tag).toInt();
+        cardsMap.insert(code, value);
     }
 }
 
@@ -549,8 +574,8 @@ void WinratesDownloader::startProcessFireCards(const QJsonObject &jsonObject, co
             int samples = cardStatsObject.value("decksWithCard").toInt();
             int wins = cardStatsObject.value("decksWithCardThenWin").toInt();
             float wr = round((wins/(float)samples) * 1000)/10.0;
-            fireData.fireSamplesMap[code] = samples;
-            fireData.fireWRMap[code] = wr;
+            fireData.fireSamplesMap.insert(code, samples);
+            fireData.fireWRMap.insert(code, wr);
         }
         return fireData;
     });

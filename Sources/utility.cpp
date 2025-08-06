@@ -1461,6 +1461,15 @@ void Utility::mergeHSRwithFireCards()
 }
 
 
+void Utility::buildDbfIdMap(QMap<int, QString> *map)
+{
+    for(QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
+    {
+        map->insert(it->value("dbfId").toInt(), it.key());
+    }
+}
+
+
 //--------------------------------------------------------
 //----Constants
 //--------------------------------------------------------
