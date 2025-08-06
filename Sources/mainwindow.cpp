@@ -468,6 +468,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
 }
 
 
+//Old redirection - HSR
 void MainWindow::checkCardsJsonVersion(QString cardsJsonVersion)
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -543,6 +544,10 @@ void MainWindow::readyHSRSamplesMap(QMap<QString, int> *hsrSamplesMap)
 void MainWindow::readyHSRPlayedWRMap(QMap<QString, float> *hsrPlayedWRMap)
 {
     draftHandler->setCardsPlayedWinratesMap(hsrPlayedWRMap);
+}
+void MainWindow::readyHSRBundlesMap(QMap<QString, QStringList> *hsrBundlesMap)
+{
+    draftHandler->setBundlesMap(hsrBundlesMap);
 }
 void MainWindow::readyFireWRMap(QMap<QString, float> *fireWRMap)
 {
@@ -1114,6 +1119,8 @@ void MainWindow::createWinratesDownloader()
             this, SLOT(readyHSRSamplesMap(QMap<QString,int>*)));
     connect(winratesDownloader, SIGNAL(readyHSRPlayedWRMap(QMap<QString,float>*)),
             this, SLOT(readyHSRPlayedWRMap(QMap<QString,float>*)));
+    connect(winratesDownloader, SIGNAL(readyHSRBundlesMap(QMap<QString,QStringList>*)),
+            this, SLOT(readyHSRBundlesMap(QMap<QString,QStringList>*)));
     connect(winratesDownloader, SIGNAL(readyFireWRMap(QMap<QString,float>*)),
             this, SLOT(readyFireWRMap(QMap<QString,float>*)));
     connect(winratesDownloader, SIGNAL(readyFireSamplesMap(QMap<QString,int>*)),

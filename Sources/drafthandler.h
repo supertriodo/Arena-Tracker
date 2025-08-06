@@ -118,6 +118,7 @@ private:
     QMap<QString, float> *cardsIncludedWinratesMap;
     QMap<QString, int> *cardsIncludedDecksMap;
     QMap<QString, float> *cardsPlayedWinratesMap;
+    QMap<QString, QStringList> *bundlesMap;
     QMap<QString, float> *fireWRMap;
     QMap<QString, int> *fireSamplesMap;
     TwitchHandler *twitchHandler;
@@ -253,6 +254,7 @@ public:
     void setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[]);
     void setCardsIncludedDecksMap(QMap<QString, int> cardsIncludedDecksMap[]);
     void setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[]);
+    void setBundlesMap(QMap<QString, QStringList> bundlesMap[]);
     void setFireWRMap(QMap<QString, float> fireWRMap[]);
     void setFireSamplesMap(QMap<QString, int> fireSamplesMap[]);
     void updateTwitchChatVotes();

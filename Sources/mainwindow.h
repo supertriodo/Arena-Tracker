@@ -340,6 +340,7 @@ private slots:
     void readyHSRWRMap(QMap<QString, float> *hsrWRMap);
     void readyHSRSamplesMap(QMap<QString, int> *hsrSamplesMap);
     void readyHSRPlayedWRMap(QMap<QString, float> *hsrPlayedWRMap);
+    void readyHSRBundlesMap(QMap<QString, QStringList> *hsrBundlesMap);
     void readyFireWRMap(QMap<QString, float> *fireWRMap);
     void readyFireSamplesMap(QMap<QString, int> *fireSamplesMap);
 };

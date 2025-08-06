@@ -6,11 +6,12 @@
 
 WinratesDownloader::WinratesDownloader(QObject *parent) : QObject(parent)
 {
-    hsrdataPickratesThreads = hsrdataWRThreads = hsrdataSamplesThreads = hsrdataPlayedThreads = fireDataThreads = 0;
+    hsrdataPickratesThreads = hsrdataWRThreads = hsrdataSamplesThreads = hsrdataPlayedThreads = hsrdataBundlesThreads = fireDataThreads = 0;
     hsrPickratesMap = new QMap<QString, float>[NUM_HEROS];
     hsrWRMap = new QMap<QString, float>[NUM_HEROS];
     hsrSamplesMap = new QMap<QString, int>[NUM_HEROS];
     hsrPlayedWRMap = new QMap<QString, float>[NUM_HEROS];
+    hsrBundlesMap = new QMap<QString, QStringList>[NUM_HEROS];
 
     fireWRMap = new QMap<QString, float>[NUM_HEROS];
     fireSamplesMap = new QMap<QString, int>[NUM_HEROS];
@@ -32,6 +33,7 @@ WinratesDownloader::~WinratesDownloader()
     if(hsrWRMap != nullptr)         delete[] hsrWRMap;
     if(hsrSamplesMap != nullptr)    delete[] hsrSamplesMap;
     if(hsrPlayedWRMap != nullptr)   delete[] hsrPlayedWRMap;
+    if(hsrBundlesMap != nullptr)    delete[] hsrBundlesMap;
 
     //Delete Fire maps
     if(fireWRMap != nullptr)        delete[] fireWRMap;
@@ -47,6 +49,7 @@ void WinratesDownloader::waitFinishThreads()
         if(futureHSRWR[i].isRunning())          futureHSRWR[i].waitForFinished();
         if(futureHSRSamples[i].isRunning())     futureHSRSamples[i].waitForFinished();
         if(futureHSRPlayedWR[i].isRunning())    futureHSRPlayedWR[i].waitForFinished();
+        if(futureHSRBundles[i].isRunning())     futureHSRBundles[i].waitForFinished();
         if(futureFire[i].isRunning())           futureFire[i].waitForFinished();
     }
 }
@@ -55,7 +58,8 @@ void WinratesDownloader::waitFinishThreads()
 int WinratesDownloader::url2classOrder(QString url)
 {
     int classOrder = -1;
-    if(url.contains(QRegularExpression(QString(FIRE_CARDS) + "(\\w+)\\.gz\\.json"), match))
+    static const auto re = QRegularExpression(QString(FIRE_CARDS) + "(\\w+)\\.gz\\.json");
+    if(url.contains(re, match))
     {
         QString hero = match->captured(1);
         classOrder = Utility::className2classOrder(hero);
@@ -98,10 +102,14 @@ void WinratesDownloader::replyFinished(QNetworkReply *reply)
         {
             localHSRHeroesWinrate();
         }
+        else if(fullUrl == HSR_BUNDLES)
+        {
+            localHSRBundles();
+        }
         else
         {
-            emit pDebug(reply->url().toString() + " --> Failed. Retrying...");
-            networkManager->get(QNetworkRequest(reply->url()));
+            emit pDebug(reply->url().toString() + " --> Failed.");
+            // networkManager->get(QNetworkRequest(reply->url()));
         }
     }
     else
@@ -139,13 +147,21 @@ void WinratesDownloader::replyFinished(QNetworkReply *reply)
             Utility::dumpOnFile(jsonData, Utility::extraPath() + "/HSRcards.json");
             startProcessHSRCards(QJsonDocument::fromJson(jsonData).object());
         }
+        //HSR Bundles
+        else if(fullUrl == HSR_BUNDLES)
+        {
+            emit pDebug("HSR bundles --> Download Success from: " + fullUrl);
+            QByteArray jsonData = reply->readAll();
+            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/" + HSR_BUNDLES_FILE);
+            startProcessHSRBundles(QJsonDocument::fromJson(jsonData).object());
+        }
     }
 }
 
 
 int WinratesDownloader::runningThreads()
 {
-    return hsrdataPickratesThreads + hsrdataWRThreads + hsrdataSamplesThreads + hsrdataPlayedThreads + fireDataThreads;
+    return hsrdataPickratesThreads + hsrdataWRThreads + hsrdataSamplesThreads + hsrdataPlayedThreads + hsrdataBundlesThreads + fireDataThreads;
 }
 
 
@@ -215,11 +231,94 @@ void WinratesDownloader::processHSRHeroesWinrate(const QJsonObject &jsonObject)
 
 void WinratesDownloader::initWRCards()
 {
-    hsrdataPickratesThreads = hsrdataWRThreads = hsrdataSamplesThreads = hsrdataPlayedThreads = fireDataThreads = NUM_HEROS;
+    hsrdataPickratesThreads = hsrdataWRThreads = hsrdataSamplesThreads = hsrdataPlayedThreads = hsrdataBundlesThreads = fireDataThreads = NUM_HEROS;
     emit startProgressBar(runningThreads(), "Building WR data...");
 
+    initHSRBundles();
     initHSRCards();
     initFireCards();
+}
+
+
+void WinratesDownloader::initHSRBundles()
+{
+    for(int i=0; i<NUM_HEROS; i++)
+    {
+        connect(&futureHSRBundles[i], &QFutureWatcher<QMap<QString, QStringList>>::finished, this,[this,i]()
+                {
+                    // emit pDebug("HSR bundles (" + Utility::classOrder2classLName(i) + ") --> Thread end.");
+                    this->hsrBundlesMap[i] = futureHSRBundles[i].result();
+
+                    hsrdataBundlesThreads--;
+                    if(hsrdataBundlesThreads == 0)
+                    {
+                        emit pDebug("HSR bundles ready.");
+                        emit readyHSRBundlesMap(hsrBundlesMap);
+                    }
+                    showDataProgressBar();
+                });
+    }
+
+
+    QFileInfo fi(Utility::extraPath() + "/" + HSR_BUNDLES_FILE);
+    if(fi.exists() && (fi.lastModified().addDays(1)>QDateTime::currentDateTime()))
+    {
+        localHSRBundles();
+    }
+    else
+    {
+        emit pDebug("HSR bundles --> Download from: " + QString(HSR_BUNDLES));
+        networkManager->get(QNetworkRequest(QUrl(HSR_BUNDLES)));
+    }
+}
+
+
+void WinratesDownloader::localHSRBundles()
+{
+    emit pDebug(QStringLiteral("HSR bundles --> Use local %1").arg(HSR_BUNDLES_FILE));
+
+    QFile file(Utility::extraPath() + "/" + HSR_BUNDLES_FILE);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        emit pDebug(QStringLiteral("ERROR: Failed to open %1").arg(HSR_BUNDLES_FILE));
+        return;
+    }
+    QByteArray jsonData = file.readAll();
+    file.close();
+    startProcessHSRBundles(QJsonDocument::fromJson(jsonData).object());
+}
+
+
+void WinratesDownloader::startProcessHSRBundles(const QJsonObject &jsonObject)
+{
+    for(int i=0; i<NUM_HEROS; i++)
+    {
+        if(futureHSRBundles[i].isRunning()) return;
+
+        const QString hero = Utility::classEnum2classUName((CardClass)i);
+        const QJsonArray &data = jsonObject.value("data").toObject().value(hero).toArray();
+
+        QFuture<QMap<QString, QStringList>> future = QtConcurrent::run([data]()->QMap<QString, QStringList>{
+            QMap<QString, QStringList> map;
+
+            for(const QJsonValue &bundleV: data)
+            {
+                QJsonObject bundleObject = bundleV.toObject();
+                QString codeMain = bundleObject.value("package_key_card_id").toString();
+                QStringList codesList;
+
+                const auto &codeArray = bundleObject.value("package_card_ids").toArray();
+                for(const QJsonValue &codeV: codeArray)
+                {
+                    codesList << codeV.toString();
+
+                }
+                map.insert(codeMain, codesList);
+            }
+            return map;
+        });
+        futureHSRBundles[i].setFuture(future);
+    }
 }
 
 
@@ -354,7 +453,6 @@ void WinratesDownloader::startProcessHSRCards(const QJsonObject &jsonObject)
             return map;
         });
         futureHSRPickrates[i].setFuture(future1);
-
         QFuture<QMap<QString, float>> future2 = QtConcurrent::run([this,data]()->QMap<QString, float>{
             QMap<QString, float> map;
             processHSRCardClassDouble(data, "included_winrate", map, true);

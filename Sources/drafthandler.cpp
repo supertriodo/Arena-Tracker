@@ -3249,26 +3249,22 @@ void DraftHandler::setCardsIncludedWinratesMap(QMap<QString, float> cardsInclude
 {
     this->cardsIncludedWinratesMap = cardsIncludedWinratesMap;
 }
-
-
 void DraftHandler::setCardsIncludedDecksMap(QMap<QString, int> cardsIncludedDecksMap[])
 {
     this->cardsIncludedDecksMap = cardsIncludedDecksMap;
 }
-
-
 void DraftHandler::setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[])
 {
     this->cardsPlayedWinratesMap = cardsPlayedWinratesMap;
 }
-
-
+void DraftHandler::setBundlesMap(QMap<QString, QStringList> bundlesMap[])
+{
+    this->bundlesMap = bundlesMap;
+}
 void DraftHandler::setFireWRMap(QMap<QString, float> fireWRMap[])
 {
     this->fireWRMap = fireWRMap;
 }
-
-
 void DraftHandler::setFireSamplesMap(QMap<QString, int> fireSamplesMap[])
 {
     this->fireSamplesMap = fireSamplesMap;
