@@ -1,8 +1,10 @@
 #include "winratesdownloader.h"
 #include "Widgets/scorebutton.h"
 #include "QtConcurrent/qtconcurrentrun.h"
+#include "qfileinfo.h"
+#include "qjsonarray.h"
+#include "qjsondocument.h"
 #include "qnetworkreply.h"
-#include <QtWidgets>
 
 WinratesDownloader::WinratesDownloader(QObject *parent) : QObject(parent)
 {
