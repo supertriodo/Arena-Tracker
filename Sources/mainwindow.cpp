@@ -2524,6 +2524,7 @@ void MainWindow::redrawDownloadedCardImage(QString code)
     popularCardsHandler->redrawDownloadedCardImage(code);
     drawCardHandler->redrawDownloadedCardImage(code);
     rngCardHandler->redrawDownloadedCardImage(code);
+    draftHandler->redrawDownloadedCardImage(code);
     draftHandler->reHistDownloadedCardImage(code);
     if(!allCardsDownloadList.isEmpty())     this->updateProgressAllCardsDownload(code);
 }
@@ -4986,9 +4987,7 @@ void MainWindow::testDelay()
 
 // PDEBUG
 // emit pDebug(QStringLiteral("Good matches: %1 Screen: %2 Template: %3")
-//             .arg(goodMatches)
-//             .arg(screenIndex)
-//             .arg(arenaTemplate));
+//             .arg(goodMatches, screenIndex, arenaTemplate));
 
 //Lambda
 //Connect, function def inline
@@ -5065,9 +5064,8 @@ void MainWindow::testDelay()
 
 //TODO
 //Deathrattle cost sinergy
-//TEST
-//Drop4 + overload
-
+//Search text: local keyboard
+//Revisa HSR apis
 
 
 

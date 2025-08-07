@@ -78,7 +78,7 @@ public:
     void hideScores(bool quick=false);
     void setLearningMode(bool value);
     void showTwitchScores(bool show=true);
-    void setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
+    void setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, bool updateSynergies);
     void redrawSynergyCards();
     void setSynergies(int posCard, QMap<QString, QMap<QString, int> > &synergyTagMap, QMap<MechanicIcons, int> &mechanicIcons,
                       const MechanicBorderColor dropBorderColor);
@@ -87,6 +87,7 @@ public:
     void setWantedMechanics(bool wantedMechanics[]);
     void setWarningCard(const int posCard, const QString &code);
     void setTheme();
+    QList<SynergyCard> *getSynergyCardLists();
 
 signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);

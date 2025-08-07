@@ -209,6 +209,7 @@ private:
     void showComboBoxesCards();
     void showComboBoxesCards(DraftCard bestCards[]);
     void showSynergies();
+    void showBundles(QString codes[]);
     void getBestNManaRarity(int &manaN, CardRarity &cardRarity, const cv::Mat &screenSmall, const QList<Mat> &manaTemplates, const QList<Mat> &rarityTemplates,
                             const cv::Rect &manaRectSmall, const cv::Rect &rarityRectSmall);
     double getL2Mat(const cv::Mat &matSample, const cv::Mat &matTemplate);
@@ -231,6 +232,11 @@ private:
     void beginRedraftReview();
     bool posibleLegendaryPack();
     bool areScreenPointsValid(std::vector<Point2f> screenPoints, int screenHeight);
+    void showHAScores(QString codes[], QString cardNames[]);
+    void showHSRScores(QString codes[], QString cardNames[]);
+    void showFireScores(QString codes[], QString cardNames[]);
+    QString getHSRFireCode(QString code, bool HSR);
+    bool isEmptyDeck();
 
 public:
     void setDeckScores();
@@ -271,6 +277,7 @@ public:
     void setShowMyWR(bool value);
     void setWantedMechanic(uint mechanicIcon, bool value);
     QStringList getAllArenaCodesTrimmed();
+    void redrawDownloadedCardImage(QString code);
 
 signals:
     void checkCardImage(QString code, bool isHero=false);

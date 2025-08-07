@@ -313,7 +313,7 @@ void DraftScoreWindow::showTwitchScores(bool show)
 }
 
 
-void DraftScoreWindow::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR)
+void DraftScoreWindow::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, bool updateSynergies)
 {
     showHA = draftMethodHA;
     showLF = draftMethodLF;
@@ -325,6 +325,19 @@ void DraftScoreWindow::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bo
         scoresPushButton[i]->setVisible(showLF);
         scoresPushButton2[i]->setVisible(showHA);
         scoresPushButton3[i]->setVisible(showHSR);
+    }
+
+    //Legendary bundles
+    if(updateSynergies)
+    {
+        for(int i=0; i<3; i++)
+        {
+            for(SynergyCard &synergyCard: synergyCardLists[i])
+            {
+                synergyCard.setEachShowScores(draftMethodHA, draftMethodHSR, draftMethodLF, false);
+                synergyCard.draw();
+            }
+        }
     }
 }
 
@@ -545,6 +558,12 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
         posMech++;
     }
     if(posCard == 2)    showSynergies();
+}
+
+
+QList<SynergyCard> * DraftScoreWindow::getSynergyCardLists()
+{
+    return this->synergyCardLists;
 }
 
 

@@ -81,7 +81,7 @@ public:
     bool isOutsider();
     void setCreatedByCode(QString code);
     QString getCreatedByCode();
-    void setEachShowScores(bool showHA, bool showHSR, bool showFire);
+    void setEachShowScores(bool showHA, bool showHSR, bool showFire, bool redraw);
     void hideScores();
     void setShowScores(bool showScores);
     void setScores(int haTier, float hsrWR, float fireWR, int classOrder, int includedDecks, int samplesFire);

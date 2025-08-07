@@ -1778,7 +1778,169 @@ void DraftHandler::refreshHeroes()
 }
 
 
-void DraftHandler::showNewCards(DraftCard bestCards[3])
+bool DraftHandler::isEmptyDeck()
+{
+    return (synergyHandler->draftedCardsCount() == 0);
+}
+
+
+void DraftHandler::showHAScores(QString codes[], QString cardNames[])
+{
+    int rating[3] = {0,0,0};
+
+    for(int i=0; i<3; i++)
+    {
+        rating[i] = hearthArenaTiers[codes[i]];
+
+        //Bundle
+        if(isEmptyDeck() && bundlesMap[arenaHero].contains(codes[i]))
+        {
+            int numScores = 0;
+            if(rating[i] != 0)  numScores++;
+
+            const auto &codesSub = bundlesMap[arenaHero][codes[i]];
+            for(const QString &codeSub: codesSub)
+            {
+                int score = hearthArenaTiers[codeSub];
+                rating[i] += score;
+                if(score != 0)  numScores++;
+            }
+            rating[i] = round(rating[i] / (float)numScores);
+        }
+    }
+
+    showNewRatings(cardNames[0], cardNames[1], cardNames[2],
+                   rating[0], rating[1], rating[2],
+                   rating[0], rating[1], rating[2],
+                   HearthArena);
+}
+
+
+QString DraftHandler::getHSRFireCode(QString code, bool HSR)
+{
+    auto &wrMap = HSR?cardsPlayedWinratesMap:fireWRMap;
+    auto &samplesMap = HSR?cardsIncludedDecksMap:fireSamplesMap;
+    if(!wrMap[this->arenaHero].contains(code))
+    {
+        if(code.startsWith("CORE_") && wrMap[this->arenaHero].contains(code.mid(5)))
+            code = code.mid(5);
+        else if(wrMap[this->arenaHero].contains("CORE_" + code))
+            code = "CORE_" + code;
+        else
+        {
+            QString name = Utility::cardEnNameFromCode(code);
+            const QStringList altCodes = Utility::cardEnCodesFromName(name);
+            int maxIncluded = 0;
+            for(const QString &altCode: altCodes)
+            {
+                if(samplesMap[this->arenaHero].contains(altCode) && samplesMap[this->arenaHero][altCode]>maxIncluded)
+                {
+                    emit pDebug(QStringLiteral("%1 - %2 - not found on %3 data. Swap to %4 - %5")
+                                    .arg(code, name, HSR?"HSR":"Fire", altCode, name));
+
+                    maxIncluded = samplesMap[this->arenaHero][altCode];
+                    code = altCode;
+                }
+            }
+        }
+    }
+    return code;
+}
+
+
+void DraftHandler::showHSRScores(QString codes[], QString cardNames[])
+{
+    float ratingPlayed[3] = {0,0,0};
+    float ratingIncluded[3] = {0,0,0};
+    int includedDecks[3] = {0,0,0};
+
+    if(cardsPlayedWinratesMap != nullptr && cardsIncludedWinratesMap != nullptr && cardsIncludedDecksMap != nullptr)
+    {
+        for(int i=0; i<3; i++)
+        {
+            const QString &code = codes[i];
+            ratingIncluded[i] = cardsIncludedWinratesMap[this->arenaHero][code];
+            ratingPlayed[i] = cardsPlayedWinratesMap[this->arenaHero][code];
+            includedDecks[i] = cardsIncludedDecksMap[this->arenaHero][code];
+
+            //Bundle
+            if(isEmptyDeck() && bundlesMap[arenaHero].contains(code))
+            {
+                int numScores = 0;
+                if(ratingIncluded[i] != 0)  numScores++;
+                includedDecks[i] = std::min(includedDecks[i], MIN_HSR_DECKS);
+
+                const auto &codesSub = bundlesMap[arenaHero][code];
+                for(const QString &codeSub: codesSub)
+                {
+                    QString code = getHSRFireCode(codeSub, true);
+                    float score = cardsIncludedWinratesMap[this->arenaHero][code];
+                    if(score != 0)  numScores++;
+                    ratingIncluded[i] += score;
+                    ratingPlayed[i] += cardsPlayedWinratesMap[this->arenaHero][code];
+                    includedDecks[i] += std::min(cardsIncludedDecksMap[this->arenaHero][code], MIN_HSR_DECKS);
+                }
+                float bundleCount = codesSub.count()+1;
+                ratingIncluded[i] = ratingIncluded[i] / numScores;
+                ratingPlayed[i] = ratingPlayed[i] / numScores;
+                includedDecks[i] = round(includedDecks[i] / bundleCount);
+            }
+        }
+    }
+
+    showNewRatings(cardNames[0], cardNames[1], cardNames[2],
+                   ratingIncluded[0], ratingIncluded[1], ratingIncluded[2],
+                   ratingPlayed[0], ratingPlayed[1], ratingPlayed[2],
+                   HSReplay,
+                   includedDecks[0], includedDecks[1], includedDecks[2]);
+}
+
+
+void DraftHandler::showFireScores(QString codes[], QString cardNames[])
+{
+    float wrFire[3] = {0,0,0};
+    int samplesFire[3] = {0,0,0};
+
+    if(fireWRMap != nullptr && fireSamplesMap != nullptr)
+    {
+        for(int i=0; i<3; i++)
+        {
+            QString code = getHSRFireCode(codes[i], false);
+            wrFire[i] = fireWRMap[this->arenaHero][code];
+            samplesFire[i] = fireSamplesMap[this->arenaHero][code];
+
+            //Bundle
+            if(isEmptyDeck() && bundlesMap[arenaHero].contains(codes[i]))
+            {
+                int numScores = 0;
+                if(wrFire[i] != 0)  numScores++;
+                samplesFire[i] = std::min(samplesFire[i], MIN_HSR_DECKS);
+
+                const auto &codesSub = bundlesMap[arenaHero][codes[i]];
+                for(const QString &codeSub: codesSub)
+                {
+                    QString code = getHSRFireCode(codeSub, false);
+                    float score = fireWRMap[this->arenaHero][code];
+                    if(score != 0)  numScores++;
+                    wrFire[i] += score;
+                    samplesFire[i] += std::min(fireSamplesMap[this->arenaHero][code], MIN_HSR_DECKS);
+                }
+                float bundleCount = codesSub.count()+1;
+                wrFire[i] = wrFire[i] / numScores;
+                samplesFire[i] = round(samplesFire[i] / bundleCount);
+            }
+        }
+    }
+
+    showNewRatings(cardNames[0], cardNames[1], cardNames[2],
+                   wrFire[0], wrFire[1], wrFire[2],
+                   wrFire[0], wrFire[1], wrFire[2],
+                   FireStone,
+                   samplesFire[0], samplesFire[1], samplesFire[2]);
+}
+
+
+void DraftHandler::showNewCards(DraftCard bestCards[])
 {
     for(int i=0; i<3; i++)  prevCodes[i] = "";
 
@@ -1791,107 +1953,17 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
         draftCards[i] = bestCards[i];
     }
 
-    QString codes[3] = {bestCards[0].getCode(), bestCards[1].getCode(), bestCards[2].getCode()};
-    QString cardNames[3] = {Utility::cardLocalNameFromCode(codes[0]), Utility::cardLocalNameFromCode(codes[1]), Utility::cardLocalNameFromCode(codes[2])};
-
-
-    //HearthArena
-    int rating1 = hearthArenaTiers[codes[0]];
-    int rating2 = hearthArenaTiers[codes[1]];
-    int rating3 = hearthArenaTiers[codes[2]];
-    showNewRatings(cardNames[0], cardNames[1], cardNames[2],
-                   rating1, rating2, rating3,
-                   rating1, rating2, rating3,
-                   HearthArena);
-
-    //HSReplay
-    float ratingPlayed[3] = {0,0,0};
-    float ratingIncluded[3] = {0,0,0};
-    int includedDecks[3] = {0,0,0};
-
-    if(cardsPlayedWinratesMap != nullptr && cardsIncludedWinratesMap != nullptr && cardsIncludedDecksMap != nullptr)
+    QString codes[3];
+    QString cardNames[3];
+    for(int i=0; i<3; i++)
     {
-        for(int i=0; i<3; i++)
-        {
-            if(!cardsPlayedWinratesMap[this->arenaHero].contains(codes[i]))
-            {
-                if(codes[i].startsWith("CORE_") && cardsPlayedWinratesMap[this->arenaHero].contains(codes[i].mid(5)))
-                    codes[i] = codes[i].mid(5);
-                else if(cardsPlayedWinratesMap[this->arenaHero].contains("CORE_" + codes[i]))
-                    codes[i] = "CORE_" + codes[i];
-                else
-                {
-                    QString name = Utility::cardEnNameFromCode(codes[i]);
-                    QStringList altCodes = Utility::cardEnCodesFromName(name);
-                    int maxIncluded = 0;
-                    for(const QString &altCode: altCodes)
-                    {
-                        if(cardsIncludedDecksMap[this->arenaHero].contains(altCode) && cardsIncludedDecksMap[this->arenaHero][altCode]>maxIncluded)
-                        {
-                            emit pDebug(codes[i] + " - " + name + " - not found on HSR data. Swap to " + altCode + " - " + name);
-
-                            maxIncluded = cardsIncludedDecksMap[this->arenaHero][altCode];
-                            codes[i] = altCode;
-                        }
-                    }
-                }
-            }
-
-            ratingPlayed[i] = cardsPlayedWinratesMap[this->arenaHero][codes[i]];
-            ratingIncluded[i] = cardsIncludedWinratesMap[this->arenaHero][codes[i]];
-            includedDecks[i] = cardsIncludedDecksMap[this->arenaHero][codes[i]];
-        }
+        codes[i] = getHSRFireCode(bestCards[i].getCode(), true);
+        cardNames[i] = Utility::cardLocalNameFromCode(codes[i]);
     }
 
-    showNewRatings(cardNames[0], cardNames[1], cardNames[2],
-                   ratingIncluded[0], ratingIncluded[1], ratingIncluded[2],
-                   ratingPlayed[0], ratingPlayed[1], ratingPlayed[2],
-                   HSReplay,
-                   includedDecks[0], includedDecks[1], includedDecks[2]);
-
-
-    //FireStone
-    float wrFire[3] = {0,0,0};
-    int samplesFire[3] = {0,0,0};
-
-    if(fireWRMap != nullptr && fireSamplesMap != nullptr)
-    {
-        for(int i=0; i<3; i++)
-        {
-            if(!fireWRMap[this->arenaHero].contains(codes[i]))
-            {
-                if(codes[i].startsWith("CORE_") && fireWRMap[this->arenaHero].contains(codes[i].mid(5)))
-                    codes[i] = codes[i].mid(5);
-                else if(fireWRMap[this->arenaHero].contains("CORE_" + codes[i]))
-                    codes[i] = "CORE_" + codes[i];
-                else
-                {
-                    QString name = Utility::cardEnNameFromCode(codes[i]);
-                    QStringList altCodes = Utility::cardEnCodesFromName(name);
-                    int maxIncluded = 0;
-                    for(const QString &altCode: altCodes)
-                    {
-                        if(fireSamplesMap[this->arenaHero].contains(altCode) && fireSamplesMap[this->arenaHero][altCode]>maxIncluded)
-                        {
-                            emit pDebug(codes[i] + " - " + name + " - not found on Fire data. Swap to " + altCode + " - " + name);
-
-                            maxIncluded = fireSamplesMap[this->arenaHero][altCode];
-                            codes[i] = altCode;
-                        }
-                    }
-                }
-            }
-
-            wrFire[i] = fireWRMap[this->arenaHero][codes[i]];
-            samplesFire[i] = fireSamplesMap[this->arenaHero][codes[i]];
-        }
-    }
-
-    showNewRatings(cardNames[0], cardNames[1], cardNames[2],
-                   wrFire[0], wrFire[1], wrFire[2],
-                   wrFire[0], wrFire[1], wrFire[2],
-                   FireStone,
-                   samplesFire[0], samplesFire[1], samplesFire[2]);
+    showHAScores(codes, cardNames);
+    showHSRScores(codes, cardNames);
+    showFireScores(codes, cardNames);
 
 
     //Twitch Handler
@@ -1911,7 +1983,17 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
         }
     }
 
-    showSynergies();
+
+    //Legendary bundles
+    if(isEmptyDeck())
+    {
+        showBundles(codes);
+    }
+    //Normal synergies
+    else
+    {
+        showSynergies();
+    }
 }
 
 
@@ -1928,6 +2010,78 @@ void DraftHandler::showSynergies()
                 MechanicBorderColor dropBorderColor;
                 synergyHandler->getSynergies(draftCards[i], synergyTagMap, mechanicIcons, dropBorderColor);
                 draftScoreWindow->setSynergies(i, synergyTagMap, mechanicIcons, dropBorderColor);
+            }
+        }
+    }
+}
+
+
+void DraftHandler::showBundles(QString codes[])
+{
+    if(draftScoreWindow != nullptr)
+    {
+        QMap<MechanicIcons, int> mechanicIcons;
+        QList<SynergyCard> * synergyCardLists = draftScoreWindow->getSynergyCardLists();
+
+        for(int i=0; i<3; i++)
+        {
+            QMap<QString, QMap<QString, int>> synergyTagMap;
+            const QString &hsrCode = codes[i];
+            if(bundlesMap[arenaHero].contains(hsrCode))
+            {
+                emit checkCardImage(hsrCode, false);
+                synergyTagMap[" Legendary"][hsrCode] = 1;
+
+                const auto &codesSub = bundlesMap[arenaHero][hsrCode];
+                for(const QString &codeSub: codesSub)
+                {
+                    if(synergyTagMap["Bundle"].contains(codeSub))
+                    {
+                        synergyTagMap["Bundle"][codeSub]++;
+                    }
+                    else
+                    {
+                        emit checkCardImage(codeSub, false);
+                        synergyTagMap["Bundle"][codeSub] = 1;
+                    }
+                }
+            }
+            draftScoreWindow->setSynergies(i, synergyTagMap, mechanicIcons, MechanicBorderGrey);
+
+            for(SynergyCard &synergyCard: synergyCardLists[i])
+            {
+                QString code = synergyCard.getCode();
+                if(code.isEmpty())    continue;
+                int scoreHA = hearthArenaTiers[code];
+                QString hsrCode = getHSRFireCode(code, true);
+                float scoreHSR = (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][hsrCode];
+                int includedDecks = (cardsIncludedDecksMap == nullptr) ? 0 : cardsIncludedDecksMap[this->arenaHero][hsrCode];
+                QString fireCode = getHSRFireCode(code, false);
+                float scoreFire = (fireWRMap == nullptr) ? 0 : fireWRMap[this->arenaHero][fireCode];
+                int samplesFire = (fireSamplesMap == nullptr) ? 0 : fireSamplesMap[this->arenaHero][fireCode];
+                synergyCard.setScores(scoreHA, scoreHSR, scoreFire, arenaHero, includedDecks, samplesFire);
+            }
+        }
+
+        draftScoreWindow->setDraftMethod(draftMethodHA, draftMethodFire, draftMethodHSR, true);
+    }
+}
+
+
+void DraftHandler::redrawDownloadedCardImage(QString code)
+{
+    //Only Legendary bundles
+    if(!isEmptyDeck())  return;
+    if(draftScoreWindow == nullptr) return;
+
+    QList<SynergyCard> * synergyCardLists = draftScoreWindow->getSynergyCardLists();
+    for(int i=0; i<3; i++)
+    {
+        for(SynergyCard &synergyCard: synergyCardLists[i])
+        {
+            if(code == synergyCard.getCode())
+            {
+                synergyCard.draw();
             }
         }
     }
@@ -2836,7 +2990,7 @@ void DraftHandler::createDraftWindows()
                 this, SIGNAL(pDebug(QString,DebugLevel,QString)));
 
         draftScoreWindow->setLearningMode(this->learningMode);
-        draftScoreWindow->setDraftMethod(this->draftMethodHA, this->draftMethodFire, this->draftMethodHSR);
+        draftScoreWindow->setDraftMethod(this->draftMethodHA, this->draftMethodFire, this->draftMethodHSR, false);
         if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())
         {
             draftScoreWindow->showTwitchScores();
@@ -3094,9 +3248,12 @@ void DraftHandler::setDraftMethod(bool draftMethodHA, bool draftMethodFire, bool
     this->draftMethodHSR = draftMethodHSR;
 
     if(redrafting)  setDraftMethodDeck();
-
     if(!isDrafting())   return;
-    if(draftScoreWindow != nullptr)        draftScoreWindow->setDraftMethod(draftMethodHA, draftMethodFire, draftMethodHSR);
+
+    if(draftScoreWindow != nullptr)
+    {
+        draftScoreWindow->setDraftMethod(draftMethodHA, draftMethodFire, draftMethodHSR, isEmptyDeck());
+    }
 
     updateDeckScore();//Basicamente para updateLabelDeckScore
     updateScoresVisibility();
@@ -3111,7 +3268,7 @@ void DraftHandler::setDraftMethodDeck()
 
     for(DeckCard &deckCard: *deckCardList)
     {
-        deckCard.setEachShowScores(draftMethodHA, draftMethodHSR, draftMethodFire);
+        deckCard.setEachShowScores(draftMethodHA, draftMethodHSR, draftMethodFire, true);
     }
 }
 

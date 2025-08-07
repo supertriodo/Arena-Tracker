@@ -83,12 +83,12 @@ void DeckCard::setShowScores(bool showScores)
 }
 
 
-void DeckCard::setEachShowScores(bool showHA, bool showHSR, bool showFire)
+void DeckCard::setEachShowScores(bool showHA, bool showHSR, bool showFire, bool redraw)
 {
     this->showHA = showHA;
     this->showHSR = showHSR;
     this->showFire = showFire;
-    if(showScores)  draw();
+    if(redraw && showScores)    draw();
 }
 
 
@@ -101,7 +101,7 @@ void DeckCard::setScores(int haTier, float hsrWR, float fireWR, int classOrder, 
     this->samplesFire = samplesFire;
     this->classOrder = classOrder;
     this->showScores = true;
-    //No hace falta hacer draw() pq en DraftHandler::setDeckScores() llamamos a DeckCard::setShowHAShowHSRScores despues de DeckCard::setScores
+    //No hace falta hacer draw() pq en DraftHandler::setDeckScores() llamamos a DeckCard::setEachShowScores despues de DeckCard::setScores
 }
 
 
@@ -461,23 +461,32 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
             int numScores = 0;
             const int offsetScore = 6*height/8;
             const int offsetLegendary = 29*width/218;
-            if(showHA && scoreHA!=0)
+            if(showHA)
             {
                 numScores++;
-                painter.drawPixmap(width - offsetLegendary - (numScores*offsetScore), 0,
-                                   ScoreButton::scorePixmap(Score_HearthArena, scoreHA, false, height, classOrder));
+                if(scoreHA!=0)
+                {
+                    painter.drawPixmap(width - offsetLegendary - (numScores*offsetScore), 0,
+                                       ScoreButton::scorePixmap(Score_HearthArena, scoreHA, false, height, classOrder));
+                }
             }
-            if(showHSR && scoreHSR!=0)
+            if(showHSR)
             {
                 numScores++;
-                painter.drawPixmap(width - offsetLegendary - (numScores*offsetScore), 0,
-                                   ScoreButton::scorePixmap(Score_HSReplay, scoreHSR, false, height, classOrder, includedDecks));
+                if(scoreHSR!=0)
+                {
+                    painter.drawPixmap(width - offsetLegendary - (numScores*offsetScore), 0,
+                                       ScoreButton::scorePixmap(Score_HSReplay, scoreHSR, false, height, classOrder, includedDecks));
+                }
             }
-            if(showFire && scoreFire!=0)
+            if(showFire)
             {
                 numScores++;
-                painter.drawPixmap(width - offsetLegendary - (numScores*offsetScore), 0,
-                                   ScoreButton::scorePixmap(Score_Fire, scoreFire, false, height, classOrder, samplesFire));
+                if(scoreFire!=0)
+                {
+                    painter.drawPixmap(width - offsetLegendary - (numScores*offsetScore), 0,
+                                       ScoreButton::scorePixmap(Score_Fire, scoreFire, false, height, classOrder, samplesFire));
+                }
             }
         }
 
