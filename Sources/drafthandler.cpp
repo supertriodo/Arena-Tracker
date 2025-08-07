@@ -1612,6 +1612,11 @@ void DraftHandler::pickCard(QString code)
             emit pDebug("Show Reenter help.");
             this->draftMechanicsWindow->showHelpReenter();
         }
+        if(draftScoreWindow != nullptr)
+        {
+            draftScoreWindow->hideScores(true);
+            draftScoreWindow->showMinimized();
+        }
         return;
     }
 
@@ -1793,7 +1798,8 @@ void DraftHandler::showHAScores(QString codes[], QString cardNames[])
 
     for(int i=0; i<3; i++)
     {
-        rating[i] = hearthArenaTiers[codes[i]];
+        QString code = getHACode(codes[i]);
+        rating[i] = hearthArenaTiers[code];
 
         //Bundle
         if(isEmptyDeck() && bundlesMap[arenaHero].contains(codes[i]))
@@ -1804,7 +1810,8 @@ void DraftHandler::showHAScores(QString codes[], QString cardNames[])
             const auto &codesSub = bundlesMap[arenaHero][codes[i]];
             for(const QString &codeSub: codesSub)
             {
-                int score = hearthArenaTiers[codeSub];
+                QString code = getHACode(codeSub);
+                int score = hearthArenaTiers[code];
                 rating[i] += score;
                 if(score != 0)  numScores++;
             }
@@ -1816,6 +1823,19 @@ void DraftHandler::showHAScores(QString codes[], QString cardNames[])
                    rating[0], rating[1], rating[2],
                    rating[0], rating[1], rating[2],
                    HearthArena);
+}
+
+
+QString DraftHandler::getHACode(QString code)
+{
+    if(!hearthArenaTiers.contains(code))
+    {
+        if(code.startsWith("CORE_") && hearthArenaTiers.contains(code.mid(5)))
+            code = code.mid(5);
+        else if(hearthArenaTiers.contains("CORE_" + code))
+            code = "CORE_" + code;
+    }
+    return code;
 }
 
 
@@ -2055,7 +2075,8 @@ void DraftHandler::showBundles(QString codes[])
             {
                 QString code = synergyCard.getCode();
                 if(code.isEmpty())    continue;
-                int scoreHA = hearthArenaTiers[code];
+                QString haCode = getHACode(code);
+                int scoreHA = hearthArenaTiers[haCode];
                 QString hsrCode = getHSRFireCode(code, true);
                 float scoreHSR = (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][hsrCode];
                 int includedDecks = (cardsIncludedDecksMap == nullptr) ? 0 : cardsIncludedDecksMap[this->arenaHero][hsrCode];

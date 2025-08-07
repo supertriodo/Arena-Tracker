@@ -15,7 +15,7 @@
 
 #define DRAFT_DELAY_TIME        3000
 #define HERODRAFT_DELAY_TIME    3000
-#define MECHANICS_DELAY_TIME    500
+#define MECHANICS_DELAY_TIME    1500
 // #define CONTINUEDRAFT_DELAY_TIME    3000
 #define REDRAFT_REVIEW_DELAY_TIME   1500
 
@@ -236,6 +236,7 @@ private:
     void showHSRScores(QString codes[], QString cardNames[]);
     void showFireScores(QString codes[], QString cardNames[]);
     QString getHSRFireCode(QString code, bool HSR);
+    QString getHACode(QString code);
     bool isEmptyDeck();
 
 public:

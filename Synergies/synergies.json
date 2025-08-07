@@ -1594,7 +1594,7 @@
 "EDR_518" : [ "drop3", "heroPowerGenGenX", "battlecry", "returnSyn" ],
 "EDR_519" : [ "heroPowerGenGenX", "battlecry", "returnSyn" ],
 "EDR_520" : [  ],
-"EDR_521" : [ "drop3", "battlecry", "returnSyn", "toYourHand" ],
+"EDR_521" : [ "drop3", "battlecry", "returnSyn", "toYourHand", "otherClass" ],
 "EDR_522" : [ "toYourHand2", "tokenCard", "enemyDraw" ],
 "EDR_523" : [ "beastGen", "stealth", "reach", "return" ],
 "EDR_524" : [ "drop4", "battlecry" ],

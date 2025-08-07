@@ -410,6 +410,8 @@ void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
         //y show synergies contiene un resize necesario para que todas las columnas se vean cuadradas
         //tanto en premium como en free
         showSynergies();
+        this->showNormal();
+        this->activateWindow();
     }
 }
 
