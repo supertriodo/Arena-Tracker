@@ -10,13 +10,13 @@
 #include "Widgets/draftmechanicswindow.h"
 #include "synergyhandler.h"
 #include "twitchhandler.h"
-#include "arenahandler.h"
 #include <QObject>
 #include <QFutureWatcher>
 
-#define DRAFT_DELAY_TIME        1500
+#define DRAFT_DELAY_TIME        3000
 #define HERODRAFT_DELAY_TIME    3000
-#define CONTINUEDRAFT_DELAY_TIME    3000
+#define MECHANICS_DELAY_TIME    500
+// #define CONTINUEDRAFT_DELAY_TIME    3000
 #define REDRAFT_REVIEW_DELAY_TIME   1500
 
 #define CAPTUREDRAFT_DELAY_TIME         1500

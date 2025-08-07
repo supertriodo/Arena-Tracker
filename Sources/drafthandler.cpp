@@ -599,10 +599,13 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
 
         for(const QString &code: qAsConst(heroCodesList))     addCardHist(code, false, true);
     }
-    else //if(drafting) ||Build mechanics window
+    else //if(drafting) || Build mechanics window (no busca frame)
     {
-        QTimer::singleShot(DRAFT_DELAY_TIME, this, [=] () {newFindScreenLoop(skipScreenSettings);});
+        int delay;
+        if(drafting)    delay = DRAFT_DELAY_TIME;
+        else            delay = MECHANICS_DELAY_TIME;
 
+        QTimer::singleShot(delay, this, [=] () {newFindScreenLoop(skipScreenSettings);});
         initLightForgeTiers(arenaHero, multiclassArena, codesByClass);
         initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), multiclassArena, codesByClass, trustHA);
         if(drafting)
