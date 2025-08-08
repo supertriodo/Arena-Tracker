@@ -4683,7 +4683,7 @@ void MainWindow::testSynergies()
 
 void MainWindow::testTierlists()
 {
-    downloadHearthArenaTierlistOriginal();
+    // downloadHearthArenaTierlistOriginal();
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
@@ -4733,7 +4733,12 @@ void MainWindow::testTierlists()
 
    // QSettings settings("Arena Tracker", "Arena Tracker");
    // QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
-   // Utility::checkTierlistsCount(arenaSets);
+
+    QMap<CardClass, QStringList> codesByClass;
+    arenaSets = QStringList();
+    draftHandler->getCodesByClassTrimmed(codesByClass, true);
+
+    Utility::checkTierlistsCount(arenaSets, codesByClass);
 }
 
 /*
@@ -4832,7 +4837,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 
     if(fromHearth)
     {
-        QStringList codeList = draftHandler->getAllArenaCodesTrimmed();
+        QStringList codeList = draftHandler->getAllArenaCodesTrimmed(true);
         for(const QString &code: qAsConst(codeList))
         {
             if(miniSet.isEmpty() || code.startsWith(miniSet))
@@ -4857,7 +4862,7 @@ void MainWindow::testDelay()
     testHeroPortraits();
     testSynergies();
 
-    // testTierlists();
+    testTierlists();
     // testDownloadHSRCardsJson();
     // testDownloadRotation(true/*, "SC_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();

@@ -40,6 +40,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->cardsPlayedWinratesMap = nullptr;
     this->fireWRMap = nullptr;
     this->fireSamplesMap = nullptr;
+    this->bundlesMap = nullptr;
     this->screenIndex = -1;
     this->screenScale = QPointF(1,1);
     this->needSaveCardHist = false;
@@ -528,6 +529,46 @@ void DraftHandler::reduceCardsNameMapMulticlass()
 }
 
 
+void DraftHandler::addLFCode(const QString &code, const CardClass &heroClass, const bool multiClassDraft,
+                             QMap<CardClass, QStringList> &codesByClass)
+{
+    const QList<CardClass> cardClassList = Utility::getClassFromCode(code);
+    if(multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
+    {
+        if(code.startsWith("CORE_"))
+        {
+            QString noCoreCode = code.mid(5);
+            if(lightForgeTiers.contains(noCoreCode))
+            {
+                lightForgeTiers.remove(noCoreCode);
+                const QList<CardClass> cardClassList = codesByClass.keys();
+                for(const CardClass &cardClass: cardClassList)
+                {
+                    codesByClass[cardClass].removeAll(noCoreCode);
+                }
+            }
+        }
+        else
+        {
+            if(lightForgeTiers.contains("CORE_" + code))   return;
+        }
+
+        lightForgeTiers[code] = 0;
+
+        if(multiClassDraft)
+        {
+            for(const CardClass &cardClass: cardClassList)
+            {
+                if(cardClass == INVALID_CLASS)  emit pDebug("WARNING: initLightForgeTiers found INVALID_CLASS: " + code);
+                else                            codesByClass[cardClass].append(code);
+            }
+        }
+        else if(cardClassList.contains(NEUTRAL))        codesByClass[NEUTRAL].append(code);
+        else/* if(cardClassList.contains(heroClass))*/  codesByClass[heroClass].append(code);
+    }
+}
+
+
 /*
  * lightForgeTiers no contiene ningun tier, solo la lista de codigos en arena
  * en un futuro podemos usarlo para una nueva tier list
@@ -537,43 +578,48 @@ void DraftHandler::initLightForgeTiers(const CardClass &heroClass, const bool mu
 {
     lightForgeTiers.clear();
 
+    //Arena sets
     for(const QString &code: (const QStringList)getAllArenaCodes())
     {
-        const QList<CardClass> cardClassList = Utility::getClassFromCode(code);
-        if(multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
+        addLFCode(code, heroClass, multiClassDraft, codesByClass);
+    }
+
+    //Bundle codes
+    if(bundlesMap != nullptr)
+    {
+        if(multiClassDraft)
         {
-            if(code.startsWith("CORE_"))
+            for(int i=0; i<NUM_HEROS; i++)
             {
-                QString noCoreCode = code.mid(5);
-                if(lightForgeTiers.contains(noCoreCode))
+                const auto &legendaryList = bundlesMap[i].keys();
+                for(const QString &legendary: legendaryList)
                 {
-                    lightForgeTiers.remove(noCoreCode);
-                    const QList<CardClass> cardClassList = codesByClass.keys();
-                    for(const CardClass &cardClass: cardClassList)
+                    addLFCode(legendary, heroClass, multiClassDraft, codesByClass);
+
+                    const auto &codesSub = bundlesMap[i][legendary];
+                    for(const QString &codeSub: codesSub)
                     {
-                        codesByClass[cardClass].removeAll(noCoreCode);
+                        addLFCode(codeSub, heroClass, multiClassDraft, codesByClass);
                     }
                 }
             }
-            else
+        }
+        else
+        {
+            const auto &legendaryList = bundlesMap[heroClass].keys();
+            for(const QString &legendary: legendaryList)
             {
-                if(lightForgeTiers.contains("CORE_" + code))   continue;
-            }
+                addLFCode(legendary, heroClass, multiClassDraft, codesByClass);
 
-            lightForgeTiers[code] = 0;
-
-            if(multiClassDraft)
-            {
-                for(const CardClass &cardClass: cardClassList)
+                const auto &codesSub = bundlesMap[heroClass][legendary];
+                for(const QString &codeSub: codesSub)
                 {
-                    if(cardClass == INVALID_CLASS)  emit pDebug("WARNING: initLightForgeTiers found INVALID_CLASS: " + code);
-                    else                            codesByClass[cardClass].append(code);
+                    addLFCode(codeSub, heroClass, multiClassDraft, codesByClass);
                 }
             }
-            else if(cardClassList.contains(NEUTRAL))        codesByClass[NEUTRAL].append(code);
-            else/* if(cardClassList.contains(heroClass))*/  codesByClass[heroClass].append(code);
         }
     }
+
     emit pDebug("Arena Cards: " + QString::number(lightForgeTiers.count()));
     const QList<CardClass> cardClassList = codesByClass.keys();
     for(const CardClass &cardClass: cardClassList)
@@ -3478,21 +3524,28 @@ void DraftHandler::initTierLists(const CardClass &heroClass)
 
 
 //All arena codes, present in HATL if trustHA
-QStringList DraftHandler::getAllArenaCodesTrimmed()
+QStringList DraftHandler::getAllArenaCodesTrimmed(bool forceTrustHA)
 {
     QMap<CardClass, QStringList> codesByClass;
-    initLightForgeTiers(WARRIOR, true, codesByClass);
-    QString hero = Utility::classEnum2classLogNumber(WARRIOR);
-    initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), true, codesByClass, trustHA);
+    getCodesByClassTrimmed(codesByClass, forceTrustHA);
 
     QStringList codes;
-    for(const CardClass &cardClass: codesByClass.keys())
+    const auto classes = codesByClass.keys();
+    for(const CardClass &cardClass: classes)
     {
         codes << codesByClass[cardClass];
     }
     codes.removeDuplicates();
-    clearTierLists();
     return codes;
+}
+
+
+void DraftHandler::getCodesByClassTrimmed(QMap<CardClass, QStringList> &codesByClass, bool forceTrustHA)
+{
+    initLightForgeTiers(WARRIOR, true, codesByClass);
+    QString hero = Utility::classEnum2classLogNumber(WARRIOR);
+    initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), true, codesByClass, forceTrustHA || trustHA);
+    clearTierLists();
 }
 
 

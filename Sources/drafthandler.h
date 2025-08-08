@@ -238,6 +238,7 @@ private:
     QString getHSRFireCode(QString code, bool HSR);
     QString getHACode(QString code);
     bool isEmptyDeck();
+    void addLFCode(const QString &code, const CardClass &heroClass, const bool multiClassDraft, QMap<CardClass, QStringList> &codesByClass);
 
 public:
     void setDeckScores();
@@ -277,7 +278,8 @@ public:
     void getCodeScores(const CardClass &heroClass, const QString &code, int &ha, float &hsr, float &fire);
     void setShowMyWR(bool value);
     void setWantedMechanic(uint mechanicIcon, bool value);
-    QStringList getAllArenaCodesTrimmed();
+    QStringList getAllArenaCodesTrimmed(bool forceTrustHA=false);
+    void getCodesByClassTrimmed(QMap<CardClass, QStringList> &codesByClass, bool forceTrustHA=false);
     void redrawDownloadedCardImage(QString code);
 
 signals:

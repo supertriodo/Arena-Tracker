@@ -174,7 +174,7 @@ public:
     static QStringList getStandardCodes();
     static bool createDir(const QString &pathDir);
     static void unZip(const QString &zipName, const QString &targetPath);
-    static void checkTierlistsCount(QStringList &arenaSets);
+    static void checkTierlistsCount(QStringList &arenaSets, QMap<CardClass, QStringList> &codesByClass);
     static void resizeSignatureCards();
     static bool checkHeroPortrait(const QString &code);
     static void checkMissingGoldenCards();

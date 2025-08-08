@@ -1214,32 +1214,44 @@ void Utility::resizeSignatureCards()
 }
 
 
-void Utility::checkTierlistsCount(QStringList &arenaSets)
+void Utility::checkTierlistsCount(QStringList &arenaSets, QMap<CardClass, QStringList> &codesByClass)
 {
     QStringList haSets;
-    QStringList allHeroes;
-    for(int i=0; i<NUM_HEROS; i++)   allHeroes << Utility::classOrder2classLogNumber(i);
-
-    for(const QString &heroLog: (const QStringList)allHeroes)
+    for(int i=0; i<NUM_HEROS; i++)
     {
+        const QString &heroLog = Utility::classOrder2classLogNumber(i);
         const QString heroString = Utility::classLogNumber2classUL_ULName(heroLog);
-        const CardClass heroClass = Utility::classLogNumber2classEnum(heroLog);
+        const CardClass heroClass = (CardClass)i;
 
         qDebug()<<endl<<"--------------------"<<heroString<<"--------------------";
         QMap<QString, QString> arenaMap;
 
         //Arena Codes List
-        for(const QString &set: qAsConst(arenaSets))
+        if(arenaSets.isEmpty())
         {
-            QStringList codeList;
-            if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
-            else                                codeList.append(Utility::getSetCodes(set, true, true));
-            for(const QString &code: (const QStringList)codeList)
+            for(const QString &code: codesByClass[heroClass])
             {
-                QList<CardClass> cardClassList = Utility::getClassFromCode(code);
-                if(cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
+                arenaMap.insert(code, "");
+            }
+            for(const QString &code: codesByClass[NEUTRAL])
+            {
+                arenaMap.insert(code, "");
+            }
+        }
+        else
+        {
+            for(const QString &set: qAsConst(arenaSets))
+            {
+                QStringList codeList;
+                if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
+                else                                codeList.append(Utility::getSetCodes(set, true, true));
+                for(const QString &code: (const QStringList)codeList)
                 {
-                    arenaMap[code] = "";
+                    QList<CardClass> cardClassList = Utility::getClassFromCode(code);
+                    if(cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
+                    {
+                        arenaMap[code] = "";
+                    }
                 }
             }
         }
@@ -1267,7 +1279,7 @@ void Utility::checkTierlistsCount(QStringList &arenaSets)
                 QStringList arenaNames = arenaMap.values();
                 if(arenaNames.contains(name))
                 {
-                    qDebug()<<"Duplicated card in arenaSets:"<<code<<name;
+                    qDebug()<<"Duplicated card in arenaSets:"<<code<<arenaMap.keys(name)<<name;
                 }
                 else
                 {
