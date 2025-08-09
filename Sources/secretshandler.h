@@ -71,7 +71,6 @@ private:
     int enemyMinionsAliveForAvenge;
     int playerCardsPlayedThisTurn; //Rat trap/Hidden wisdom control (wichwood secrets)
     bool isPlayerTurn;
-    QStringList arenaSets;
     //List of code secrets ordered by pickrate for all classes, used as options for a new unknown secret played.
     QList<QString> secretsByPickrate[NUM_HEROS];
     QMap<QString, float> *cardsPickratesMap;
@@ -85,7 +84,6 @@ private:
     void discardSecretOptionNow2(const QString &code);
     void unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState, QString createdByCode="");
     void knownSecretPlayed(int id, CardClass hero, QString code, LoadingScreenState loadingScreenState);
-    bool isFromArenaSets(QString code);
     bool unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret, QString manaText="");
     void playerMinionPlayedNow(QString code, int playerMinions);
     ActiveSecret *getActiveSecret(CardClass hero, bool inArena);
@@ -101,7 +99,6 @@ public:
     void redrawSpellWeaponCards();
     void redrawAllCards();
     QStringList getSecretOptionCodes(int id);
-    void setArenaSets(QStringList arenaSets);
     void sortSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[]);
     void setCardsPickratesMap(QMap<QString, float> cardsPickratesMap[]);
     void setShowSecrets(bool value);

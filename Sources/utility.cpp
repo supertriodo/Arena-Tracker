@@ -15,6 +15,8 @@ QMap<QString, QJsonObject> * Utility::cardsJson = nullptr;
 QString Utility::localLang = "enUS";
 QString Utility::diacriticLetters;
 QStringList Utility::noDiacriticLetters;
+bool Utility::trustHA;
+QStringList Utility::arenaSets;
 
 Utility::Utility()
 {
@@ -471,8 +473,7 @@ QList<CardClass> Utility::getClassFromCode(const QString &code)
 
 CardClass Utility::classString2cardClass(const QString &value)
 {
-    if(value == "")             return NEUTRAL;
-    else if(value == "NEUTRAL") return NEUTRAL;
+    if(value == "NEUTRAL")      return NEUTRAL;
     else if(value == "DEATHKNIGHT") return DEATHKNIGHT;
     else if(value == "DEMONHUNTER") return DEMONHUNTER;
     else if(value == "DRUID")   return DRUID;
@@ -484,7 +485,7 @@ CardClass Utility::classString2cardClass(const QString &value)
     else if(value == "SHAMAN")  return SHAMAN;
     else if(value == "WARLOCK") return WARLOCK;
     else if(value == "WARRIOR") return WARRIOR;
-    else                        return INVALID_CLASS;
+    else                        return NEUTRAL;
 }
 
 
@@ -653,6 +654,54 @@ QStringList Utility::getStandardCodes()
         }
     }
     return setCodes;
+}
+
+
+QStringList Utility::getAllArenaCodes()
+{
+    QStringList codeList;
+
+    if(trustHA)
+    {
+        QJsonObject jsonObj = loadHearthArena();
+        for(int i=0; i<NUM_HEROS; i++)
+        {
+            const QJsonObject &classCodes = jsonObj.value(Utility::classOrder2classUL_ULName(i)).toObject();
+            codeList << classCodes.keys();
+        }
+    }
+    else
+    {
+        for(const QString &set: qAsConst(arenaSets))
+        {
+            if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
+            else                                codeList.append(Utility::getSetCodes(set, true, true));
+        }
+    }
+    codeList.removeDuplicates();
+    return codeList;
+}
+
+
+QJsonObject Utility::loadHearthArena()
+{
+    QFile jsonFile(Utility::extraPath() + "/hearthArena.json");
+    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+    jsonFile.close();
+    return jsonDoc.object();
+}
+
+
+void Utility::setTrustHA(bool trustHA)
+{
+    Utility::trustHA = trustHA;
+}
+
+
+void Utility::setArenaSets(QStringList arenaSets)
+{
+    Utility::arenaSets = arenaSets;
 }
 
 
@@ -1214,7 +1263,7 @@ void Utility::resizeSignatureCards()
 }
 
 
-void Utility::checkTierlistsCount(QStringList &arenaSets, QMap<CardClass, QStringList> &codesByClass)
+void Utility::checkTierlistsCount(const QStringList &arenaCodes)
 {
     QStringList haSets;
     for(int i=0; i<NUM_HEROS; i++)
@@ -1227,54 +1276,31 @@ void Utility::checkTierlistsCount(QStringList &arenaSets, QMap<CardClass, QStrin
         QMap<QString, QString> arenaMap;
 
         //Arena Codes List
-        if(arenaSets.isEmpty())
+        for(const QString &code: arenaCodes)
         {
-            for(const QString &code: codesByClass[heroClass])
+            QList<CardClass> cardClassList = Utility::getClassFromCode(code);
+            if(cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
             {
-                arenaMap.insert(code, "");
-            }
-            for(const QString &code: codesByClass[NEUTRAL])
-            {
-                arenaMap.insert(code, "");
+                arenaMap[code] = "";
             }
         }
-        else
-        {
-            for(const QString &set: qAsConst(arenaSets))
-            {
-                QStringList codeList;
-                if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
-                else                                codeList.append(Utility::getSetCodes(set, true, true));
-                for(const QString &code: (const QStringList)codeList)
-                {
-                    QList<CardClass> cardClassList = Utility::getClassFromCode(code);
-                    if(cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
-                    {
-                        arenaMap[code] = "";
-                    }
-                }
-            }
-        }
+        const QStringList arenaCodes = arenaMap.keys();
 
-        //HearthArena Names List
-        QFile jsonFileHA(Utility::extraPath() + "/hearthArena.json");
-        jsonFileHA.open(QIODevice::ReadOnly | QIODevice::Text);
-        QJsonDocument jsonDocHA = QJsonDocument::fromJson(jsonFileHA.readAll());
-        jsonFileHA.close();
 
-        const QStringList haNames = jsonDocHA.object().value(heroString).toObject().keys();
+        //HearthArena Codes List
+        QJsonObject jsonObj = Utility::loadHearthArena();
+        const QStringList haCodes = jsonObj.value(heroString).toObject().keys();
 
         qDebug()<<heroString<<"Arena count:"<<arenaMap.count();
-        qDebug()<<heroString<<"HearthArena count:"<<haNames.count();
+        qDebug()<<heroString<<"HearthArena count:"<<haCodes.count();
 
 
         //Check Missing cards
         bool missing = false;
-        const QStringList arenaCodes = arenaMap.keys();
         for(const QString &code: arenaCodes)
         {
             QString name = Utility::cardEnNameFromCode(code);
-            if(haNames.contains(name))
+            if(haCodes.contains(code))
             {
                 QStringList arenaNames = arenaMap.values();
                 if(arenaNames.contains(name))
@@ -1287,7 +1313,7 @@ void Utility::checkTierlistsCount(QStringList &arenaSets, QMap<CardClass, QStrin
                     if(!haSets.contains(set))
                     {
                         haSets << set;
-                        qDebug()<<"Add SET "<<set<<" for CODE "<<code;
+                        // qDebug()<<"Add SET "<<set<<" for CODE "<<code;
                     }
                 }
                 arenaMap[code] = name;
@@ -1300,24 +1326,18 @@ void Utility::checkTierlistsCount(QStringList &arenaSets, QMap<CardClass, QStrin
         }
         if(!missing)    qDebug()<<"HearthArena OK!";
         missing = false;
-        QStringList arenaNames = arenaMap.values();
-        for(const QString &name: haNames)
+        for(const QString &code: haCodes)
         {
-            if(!arenaNames.contains(name))
+            if(!arenaCodes.contains(code))
             {
-                QStringList codes = Utility::cardEnCodesFromName(name);
-                if(codes.isEmpty())  codes = Utility::cardEnCodesFromName(name, false);
-                if(codes.isEmpty())  qDebug()<<"HearthArena WRONG NAME!!!"<<name;
-                else
+                QString name = Utility::cardEnNameFromCode(code);
+                qDebug()<<"Arena missing:"<<code<<name;
+                missing = true;
+                QString set = getCardAttribute(code, "set").toString();
+                if(!haSets.contains(set))
                 {
-                    qDebug()<<"Arena missing:"<<codes<<name;
-                    missing = true;
-                    QString set = getCardAttribute(codes.first(), "set").toString();
-                    if(!haSets.contains(set))
-                    {
-                        haSets << set;
-                        qDebug()<<"Add SET "<<set<<" for CODE "<<codes;
-                    }
+                    haSets << set;
+                    // qDebug()<<"Add SET "<<set<<" for CODE "<<code;
                 }
             }
         }

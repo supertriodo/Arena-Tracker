@@ -155,13 +155,13 @@ void PopularCardsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickrat
 }
 
 
-void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[], QStringList codeList,
+void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[], const QStringList &arenaCodes,
                                                 SynergyHandler *synergyHandler)
 {
     this->synergyHandler = synergyHandler;
-    synergyHandler->initSynergyCodes();
+    synergyHandler->initSynergyCodes(arenaCodes);
 
-    for(QString &code: codeList)
+    for(const QString &code: arenaCodes)
     {
         QList<CardClass> cardClass = Utility::getClassFromCode(code);
         int cost = std::min(Utility::getCardAttribute(code, "cost").toInt(), 10);

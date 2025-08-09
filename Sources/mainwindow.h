@@ -108,6 +108,7 @@ public:
     LoadingScreenState getLoadingScreen();
 
 private:
+    void initVariables();
     void createLogLoader();
     void createArenaHandler();
     void createGameWatcher();
@@ -212,7 +213,7 @@ private:
     void initWantedMechanics(bool wantedMechanics[]);
     void downloadCardsJsonVersion();
     void downloadCardsJson(int version);
-    void testDownloadHSRCardsJson();
+    void testDownloadCardsJson();
 
 protected:
     //Override events
@@ -261,7 +262,7 @@ private slots:
     void testSynergies();
     void testHeroPortraits();
     void downloadHeroPortrait(QString code);
-    void testTierlists();
+    void testHearthArenaTierlist();
     void testDownloadRotation(bool fromHearth, const QString &miniSet="");
     void testSecretsHSR(LoadingScreenState loadingScreenState);
     void testPopularList(int i=2);

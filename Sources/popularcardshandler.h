@@ -1,6 +1,7 @@
 #ifndef POPULARCARDSHANDLER_H
 #define POPULARCARDSHANDLER_H
 
+#include "Sources/drafthandler.h"
 #include "Widgets/ui_extended.h"
 #include "Cards/popularcard.h"
 #include "enemyhandhandler.h"
@@ -42,7 +43,7 @@ public:
     void redrawClassCards();
     void redrawSpellWeaponCards();
     void redrawAllCards();
-    void createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[], QStringList codeList, SynergyHandler *synergyHandler);
+    void createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[], const QStringList &codeList, SynergyHandler *synergyHandler);
     void setCardsPickratesMap(QMap<QString, float> cardsPickratesMap[]);
     void setPopularCardsShown(int value);
 

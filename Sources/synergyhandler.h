@@ -25,7 +25,6 @@ private:
     DraftItemCounter **raceCounters, **schoolCounters, **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
     DraftDropCounter **dropCounters;
-    QStringList arenaSets;
 
 //Metodos
 public:
@@ -52,7 +51,7 @@ public:
                         int &draw, int &toYourHand, int &discover);
     void getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergies,
                       QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
-    bool initSynergyCodes(bool all=false);
+    bool initSynergyCodes(const QStringList &arenaCodes, bool all=false);
     void clearCounters();
     int draftedCardsCount();
     void setTransparency(Transparency transparency, bool mouseInApp);
@@ -60,8 +59,6 @@ public:
     int getCorrectedCardMana(DeckCard &deckCard);
     int getManaCounterCount();
     void setHidden(bool hide);
-    void setArenaSets(QStringList arenaSets);
-    QStringList getAllArenaCodes();
 
     bool isDrop2(const QString &code, int cost, int attack, int health);
     bool isDrop3(const QString &code, int cost, int attack, int health);

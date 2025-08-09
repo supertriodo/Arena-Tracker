@@ -77,9 +77,8 @@ private:
     ScoreButton *scoreButtonLF, *scoreButtonHA, *scoreButtonHSR;
     QMap<QString, int> hearthArenaTiers;
     QMap<QString, int> lightForgeTiers;
-    //Guarda los codes en la rotacion. Parte de todos los sets y se limita a la tier list de HA (si trustHA)
+    //Guarda los codes en la rotacion. Parte de todos los arena sets o se limita a la tier list de HA (si trustHA)
     QMap<CardClass, QStringList> codesByClass;
-    bool trustHA;
     QMap<QString, cv::MatND> cardsHist;
     QStringList cardsDownloading;
     DraftCard draftCards[3];
@@ -124,7 +123,6 @@ private:
     TwitchHandler *twitchHandler;
     bool multiclassArena;
     bool needSaveCardHist;
-    QStringList arenaSets;
     //Usado en busqueda manual (name -> code)
     QMap<QString, QString> cardsNameMap;
     int editComboBoxNum;//Numero de combo box que estamos editando
@@ -144,7 +142,7 @@ private:
     void completeUI();
     cv::MatND getHist(const QString &code);
     cv::MatND getHist(const Mat &srcBase);
-    void initCodesAndHistMaps(QString hero="", bool skipScreenSettings=false);
+    void initCodesAndHistMaps(bool skipScreenSettings=false);
     void resetTab(bool alreadyDrafting);
     void clearLists(bool keepCounters);
     void endDraft(bool createNewArena);
@@ -160,9 +158,8 @@ private:
     void showOverlay();
     void newCaptureDraftLoop(bool delayed=false);
     void updateScoresVisibility();
-    void initHearthArenaTiers(const QString &heroString, const bool multiClassDraft, QMap<CardClass, QStringList> &codesByClass, bool trustHA);
-    void initLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft,
-                             QMap<CardClass, QStringList> &codesByClass);
+    void initHearthArenaTiers(const CardClass heroClass, const bool multiClassDraft);
+    void initLightForgeTiers(const CardClass heroClass, const bool multiClassDraft, const QStringList &arenaCodes, bool buildCodesByClass);
     void createDraftWindows();
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
@@ -196,11 +193,11 @@ private:
     bool isFindScreenAsSettings(ScreenDetection &screenDetection);
     void refreshHeroes();
     void processCardHist(QStringList &codes);
-    bool initCardHist(QMap<CardClass, QStringList> &codesByClass);
+    bool initCardHist();
     void loadCardHist(QString classUName);
-    void saveCardHist(QMap<CardClass, QStringList> &codesByClass);
+    void saveCardHist();
     CardClass findMulticlassPower(QList<DeckCard> &deckCardList);
-    void initCardsNameMap(QMap<CardClass, QStringList> &codesByClass);
+    void initCardsNameMap();
     void reduceCardsNameMapMulticlass();
     void showLineEditCardName(const QString &name);
     void hideLineEditCardName();
@@ -238,7 +235,7 @@ private:
     QString getHSRFireCode(QString code, bool HSR);
     QString getHACode(QString code);
     bool isEmptyDeck();
-    void addLFCode(const QString &code, const CardClass &heroClass, const bool multiClassDraft, QMap<CardClass, QStringList> &codesByClass);
+    void addLFCode(const QString &code, const CardClass &heroClass, const bool multiClassDraft, bool buildCodesByClass);
 
 public:
     void setDeckScores();
@@ -257,7 +254,6 @@ public:
     void craftGoldenCopy(int cardIndex);
     bool isDrafting();
     void deMinimizeScoreWindow();
-    QStringList getAllArenaCodes();
     QStringList getAllHeroCodes();
     void setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[]);
     void setCardsIncludedDecksMap(QMap<QString, int> cardsIncludedDecksMap[]);
@@ -268,9 +264,7 @@ public:
     void updateTwitchChatVotes();
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
     void setMulticlassArena(bool multiclassArena);
-    void setTrustHA(bool trustHA);
     SynergyHandler *getSynergyHandler();
-    void setArenaSets(QStringList arenaSets);
     void closeFindScreenRects();
     CardClass getArenaHero();
     void initTierLists(const CardClass &heroClass);
@@ -278,8 +272,6 @@ public:
     void getCodeScores(const CardClass &heroClass, const QString &code, int &ha, float &hsr, float &fire);
     void setShowMyWR(bool value);
     void setWantedMechanic(uint mechanicIcon, bool value);
-    QStringList getAllArenaCodesTrimmed(bool forceTrustHA=false);
-    void getCodesByClassTrimmed(QMap<CardClass, QStringList> &codesByClass, bool forceTrustHA=false);
     void redrawDownloadedCardImage(QString code);
 
 signals:

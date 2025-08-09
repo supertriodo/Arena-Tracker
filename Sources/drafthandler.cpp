@@ -176,12 +176,6 @@ void DraftHandler::setMulticlassArena(bool multiclassArena)
 }
 
 
-void DraftHandler::setTrustHA(bool trustHA)
-{
-    this->trustHA = trustHA;
-}
-
-
 void DraftHandler::setPremium(bool premium)
 {
     if(drafting)    return;
@@ -227,19 +221,6 @@ void DraftHandler::clearAndDisconnectComboBox(int index)
 }
 
 
-void DraftHandler::setArenaSets(QStringList arenaSets)
-{
-    this->arenaSets = arenaSets;
-    synergyHandler->setArenaSets(arenaSets);
-}
-
-
-QStringList DraftHandler::getAllArenaCodes()
-{
-    return synergyHandler->getAllArenaCodes();
-}
-
-
 QStringList DraftHandler::getAllHeroCodes()
 {
     return heroCodesList;
@@ -252,38 +233,35 @@ CardClass DraftHandler::getArenaHero()
 }
 
 
-void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool multiClassDraft, QMap<CardClass, QStringList> &codesByClass, bool trustHA)
+void DraftHandler::initHearthArenaTiers(const CardClass heroClass, const bool multiClassDraft)
 {
     hearthArenaTiers.clear();
+    QJsonObject jsonObj = Utility::loadHearthArena();
 
-    QFile jsonFile(Utility::extraPath() + "/hearthArena.json");
-    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
-    jsonFile.close();
+    const QString &heroString = Utility::classOrder2classUL_ULName(heroClass);
 
     if(multiClassDraft)
     {
-        QJsonObject heroJsonObject = jsonDoc.object().value(heroString).toObject();
+        QJsonObject heroJsonObject = jsonObj.value(heroString).toObject();
         QJsonObject othersJsonObject[NUM_HEROS-1];
         for(int j=0, i=0; j<NUM_HEROS; j++)
         {
-            if(heroString != Utility::classOrder2classUL_ULName(j))
+            if(heroClass != j)
             {
-                othersJsonObject[i++] = jsonDoc.object().value(Utility::classOrder2classUL_ULName(j)).toObject();
+                othersJsonObject[i++] = jsonObj.value(Utility::classOrder2classUL_ULName(j)).toObject();
             }
         }
         const QStringList lfKeys = lightForgeTiers.keys();
         for(const QString &code: lfKeys)
         {
-            QString name = Utility::cardEnNameFromCode(code);
-            if(heroJsonObject.contains(name))   hearthArenaTiers[code] = heroJsonObject.value(name).toInt();
+            if(heroJsonObject.contains(code))   hearthArenaTiers[code] = heroJsonObject.value(code).toInt();
             else
             {
                 for(int i=0; i<(NUM_HEROS-1); i++)
                 {
-                    if(othersJsonObject[i].contains(name))
+                    if(othersJsonObject[i].contains(code))
                     {
-                        hearthArenaTiers[code] = othersJsonObject[i].value(name).toInt();
+                        hearthArenaTiers[code] = othersJsonObject[i].value(code).toInt();
                         break;
                     }
                 }
@@ -291,42 +269,25 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
 
             if(hearthArenaTiers[code] == 0)
             {
-                // emit pDebug("HearthArena missing: " + name);//TODO
-                if(trustHA)
-                {
-                    const QList<CardClass> cardClassList = codesByClass.keys();
-                    for(const CardClass &cardClass: cardClassList)
-                    {
-                        codesByClass[cardClass].removeAll(code);
-                    }
-                }
+                emit pDebug(QStringLiteral("HearthArena missing: %1 - %2").arg(code, Utility::cardEnNameFromCode(code)));
             }
         }
     }
     else
     {
-        QJsonObject jsonNamesObject = jsonDoc.object().value(heroString).toObject();
+        QJsonObject jsonCodesObject = jsonObj.value(heroString).toObject();
         const QStringList lfKeys = lightForgeTiers.keys();
         for(const QString &code: lfKeys)
         {
-            QString name = Utility::cardEnNameFromCode(code);
-            int score = jsonNamesObject.value(name).toInt();
+            int score = jsonCodesObject.value(code).toInt();
             hearthArenaTiers[code] = score;
 
             if(score == 0)
             {
-                // emit pDebug("HearthArena missing: " + name);//TODO
-                if(trustHA)
-                {
-                    const QList<CardClass> cardClassList = codesByClass.keys();
-                    for(const CardClass &cardClass: cardClassList)
-                    {
-                        codesByClass[cardClass].removeAll(code);
-                    }
-                }
+                emit pDebug(QStringLiteral("HearthArena missing: %1 - %2").arg(code, Utility::cardEnNameFromCode(code)));
             }
         }
-        emit pDebug("HearthArena Cards: " + QString::number(jsonNamesObject.count()));
+        emit pDebug("HearthArena Cards: " + QString::number(jsonCodesObject.count()));
     }
 }
 
@@ -367,7 +328,7 @@ void DraftHandler::loadCardHist(QString classUName)
 }
 
 
-void DraftHandler::saveCardHist(QMap<CardClass, QStringList> &codesByClass)
+void DraftHandler::saveCardHist()
 {
     //Save
     const QList<CardClass> cardClassList = codesByClass.keys();
@@ -467,7 +428,7 @@ void DraftHandler::processCardHist(QStringList &codes)
 }
 
 
-bool DraftHandler::initCardHist(QMap<CardClass, QStringList> &codesByClass)
+bool DraftHandler::initCardHist()
 {
     bool processed = false;
     const QList<CardClass> cardClassList = codesByClass.keys();
@@ -494,7 +455,7 @@ bool DraftHandler::initCardHist(QMap<CardClass, QStringList> &codesByClass)
 }
 
 
-void DraftHandler::initCardsNameMap(QMap<CardClass, QStringList> &codesByClass)
+void DraftHandler::initCardsNameMap()
 {
     const QList<CardClass> cardClassList = codesByClass.keys();
     for(const CardClass &cardClass: cardClassList)
@@ -529,42 +490,26 @@ void DraftHandler::reduceCardsNameMapMulticlass()
 }
 
 
-void DraftHandler::addLFCode(const QString &code, const CardClass &heroClass, const bool multiClassDraft,
-                             QMap<CardClass, QStringList> &codesByClass)
+void DraftHandler::addLFCode(const QString &code, const CardClass &heroClass, const bool multiClassDraft, bool buildCodesByClass)
 {
     const QList<CardClass> cardClassList = Utility::getClassFromCode(code);
     if(multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
     {
-        if(code.startsWith("CORE_"))
+        lightForgeTiers.insert(code, 0);
+
+        if(buildCodesByClass)
         {
-            QString noCoreCode = code.mid(5);
-            if(lightForgeTiers.contains(noCoreCode))
+            if(multiClassDraft)
             {
-                lightForgeTiers.remove(noCoreCode);
-                const QList<CardClass> cardClassList = codesByClass.keys();
                 for(const CardClass &cardClass: cardClassList)
                 {
-                    codesByClass[cardClass].removeAll(noCoreCode);
+                    if(cardClass == INVALID_CLASS)  emit pDebug("WARNING: initLightForgeTiers found INVALID_CLASS: " + code);
+                    else                            codesByClass[cardClass].append(code);
                 }
             }
+            else if(cardClassList.contains(NEUTRAL))        codesByClass[NEUTRAL].append(code);
+            else/* if(cardClassList.contains(heroClass))*/  codesByClass[heroClass].append(code);
         }
-        else
-        {
-            if(lightForgeTiers.contains("CORE_" + code))   return;
-        }
-
-        lightForgeTiers[code] = 0;
-
-        if(multiClassDraft)
-        {
-            for(const CardClass &cardClass: cardClassList)
-            {
-                if(cardClass == INVALID_CLASS)  emit pDebug("WARNING: initLightForgeTiers found INVALID_CLASS: " + code);
-                else                            codesByClass[cardClass].append(code);
-            }
-        }
-        else if(cardClassList.contains(NEUTRAL))        codesByClass[NEUTRAL].append(code);
-        else/* if(cardClassList.contains(heroClass))*/  codesByClass[heroClass].append(code);
     }
 }
 
@@ -573,15 +518,14 @@ void DraftHandler::addLFCode(const QString &code, const CardClass &heroClass, co
  * lightForgeTiers no contiene ningun tier, solo la lista de codigos en arena
  * en un futuro podemos usarlo para una nueva tier list
  */
-void DraftHandler::initLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft,
-                                       QMap<CardClass, QStringList> &codesByClass)
+void DraftHandler::initLightForgeTiers(const CardClass heroClass, const bool multiClassDraft, const QStringList &arenaCodes, bool buildCodesByClass)
 {
     lightForgeTiers.clear();
 
     //Arena sets
-    for(const QString &code: (const QStringList)getAllArenaCodes())
+    for(const QString &code: arenaCodes)
     {
-        addLFCode(code, heroClass, multiClassDraft, codesByClass);
+        addLFCode(code, heroClass, multiClassDraft, buildCodesByClass);
     }
 
     //Bundle codes
@@ -594,12 +538,12 @@ void DraftHandler::initLightForgeTiers(const CardClass &heroClass, const bool mu
                 const auto &legendaryList = bundlesMap[i].keys();
                 for(const QString &legendary: legendaryList)
                 {
-                    addLFCode(legendary, heroClass, multiClassDraft, codesByClass);
+                    addLFCode(legendary, heroClass, multiClassDraft, buildCodesByClass);
 
                     const auto &codesSub = bundlesMap[i][legendary];
                     for(const QString &codeSub: codesSub)
                     {
-                        addLFCode(codeSub, heroClass, multiClassDraft, codesByClass);
+                        addLFCode(codeSub, heroClass, multiClassDraft, buildCodesByClass);
                     }
                 }
             }
@@ -609,12 +553,12 @@ void DraftHandler::initLightForgeTiers(const CardClass &heroClass, const bool mu
             const auto &legendaryList = bundlesMap[heroClass].keys();
             for(const QString &legendary: legendaryList)
             {
-                addLFCode(legendary, heroClass, multiClassDraft, codesByClass);
+                addLFCode(legendary, heroClass, multiClassDraft, buildCodesByClass);
 
                 const auto &codesSub = bundlesMap[heroClass][legendary];
                 for(const QString &codeSub: codesSub)
                 {
-                    addLFCode(codeSub, heroClass, multiClassDraft, codesByClass);
+                    addLFCode(codeSub, heroClass, multiClassDraft, buildCodesByClass);
                 }
             }
         }
@@ -632,7 +576,7 @@ void DraftHandler::initLightForgeTiers(const CardClass &heroClass, const bool mu
 
 //Desde la reforma de arena solo cargamos los screensettings en buildDraftMechanicsWindow() o al elegir heroe y empezar draft.
 //continueDraft y heroDrafts esperan a buscar el template ya que hay una pantalla pasillo.
-void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
+void DraftHandler::initCodesAndHistMaps(bool skipScreenSettings)
 {
     cardsDownloading.clear();
     cardsHist.clear();
@@ -652,14 +596,15 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
         else            delay = MECHANICS_DELAY_TIME;
 
         QTimer::singleShot(delay, this, [=] () {newFindScreenLoop(skipScreenSettings);});
-        initLightForgeTiers(arenaHero, multiclassArena, codesByClass);
-        initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), multiclassArena, codesByClass, trustHA);
+        QStringList arenaCodes = Utility::getAllArenaCodes();
+        initLightForgeTiers(arenaHero, multiclassArena, arenaCodes, true);
+        initHearthArenaTiers(arenaHero, multiclassArena);
         if(drafting)
         {
-            needSaveCardHist = initCardHist(codesByClass);
-            initCardsNameMap(codesByClass);
+            needSaveCardHist = initCardHist();
+            initCardsNameMap();
         }
-        synergyHandler->initSynergyCodes();
+        synergyHandler->initSynergyCodes(arenaCodes);
     }
 
     //Wait for cards
@@ -667,7 +612,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
     {
         if(cardsDownloading.isEmpty())
         {
-            if(needSaveCardHist)    saveCardHist(codesByClass);
+            if(needSaveCardHist)    saveCardHist();
             newCaptureDraftLoop();
         }
         else
@@ -691,7 +636,7 @@ void DraftHandler::reHistDownloadedCardImage(const QString &fileNameCode, bool m
     emit advanceProgressBar(cardsDownloading.count(), fileNameCode.split("_premium").first() + " downloaded");
     if(cardsDownloading.isEmpty())
     {
-        if(needSaveCardHist)    saveCardHist(codesByClass);
+        if(needSaveCardHist)    saveCardHist();
         emit showMessageProgressBar("All cards downloaded");
         newCaptureDraftLoop();
     }
@@ -932,8 +877,8 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     }
 
     bool alreadyDrafting = drafting;
-    int heroInt = hero.toInt();
-    if(heroInt<1 || heroInt>NUM_HEROS)
+    this->arenaHero = Utility::classLogNumber2classEnum(hero);
+    if(arenaHero == INVALID_CLASS)
     {
         emit pDebug("Begin draft of unknown hero: " + hero);
         return;
@@ -941,7 +886,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     else
     {
         emit pDebug("Begin draft. Hero: " + hero);
-        emit pDebug("Arena Hero: " + Utility::classEnum2classUName(arenaHero));
+        emit pDebug(QStringLiteral("Arena Hero: %1").arg(Utility::classEnum2classUName(arenaHero)));
     }
 
     //Set updateTime in log / Hide card Window
@@ -950,7 +895,6 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     //Reconstruir todas las sinergias permite retocar el deck y force draft con el deck correcto.
     clearLists(false);
 
-    this->arenaHero = Utility::classLogNumber2classEnum(hero);
     if(multiclassArena) this->arenaHeroMulticlassPower = findMulticlassPower(deckCardList);
     else                this->arenaHeroMulticlassPower = INVALID_CLASS;
     this->drafting = true;
@@ -959,7 +903,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
 
     for(int i=0; i<3; i++)  prevCodes[i] = "";
 
-    initCodesAndHistMaps(hero, skipScreenSettings);
+    initCodesAndHistMaps(skipScreenSettings);
     resetTab(alreadyDrafting);
     initSynergyCounters(deckCardList);
     createTwitchHandler();
@@ -1295,28 +1239,27 @@ bool DraftHandler::buildDraftMechanicsWindow()
 {
     deleteDraftMechanicsWindow();
 
-    QString hero = Utility::classEnum2classLogNumber(this->arenaHero);
     QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
 
-    int heroInt = hero.toInt();
     if(deckCardList == nullptr)
     {
         emit pDebug("Build draft mechanic window of incomplete deck.");
         return false;
     }
-    else if(heroInt<1 || heroInt>NUM_HEROS)
+    else if(arenaHero == INVALID_CLASS)
     {
-        emit pDebug("Build draft mechanic window of unknown hero: " + hero);
+        emit pDebug("Build draft mechanic window of unknown hero.");
         return false;
     }
     else
     {
-        emit pDebug("Build draft mechanic window. Heroe: " + hero);
+        QString hero = Utility::classEnum2classUName(this->arenaHero);
+        emit pDebug(QStringLiteral("Build draft mechanic window. Heroe: %1").arg(hero));
     }
 
     clearLists(false);
 
-    initCodesAndHistMaps(hero);
+    initCodesAndHistMaps();
     initSynergyCounters(*deckCardList);
     return true;
 }
@@ -2945,7 +2888,7 @@ void DraftHandler::beginHeroDraft()
     clearLists(false);
     this->heroDrafting = true;
 
-    initCodesAndHistMaps("", true);
+    initCodesAndHistMaps(true);
     createTwitchHandler();
 }
 
@@ -3516,36 +3459,9 @@ void DraftHandler::buildHeroCodesList()
 //Funciones para calcular deck scores fuera de draft (enemy decks)
 void DraftHandler::initTierLists(const CardClass &heroClass)
 {
-    QMap<CardClass, QStringList> codesByClass;
-    initLightForgeTiers(heroClass, multiclassArena, codesByClass);
-    QString hero = Utility::classEnum2classLogNumber(heroClass);
-    initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), multiclassArena, codesByClass, false);
-}
-
-
-//All arena codes, present in HATL if trustHA
-QStringList DraftHandler::getAllArenaCodesTrimmed(bool forceTrustHA)
-{
-    QMap<CardClass, QStringList> codesByClass;
-    getCodesByClassTrimmed(codesByClass, forceTrustHA);
-
-    QStringList codes;
-    const auto classes = codesByClass.keys();
-    for(const CardClass &cardClass: classes)
-    {
-        codes << codesByClass[cardClass];
-    }
-    codes.removeDuplicates();
-    return codes;
-}
-
-
-void DraftHandler::getCodesByClassTrimmed(QMap<CardClass, QStringList> &codesByClass, bool forceTrustHA)
-{
-    initLightForgeTiers(WARRIOR, true, codesByClass);
-    QString hero = Utility::classEnum2classLogNumber(WARRIOR);
-    initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), true, codesByClass, forceTrustHA || trustHA);
-    clearTierLists();
+    QStringList arenaCodes = Utility::getAllArenaCodes();
+    initLightForgeTiers(heroClass, multiclassArena, arenaCodes, false);
+    initHearthArenaTiers(heroClass, multiclassArena);
 }
 
 

@@ -17,44 +17,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QApplication::setWheelScrollLines(1);
     QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
     QFontDatabase::addApplicationFont(":Fonts/LuckiestGuy.ttf");
-    QSettings settings("Arena Tracker", "Arena Tracker");
 
     qsrand((uint)QTime::currentTime().msec());
 
     ui->setupUi(this);
 
-    atLogFile = nullptr;
-    mouseInApp = false;
-    deckWindow = nullptr;
-    arenaWindow = nullptr;
-    enemyWindow = nullptr;
-    enemyDeckWindow = nullptr;
-    graveyardWindow = nullptr;
-    planWindow = nullptr;
-    cardHeight = -1;
-    patreonVersion = false;
-    transparency = AutoTransparent;
-    cardsJsonLoaded = arenaSetsLoaded = false;
-    allCardsDownloadNeeded = !settings.value("allCardsDownloaded", false).toBool();
-
-    logLoader = nullptr;
-    gameWatcher = nullptr;
-    arenaHandler = nullptr;
-    cardDownloader = nullptr;
-    winratesDownloader = nullptr;
-    enemyHandHandler = nullptr;
-    draftHandler = nullptr;
-    drawCardHandler = nullptr;
-    rngCardHandler = nullptr;
-    deckHandler = nullptr;
-    enemyDeckHandler = nullptr;
-    graveyardHandler = nullptr;
-    secretsHandler = nullptr;
-    popularCardsHandler = nullptr;
-    trackobotUploader = nullptr;
-    premiumHandler = nullptr;
-    twitchTester = nullptr;
-
+    initVariables();
     createNetworkManager();
     createDataDir();
     createLogFile();
@@ -122,6 +90,46 @@ MainWindow::~MainWindow()
     if(ui != nullptr)                  delete ui;
     closeLogFile();
     QFontDatabase::removeAllApplicationFonts();
+}
+
+
+void MainWindow::initVariables()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+
+    atLogFile = nullptr;
+    mouseInApp = false;
+    deckWindow = nullptr;
+    arenaWindow = nullptr;
+    enemyWindow = nullptr;
+    enemyDeckWindow = nullptr;
+    graveyardWindow = nullptr;
+    planWindow = nullptr;
+    cardHeight = -1;
+    patreonVersion = false;
+    transparency = AutoTransparent;
+    cardsJsonLoaded = arenaSetsLoaded = false;
+    allCardsDownloadNeeded = !settings.value("allCardsDownloaded", false).toBool();
+    Utility::setTrustHA(settings.value("trustHA", true).toBool());
+    Utility::setArenaSets(settings.value("arenaSets", QStringList()).toStringList());
+
+    logLoader = nullptr;
+    gameWatcher = nullptr;
+    arenaHandler = nullptr;
+    cardDownloader = nullptr;
+    winratesDownloader = nullptr;
+    enemyHandHandler = nullptr;
+    draftHandler = nullptr;
+    drawCardHandler = nullptr;
+    rngCardHandler = nullptr;
+    deckHandler = nullptr;
+    enemyDeckHandler = nullptr;
+    graveyardHandler = nullptr;
+    secretsHandler = nullptr;
+    popularCardsHandler = nullptr;
+    trackobotUploader = nullptr;
+    premiumHandler = nullptr;
+    twitchTester = nullptr;
 }
 
 
@@ -563,8 +571,9 @@ void MainWindow::processPopularCardsHandlerPickrates(QMap<QString, float> *hsrPi
 {
     if(arenaSetsLoaded)
     {
+        QStringList arenaCodes = Utility::getAllArenaCodes();
         popularCardsHandler->createCardsByPickrate(hsrPickratesMap,
-            draftHandler->getAllArenaCodes(), draftHandler->getSynergyHandler());
+            arenaCodes, draftHandler->getSynergyHandler());
     }
     else
     {
@@ -646,8 +655,7 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
         if(settings.value("arenaSets", QStringList()).toStringList() != arenaSets)
         {
             settings.setValue("arenaSets", arenaSets);
-            if(secretsHandler != nullptr)   secretsHandler->setArenaSets(arenaSets);
-            if(draftHandler != nullptr)     draftHandler->setArenaSets(arenaSets);
+            Utility::setArenaSets(arenaSets);
             pDebug("CheckArenaVersion: New arena sets: " + arenaSets.join(" "));
 
             //New rotation date
@@ -678,14 +686,16 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
 
         //TrustHA
         bool trustHA = jsonObject.value("trustHA").toBool(false);
-        if(draftHandler != nullptr) draftHandler->setTrustHA(trustHA);
+        Utility::setTrustHA(trustHA);
         settings.setValue("trustHA", trustHA);
         pDebug("CheckArenaVersion: trustHA: " + QString(trustHA?"true":"false"));
     }
     else
     {
-        pDebug("CheckArenaVersion: Unchanged arena sets: " +
-                    settings.value("arenaSets", QStringList()).toStringList().join(" "));
+        QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
+        bool trustHA = settings.value("trustHA", true).toBool();
+        pDebug(QStringLiteral("CheckArenaVersion: Unchanged arena sets: %1").arg(arenaSets.join(" ")));
+        pDebug(QStringLiteral("CheckArenaVersion: Unchanged trustHA: %1").arg(trustHA?"true":"false"));
     }
 
     arenaSetsLoaded = true;
@@ -814,13 +824,8 @@ void MainWindow::createDraftHandler()
     if(cardsJsonLoaded) draftHandler->buildHeroCodesList();
 
     QSettings settings("Arena Tracker", "Arena Tracker");
-    bool trustHA = settings.value("trustHA", true).toBool();
     bool multiclassArena = settings.value("multiclassArena", false).toBool();
-    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
-    draftHandler->setTrustHA(trustHA);
     draftHandler->setMulticlassArena(multiclassArena);
-    draftHandler->setArenaSets(arenaSets);
-    pDebug("trustHA = " + QString(trustHA?"true":"false"));
     pDebug("multiclassArena = " + QString(multiclassArena?"true":"false"));
 
     //SynergyHandler
@@ -845,7 +850,6 @@ void MainWindow::createSecretsHandler()
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
-    secretsHandler->setArenaSets(arenaSets);
 }
 
 
@@ -2709,7 +2713,7 @@ void MainWindow::downloadCardsJsonVersion()
 }
 
 
-void MainWindow::testDownloadHSRCardsJson()
+void MainWindow::testDownloadCardsJson()
 {
     networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_URL)));
     qDebug() << "DEBUG CARDS: Json Cards --> Download from:" << QString(HSR_CARDS_URL);
@@ -4267,7 +4271,7 @@ void MainWindow::checkArenaCards()
     if(allCardsDownloadNeeded)
     {
         settings.setValue("allCardsDownloaded", false);
-        QStringList codeList = draftHandler->getAllArenaCodesTrimmed();
+        QStringList codeList = Utility::getAllArenaCodes();
         downloadAllArenaCodes(codeList);
     }
     else
@@ -4426,7 +4430,7 @@ void MainWindow::saveHearthArenaTierlistOriginal(const QByteArray &html)
 
     //Lanza script HATLsed.sh
     QProcess p;
-    p.start("\"/home/triodo/Documentos/ArenaTracker/HearthArena/Json extract/HATLsed.sh\"");
+    p.start("\"/home/triodo/Documentos/ArenaTracker/HearthArena/Json extract/HATLsedCodes.sh\"");
     p.waitForFinished(-1);
 
     //Copy to local and source
@@ -4466,7 +4470,8 @@ void MainWindow::testEnemyHand()
 
 void MainWindow::testPlan()
 {
-    draftHandler->getSynergyHandler()->initSynergyCodes(true);
+    QStringList arenaCodes = Utility::getAllArenaCodes();
+    draftHandler->getSynergyHandler()->initSynergyCodes(arenaCodes, true);
 
     planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
     planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
@@ -4681,11 +4686,8 @@ void MainWindow::testSynergies()
 }
 
 
-void MainWindow::testTierlists()
+void MainWindow::testHearthArenaTierlist()
 {
-    // downloadHearthArenaTierlistOriginal();
-//    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
-
     QStringList arenaSets;
     arenaSets <<  "CORE" <<
         "LEGACY" <<
@@ -4730,15 +4732,10 @@ void MainWindow::testTierlists()
         "EMERALD_DREAM" <<
         "THE_LOST_CITY";
 
+    Utility::setArenaSets(arenaSets);
 
-   // QSettings settings("Arena Tracker", "Arena Tracker");
-   // QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
-
-    QMap<CardClass, QStringList> codesByClass;
-    arenaSets = QStringList();
-    draftHandler->getCodesByClassTrimmed(codesByClass, true);
-
-    Utility::checkTierlistsCount(arenaSets, codesByClass);
+    QStringList arenaCodes = Utility::getAllArenaCodes();
+    Utility::checkTierlistsCount(arenaCodes);
 }
 
 /*
@@ -4833,11 +4830,11 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
         "EMERALD_DREAM" <<
         "THE_LOST_CITY";
 
-    draftHandler->setArenaSets(arenaSets);
+    Utility::setArenaSets(arenaSets);
 
     if(fromHearth)
     {
-        QStringList codeList = draftHandler->getAllArenaCodesTrimmed(true);
+        QStringList codeList = Utility::getAllArenaCodes();
         for(const QString &code: qAsConst(codeList))
         {
             if(miniSet.isEmpty() || code.startsWith(miniSet))
@@ -4862,8 +4859,9 @@ void MainWindow::testDelay()
     testHeroPortraits();
     testSynergies();
 
-    testTierlists();
-    // testDownloadHSRCardsJson();
+    // downloadHearthArenaTierlistOriginal();
+    // testHearthArenaTierlist();
+    // testDownloadCardsJson();
     // testDownloadRotation(true/*, "SC_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
 
@@ -4897,7 +4895,7 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Json cards --> testDownloadHSRCardsJson();
+//Update Json cards --> testDownloadCardsJson();
 //Update Utility::isFromStandardSet(QString code) --> THE_LOST_CITY
 //Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true

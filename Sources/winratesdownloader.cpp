@@ -5,6 +5,8 @@
 #include "qjsonarray.h"
 #include "qjsondocument.h"
 #include "qnetworkreply.h"
+#include <QRegularExpression>
+
 
 WinratesDownloader::WinratesDownloader(QObject *parent) : QObject(parent)
 {

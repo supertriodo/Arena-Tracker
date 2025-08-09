@@ -270,7 +270,7 @@ void SynergyHandler::sendItemEnter(QList<SynergyCard> &synergyCardList, QRect &l
 }
 
 
-bool SynergyHandler::initSynergyCodes(bool all)
+bool SynergyHandler::initSynergyCodes(const QStringList &arenaCodes, bool all)
 {
     if(!all && !synergyCodes.isEmpty())
     {
@@ -287,7 +287,6 @@ bool SynergyHandler::initSynergyCodes(bool all)
     jsonFile.close();
     QJsonObject jsonObject = jsonDoc.object();
     QStringList coreCodes = Utility::getSetCodes("CORE", true, true);
-    QStringList arenaCodes = getAllArenaCodes();
 
     for(const QString &code: (const QStringList)jsonObject.keys())
     {
@@ -407,25 +406,6 @@ void SynergyHandler::clearCounters()
     costWeapons.clear();
     attackWeapons.clear();
     healthWeapons.clear();
-}
-
-
-QStringList SynergyHandler::getAllArenaCodes()
-{
-    QStringList codeList;
-
-    for(const QString &set: qAsConst(arenaSets))
-    {
-        if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
-        else                                codeList.append(Utility::getSetCodes(set, true, true));
-    }
-    return codeList;
-}
-
-
-void SynergyHandler::setArenaSets(QStringList arenaSets)
-{
-    this->arenaSets = arenaSets;
 }
 
 
@@ -1628,7 +1608,8 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic, QRegularExpress
 
 void SynergyHandler::testSynergies(const QString &miniSet)
 {
-    initSynergyCodes(true);
+    QStringList arenaCodes = Utility::getAllArenaCodes();
+    initSynergyCodes(arenaCodes, true);
     int num = 0;
 
     // for(QString &code: (QStringList)Utility::getSetCodes("SPACE", true, false))
@@ -1710,7 +1691,8 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 
 void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int openTo, const QString &miniSet, bool onlyCollectible)
 {
-    initSynergyCodes(true);
+    QStringList arenaCodes = Utility::getAllArenaCodes();
+    initSynergyCodes(arenaCodes, true);
 
     QStringList codeList;
     if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
@@ -1758,7 +1740,9 @@ bool SynergyHandler::shouldBeInSynergies(const QString &code)
 
 void SynergyHandler::debugMissingSynergiesAllSets()
 {
-    initSynergyCodes(true);
+    QStringList arenaCodes = Utility::getAllArenaCodes();
+    initSynergyCodes(arenaCodes, true);
+
     int num = 0;
     const QStringList wildCodes = Utility::getWildCodes();
     for(const QString &code: (const QStringList)wildCodes)
@@ -1929,7 +1913,8 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
 
 void SynergyHandler::debugDrops()
 {
-    initSynergyCodes(true);
+    QStringList arenaCodes = Utility::getAllArenaCodes();
+    initSynergyCodes(arenaCodes, true);
 
     QString filename = "global.gz.json";
     QFile file(Utility::extraPath() + "/" + filename);

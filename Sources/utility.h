@@ -103,6 +103,8 @@ private:
     static QString localLang;
     static QString diacriticLetters;
     static QStringList noDiacriticLetters;
+    static bool trustHA;
+    static QStringList arenaSets;
 
 
 //Metodos
@@ -172,9 +174,13 @@ public:
     static QStringList getSetIntCodes(const int &set, bool excludeHeroes, bool onlyCollectible);
     static QStringList getWildCodes();
     static QStringList getStandardCodes();
+    static QStringList getAllArenaCodes();
+    static QJsonObject loadHearthArena();
+    static void setTrustHA(bool trustHA);
+    static void setArenaSets(QStringList arenaSets);
     static bool createDir(const QString &pathDir);
     static void unZip(const QString &zipName, const QString &targetPath);
-    static void checkTierlistsCount(QStringList &arenaSets, QMap<CardClass, QStringList> &codesByClass);
+    static void checkTierlistsCount(const QStringList &arenaCodes);
     static void resizeSignatureCards();
     static bool checkHeroPortrait(const QString &code);
     static void checkMissingGoldenCards();

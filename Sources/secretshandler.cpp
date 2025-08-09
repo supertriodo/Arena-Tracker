@@ -42,12 +42,6 @@ void SecretsHandler::completeUI()
 }
 
 
-void SecretsHandler::setArenaSets(QStringList arenaSets)
-{
-    this->arenaSets = arenaSets;
-}
-
-
 void SecretsHandler::resetLastMinionDead(QString code, QString subType)
 {
     (void) code;
@@ -177,21 +171,10 @@ void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code, Loa
 }
 
 
-bool SecretsHandler::isFromArenaSets(QString code)
-{
-    QString cardSet = Utility::getCardAttribute(code, "set").toString();
-    return arenaSets.contains(cardSet);
-}
-
-
 bool SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret, QString manaText)
 {
     QString coreCode = "CORE_" + code;
-    if
-    (
-        (inArena && isFromArenaSets(coreCode)) ||
-        (!inArena && Utility::isFromStandardSet(coreCode))
-    )
+    if(!inArena && Utility::isFromStandardSet(coreCode))
     {
         emit pDebug("Secret option: " + coreCode);
         activeSecret.children.append(SecretCard(coreCode, manaText));
@@ -199,7 +182,7 @@ bool SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, Ac
     }
     else if
     (
-        (inArena && isFromArenaSets(code)) ||
+        inArena ||
         (!inArena && (Utility::isFromStandardSet(code) || (showWildSecrets && patreonVersion)))
     )
     {
