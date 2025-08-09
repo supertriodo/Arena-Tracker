@@ -221,22 +221,14 @@ void WinratesDownloader::localHSRHeroesWinrate()
 void WinratesDownloader::processHSRHeroesWinrate(const QJsonObject &jsonObject)
 {
     float heroScores[NUM_HEROS];
-    QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
+    const QJsonArray &data = jsonObject["data"].toArray();
 
-    for(const QString &key: (const QStringList)data.keys())
+    for(const QJsonValue &jv: data)
     {
-        for(const QJsonValue &gameWinrate: (const QJsonArray)data.value(key).toArray())
-        {
-            QJsonObject gameWinrateObject = gameWinrate.toObject();
-            if(gameWinrateObject.value("game_type").toInt() == 3)
-            {
-                int classOrder = Utility::className2classOrder(key);
-                if(classOrder!=-1)
-                {
-                    heroScores[classOrder] = round(gameWinrateObject.value("win_rate").toDouble() * 10)/10.0;
-                }
-            }
-        }
+        const QJsonObject &jo = jv.toObject();
+        int classOrder = Utility::hsrHero2classEnum(jo["deck_class"].toInt());
+        float wr = round(jo["win_rate"].toDouble() * 10)/10.0;
+        heroScores[classOrder] = wr;
     }
 
     ScoreButton::setHeroScores(heroScores);

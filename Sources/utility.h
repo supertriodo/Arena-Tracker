@@ -118,6 +118,7 @@ public:
     static QString classEnum2classLogNumber(CardClass cardClass);
     static QString classEnum2classUName(CardClass cardClass);
     static CardClass classLogNumber2classEnum(const QString &hero);
+    static CardClass hsrHero2classEnum(const int hero);
     static QString classLogNumber2classUName(const QString &hero);
     static QString classLogNumber2classUL_ULName(const QString &hero);
     static QString classLogNumber2classULName(const QString &hero);

@@ -103,6 +103,23 @@ CardClass Utility::classLogNumber2classEnum(const QString &hero)
 }
 
 
+CardClass Utility::hsrHero2classEnum(const int hero)
+{
+    if(hero == 2)       return DRUID;
+    else if(hero == 3)  return HUNTER;
+    else if(hero == 4)  return MAGE;
+    else if(hero == 5)  return PALADIN;
+    else if(hero == 6)  return PRIEST;
+    else if(hero == 7)  return ROGUE;
+    else if(hero == 8)  return SHAMAN;
+    else if(hero == 9)  return WARLOCK;
+    else if(hero == 10) return WARRIOR;
+    else if(hero == 14) return DEMONHUNTER;
+    else if(hero == 1)  return DEATHKNIGHT;
+    else                return INVALID_CLASS;
+}
+
+
 QString Utility::classLogNumber2classUL_ULName(const QString &hero)
 {
     if(hero == QString("06"))       return "Druid";
