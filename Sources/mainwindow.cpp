@@ -5067,8 +5067,6 @@ void MainWindow::testDelay()
 
 //TODO
 //Deathrattle cost sinergy
-//Search text: local keyboard
-//Revisa HSR apis
 
 
 

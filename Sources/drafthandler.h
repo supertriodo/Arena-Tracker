@@ -206,7 +206,7 @@ private:
     void showComboBoxesCards();
     void showComboBoxesCards(DraftCard bestCards[]);
     void showSynergies();
-    void showBundles(QString codes[]);
+    void showBundles(QString hsrCodes[]);
     void getBestNManaRarity(int &manaN, CardRarity &cardRarity, const cv::Mat &screenSmall, const QList<Mat> &manaTemplates, const QList<Mat> &rarityTemplates,
                             const cv::Rect &manaRectSmall, const cv::Rect &rarityRectSmall);
     double getL2Mat(const cv::Mat &matSample, const cv::Mat &matTemplate);
@@ -229,13 +229,14 @@ private:
     void beginRedraftReview();
     bool posibleLegendaryPack();
     bool areScreenPointsValid(std::vector<Point2f> screenPoints, int screenHeight);
-    void showHAScores(QString codes[], QString cardNames[]);
-    void showHSRScores(QString codes[], QString cardNames[]);
-    void showFireScores(QString codes[], QString cardNames[]);
+    void showHAScores(QString ogCodes[], QString hsrCodes[], QString cardNames[]);
+    void showHSRScores(QString hsrCodes[], QString cardNames[]);
+    void showFireScores(QString hsrCodes[], QString cardNames[]);
     QString getHSRFireCode(QString code, bool HSR);
     QString getHACode(QString code);
     bool isEmptyDeck();
     void addLFCode(const QString &code, const CardClass &heroClass, const bool multiClassDraft, bool buildCodesByClass);
+    QStringList getBundleCodes(const QString &code);
 
 public:
     void setDeckScores();
