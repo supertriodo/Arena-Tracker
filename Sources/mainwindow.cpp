@@ -5067,7 +5067,10 @@ void MainWindow::testDelay()
 
 //TODO
 //Deathrattle cost sinergy
-
+//Refresh draft es force draft
+//drops en hand tab / replay tab
+//synergies de bundles
+//Bundles en guide / more.md
 
 
 
