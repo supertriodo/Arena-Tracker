@@ -2691,7 +2691,7 @@ void DraftHandler::finishFindScreenRects()
     if(screenDetection.screenIndex == -1)
     {
         emit pDebug("Hearthstone arena screen not found. Retrying...");
-        startFindScreenRects();
+        QTimer::singleShot(FINDSCREEN_LOOP_TIME, this, SLOT(startFindScreenRects()));
     }
     else if(isFindScreenOk(screenDetection))
     {
@@ -2731,7 +2731,7 @@ void DraftHandler::finishFindScreenRects()
             }
         }
     }
-    else    startFindScreenRects();
+    else    QTimer::singleShot(FINDSCREEN_LOOP_TIME, this, SLOT(startFindScreenRects()));
 }
 
 
