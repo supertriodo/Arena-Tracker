@@ -5067,9 +5067,12 @@ void MainWindow::testDelay()
 
 //TODO
 //Deathrattle cost sinergy
+//Incluir tipo de carta (minion, weapon, spell, location) en LLM
+//Revisar lifesteal para todos (minion, weapon, spell) y lifestealSyn/AllSyn para todos, sin son solo minion hacer compuesto &&
 //Refresh draft es force draft
 //drops en hand tab / replay tab
 //synergies de bundles
+//debugMissingSynergiesAllSets() de rotacion actual + bundles
 
 
 

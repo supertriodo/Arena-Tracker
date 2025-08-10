@@ -3374,5 +3374,3 @@ REGLAS
 
 
 //TODO
-//Incluir tipo de carta (minion, weapon, spell, location) en LLM
-//Revisar lifesteal para todos (minion, weapon, spell) y lifestealSyn/AllSyn para todos, sin son solo minion hacer compuesto &&

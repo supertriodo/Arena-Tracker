@@ -193,6 +193,7 @@ private:
     bool isFindScreenOk(ScreenDetection &screenDetection);
     bool isFindScreenAsSettings(ScreenDetection &screenDetection);
     void refreshHeroes();
+    void refreshCapturedCards();
     void processCardHist(QStringList &codes);
     bool initCardHist();
     void loadCardHist(QString classUName);
@@ -321,7 +322,7 @@ private slots:
     void finishFindScreenRects();
     void startFindScreenRects();
     void comboBoxActivated();
-    void refreshCapturedCards();
+    void refreshDraft();
     void twitchHandlerConnectionOk(bool ok);
     void twitchHandlerVoteUpdate(int vote1, int vote2, int vote3, QString username);
     void showHSRwebPicks();

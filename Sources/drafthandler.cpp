@@ -157,7 +157,7 @@ void DraftHandler::completeUI()
     ui->lineEditCardName->hide();
 
     connect(ui->refreshDraftButton, SIGNAL(clicked(bool)),
-                this, SLOT(refreshCapturedCards()));
+                this, SLOT(refreshDraft()));
     connect(ui->lineEditCardName, SIGNAL(textEdited(QString)),
                 this, SLOT(editCardName(QString)));
     connect(ui->lineEditCardName, SIGNAL(editingFinished()),
@@ -1756,6 +1756,51 @@ void DraftHandler::refreshCapturedCards()
     if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores();
 
     newCaptureDraftLoop();
+}
+
+
+void DraftHandler::refreshDraft()
+{
+    if(!drafting)   return;
+
+    emit pDebug("\nRefresh Draft.");
+
+    //Clear cards and score
+    clearAndDisconnectAllComboBox();
+    for(int i=0; i<3; i++)
+    {
+        clearScore(labelLFscore[i], FireStone);
+        clearScore(labelHAscore[i], HearthArena);
+        clearScore(labelHSRscore[i], HSReplay);
+        prevCodes[i] = "";
+        draftCards[i].setCode("");
+        draftCards[i].draw(comboBoxCard[i]);
+        comboBoxCard[i]->setCurrentIndex(0);
+        cardDetected[i] = false;
+        draftCardMaps[i].clear();
+        bestMatchesMaps[i].clear();
+
+        screenRects[i] = cv::Rect(0,0,0,0);
+        manaRects[i] = cv::Rect(0,0,0,0);
+        rarityRects[i] = cv::Rect(0,0,0,0);
+        bestCodesRedraftingReview[i] = "";
+    }
+
+    synergyHandler->clearCounters();
+    deckRatingHA = 0;
+    deckRatingHSR = 0;
+    deckRatingFire = 0;
+    screenIndex = -1;
+    screenScale = QPointF(1,1);
+
+    this->numCaptured = 0;
+    this->extendedCapture = true;
+    this->resetTwitchScores = false;
+
+    //Force draft
+    newFindScreenLoop(false);
+    QList<DeckCard> deckCardList = deckHandler->getDeckCardList();
+    initSynergyCounters(deckCardList);
 }
 
 
