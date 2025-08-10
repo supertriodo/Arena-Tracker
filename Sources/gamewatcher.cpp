@@ -92,6 +92,8 @@ void GameWatcher::setDeckRead(bool value)
 
 void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
 {
+    static QString lastMode = "";
+
     //[LoadingScreen] LoadingScreen.OnSceneLoaded() - prevMode=HUB currMode=DRAFT
     if(line.contains(QRegularExpression("LoadingScreen\\.OnSceneLoaded\\(\\) *- *prevMode=(\\w+) *currMode=(\\w+)"), match))
     {
@@ -100,7 +102,7 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
         emit pDebug("\nLoadingScreen: " + prevMode + " -> " + currMode, numLine);
 
         //Create result, avoid first run
-        if(prevMode == "GAMEPLAY" && loadingScreenState == gameplay)
+        if(prevMode == "GAMEPLAY" && prevMode == lastMode)
         {
             if(spectating || loadingScreenState == menu || tied)
             {
@@ -113,7 +115,17 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
             spectating = false;
         }
 
-        if(currMode == "DRAFT" && loadingScreenState != arena)
+        if(currMode == lastMode)
+        {
+            emit pDebug("Avoid double LoadingScreen.", numLine);
+            return;
+        }
+        else
+        {
+            lastMode = currMode;
+        }
+
+        if(currMode == "DRAFT")
         {
             loadingScreenState = arena;
             emit pDebug("Entering ARENA (loadingScreenState = arena).", numLine);
@@ -128,7 +140,7 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
                 emit enterArena();//enterArena deckHandler
             }
         }
-        else if(currMode == "HUB" && loadingScreenState != menu)
+        else if(currMode == "HUB")
         {
             loadingScreenState = menu;
             emit pDebug("Entering MENU (loadingScreenState = menu).", numLine);
@@ -139,27 +151,27 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
                 emit leaveArena();//leaveArena deckHandler
             }
         }
-        else if(currMode == "GAME_MODE" && loadingScreenState != gameMode)
+        else if(currMode == "GAME_MODE")
         {
             loadingScreenState = gameMode;
             emit pDebug("Entering GAME_MODE (loadingScreenState = gameMode).", numLine);
         }
-        else if(currMode == "TOURNAMENT" && loadingScreenState != ranked)
+        else if(currMode == "TOURNAMENT")
         {
             loadingScreenState = ranked;
             emit pDebug("Entering CASUAL/RANKED (loadingScreenState = ranked).", numLine);
         }
-        else if(currMode == "ADVENTURE" && loadingScreenState != adventure)
+        else if(currMode == "ADVENTURE")
         {
             loadingScreenState = adventure;
             emit pDebug("Entering ADVENTURE (loadingScreenState = adventure).", numLine);
         }
-        else if(currMode == "TAVERN_BRAWL" && loadingScreenState != tavernBrawl)
+        else if(currMode == "TAVERN_BRAWL")
         {
             loadingScreenState = tavernBrawl;
             emit pDebug("Entering TAVERN (loadingScreenState = tavernBrawl).", numLine);
         }
-        else if(currMode == "FRIENDLY" && loadingScreenState != friendly)
+        else if(currMode == "FRIENDLY")
         {
             loadingScreenState = friendly;
             emit pDebug("Entering FRIENDLY (loadingScreenState = friendly).", numLine);

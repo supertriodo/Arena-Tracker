@@ -13,9 +13,9 @@
 #include <QObject>
 #include <QFutureWatcher>
 
-#define DRAFT_DELAY_TIME        3000
-#define HERODRAFT_DELAY_TIME    3000
-#define MECHANICS_DELAY_TIME    1500
+#define DRAFT_DELAY_TIME        2000
+#define HERODRAFT_DELAY_TIME    2000
+#define MECHANICS_DELAY_TIME    1000
 // #define CONTINUEDRAFT_DELAY_TIME    3000
 #define REDRAFT_REVIEW_DELAY_TIME   1500
 #define FINDSCREEN_LOOP_TIME    1000
