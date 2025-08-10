@@ -1,6 +1,4 @@
 #include "drawcard.h"
-#include "../utility.h"
-#include <QtWidgets>
 
 DrawCard::DrawCard(QString code) : DeckCard(code)
 {
