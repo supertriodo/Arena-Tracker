@@ -1612,10 +1612,11 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(arenaCodes, true);
     int num = 0;
 
+    for(QString &code: arenaCodes)
     // for(QString &code: (QStringList)Utility::getSetCodes("SPACE", true, false))
-   // for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
-   // for(QString &code: (QStringList)Utility::getStandardCodes())
-   for(QString &code: (QStringList)Utility::getWildCodes())
+    // for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
+    // for(QString &code: (QStringList)Utility::getStandardCodes())
+    // for(QString &code: (QStringList)Utility::getWildCodes())
     {
         if(code.startsWith("VAN_"))     continue;
         if(code.startsWith("CORE_"))    code = code.mid(5);
@@ -1639,7 +1640,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //                cardType == MINION
 //                mechanics.contains(QJsonValue("CORRUPT"))
 //                && attack<4 && health<4
-//                cost > 5
+               // cost == 1
 //                && !isTokenGen(code, mechanics, text)
 //                && !isDrop2(code, cost, attack, health)
 //                && !isDrop3(code, cost, attack, health)
@@ -1667,6 +1668,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
                 // qDebug()<<mechanics<<endl<<referencedTags;
 
                 if(num>0 && num<=50)
+                // if(num>50 && num<=100)
                 {
                     QDesktopServices::openUrl(QUrl(
                         "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
@@ -1960,7 +1962,8 @@ void SynergyHandler::debugDrops()
         //>0.2 drop
         //0.2 - 0.15 duda
         //<0.15 no drop
-        if(cost == 2)
+        if(cost == 1)
+        // if(cost == 2)
         // if(cost == 3)
         // if(cost == 4)
         {
@@ -1988,6 +1991,8 @@ void SynergyHandler::debugDrops()
             {
                 num++;
                 if(num>0 && num<=50)
+                // if(num>50 && num<=100)
+                // if(num>100 && num<=150)
                 {
                     QDesktopServices::openUrl(QUrl(
                         "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"

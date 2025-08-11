@@ -118,7 +118,6 @@ private:
     QMap<QString, float> *cardsIncludedWinratesMap;
     QMap<QString, int> *cardsIncludedDecksMap;
     QMap<QString, float> *cardsPlayedWinratesMap;
-    QMap<QString, QStringList> *bundlesMap;
     QMap<QString, float> *fireWRMap;
     QMap<QString, int> *fireSamplesMap;
     TwitchHandler *twitchHandler;
@@ -234,11 +233,14 @@ private:
     void showHAScores(QString ogCodes[], QString hsrCodes[], QString cardNames[]);
     void showHSRScores(QString hsrCodes[], QString cardNames[]);
     void showFireScores(QString hsrCodes[], QString cardNames[]);
+    QString getHSRCode(QString code);
+    QString getFireCode(QString code);
     QString getHSRFireCode(QString code, bool HSR);
     QString getHACode(QString code);
     bool isEmptyDeck();
     void addLFCode(const QString &code, const CardClass &heroClass, const bool multiClassDraft, bool buildCodesByClass);
     QStringList getBundleCodes(const QString &code);
+    int getHAScore(const QString &code);
 
 public:
     void setDeckScores();
@@ -261,7 +263,6 @@ public:
     void setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[]);
     void setCardsIncludedDecksMap(QMap<QString, int> cardsIncludedDecksMap[]);
     void setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[]);
-    void setBundlesMap(QMap<QString, QStringList> bundlesMap[]);
     void setFireWRMap(QMap<QString, float> fireWRMap[]);
     void setFireSamplesMap(QMap<QString, int> fireSamplesMap[]);
     void updateTwitchChatVotes();

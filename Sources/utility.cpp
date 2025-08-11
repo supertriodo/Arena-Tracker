@@ -17,6 +17,7 @@ QString Utility::diacriticLetters;
 QStringList Utility::noDiacriticLetters;
 bool Utility::trustHA;
 QStringList Utility::arenaSets;
+QMap<QString, QStringList> * Utility::bundlesMap = nullptr;
 
 Utility::Utility()
 {
@@ -695,6 +696,21 @@ QStringList Utility::getAllArenaCodes()
             else                                codeList.append(Utility::getSetCodes(set, true, true));
         }
     }
+
+    //Bundle codes
+    if(bundlesMap != nullptr)
+    {
+        for(int i=0; i<NUM_HEROS; i++)
+        {
+            const auto &legendaryList = bundlesMap[i].keys();
+            for(const QString &legendary: legendaryList)
+            {
+                const auto &codesSub = bundlesMap[i][legendary];
+                codeList << legendary << codesSub;
+            }
+        }
+    }
+
     codeList.removeDuplicates();
     return codeList;
 }
@@ -719,6 +735,18 @@ void Utility::setTrustHA(bool trustHA)
 void Utility::setArenaSets(QStringList arenaSets)
 {
     Utility::arenaSets = arenaSets;
+}
+
+
+void Utility::setBundlesMap(QMap<QString, QStringList> bundlesMap[])
+{
+    Utility::bundlesMap = bundlesMap;
+}
+
+
+QMap<QString, QStringList> * Utility::getBundlesMap()
+{
+    return Utility::bundlesMap;
 }
 
 

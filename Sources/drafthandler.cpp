@@ -40,7 +40,6 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->cardsPlayedWinratesMap = nullptr;
     this->fireWRMap = nullptr;
     this->fireSamplesMap = nullptr;
-    this->bundlesMap = nullptr;
     this->screenIndex = -1;
     this->screenScale = QPointF(1,1);
     this->needSaveCardHist = false;
@@ -254,22 +253,20 @@ void DraftHandler::initHearthArenaTiers(const CardClass heroClass, const bool mu
         const QStringList lfKeys = lightForgeTiers.keys();
         for(const QString &code: lfKeys)
         {
-            if(heroJsonObject.contains(code))   hearthArenaTiers[code] = heroJsonObject.value(code).toInt();
+            if(heroJsonObject.contains(code))
+            {
+                hearthArenaTiers.insert(code, heroJsonObject.value(code).toInt());
+            }
             else
             {
                 for(int i=0; i<(NUM_HEROS-1); i++)
                 {
                     if(othersJsonObject[i].contains(code))
                     {
-                        hearthArenaTiers[code] = othersJsonObject[i].value(code).toInt();
+                        hearthArenaTiers.insert(code, othersJsonObject[i].value(code).toInt());
                         break;
                     }
                 }
-            }
-
-            if(hearthArenaTiers[code] == 0)
-            {
-                emit pDebug(QStringLiteral("HearthArena missing: %1 - %2").arg(code, Utility::cardEnNameFromCode(code)));
             }
         }
     }
@@ -279,16 +276,33 @@ void DraftHandler::initHearthArenaTiers(const CardClass heroClass, const bool mu
         const QStringList lfKeys = lightForgeTiers.keys();
         for(const QString &code: lfKeys)
         {
-            int score = jsonCodesObject.value(code).toInt();
-            hearthArenaTiers[code] = score;
+            if(jsonCodesObject.contains(code))
+            {
+                hearthArenaTiers.insert(code, jsonCodesObject.value(code).toInt());
+            }
+        }
+    }
+    emit pDebug(QStringLiteral("HearthArena Cards: %1").arg(hearthArenaTiers.count()));
 
-            if(score == 0)
+    //Revision
+    const QStringList lfKeys = lightForgeTiers.keys();
+    for(const QString &code: lfKeys)
+    {
+        if(!hearthArenaTiers.contains(code))
+        {
+            QString haCode = getHACode(code);
+            if(haCode == code)
             {
                 emit pDebug(QStringLiteral("HearthArena missing: %1 - %2").arg(code, Utility::cardEnNameFromCode(code)));
             }
+            else
+            {
+                emit pDebug(QStringLiteral("HearthArena redirect: %1 -> %2 - %3").arg(code, haCode, Utility::cardEnNameFromCode(code)));
+                hearthArenaTiers.insert(code, hearthArenaTiers[haCode]);
+            }
         }
-        emit pDebug("HearthArena Cards: " + QString::number(jsonCodesObject.count()));
     }
+    emit pDebug(QStringLiteral("HearthArena Cards with doubles: %1").arg(hearthArenaTiers.count()));
 }
 
 
@@ -526,42 +540,6 @@ void DraftHandler::initLightForgeTiers(const CardClass heroClass, const bool mul
     for(const QString &code: arenaCodes)
     {
         addLFCode(code, heroClass, multiClassDraft, buildCodesByClass);
-    }
-
-    //Bundle codes
-    if(bundlesMap != nullptr)
-    {
-        if(multiClassDraft)
-        {
-            for(int i=0; i<NUM_HEROS; i++)
-            {
-                const auto &legendaryList = bundlesMap[i].keys();
-                for(const QString &legendary: legendaryList)
-                {
-                    addLFCode(legendary, heroClass, multiClassDraft, buildCodesByClass);
-
-                    const auto &codesSub = bundlesMap[i][legendary];
-                    for(const QString &codeSub: codesSub)
-                    {
-                        addLFCode(codeSub, heroClass, multiClassDraft, buildCodesByClass);
-                    }
-                }
-            }
-        }
-        else
-        {
-            const auto &legendaryList = bundlesMap[heroClass].keys();
-            for(const QString &legendary: legendaryList)
-            {
-                addLFCode(legendary, heroClass, multiClassDraft, buildCodesByClass);
-
-                const auto &codesSub = bundlesMap[heroClass][legendary];
-                for(const QString &codeSub: codesSub)
-                {
-                    addLFCode(codeSub, heroClass, multiClassDraft, buildCodesByClass);
-                }
-            }
-        }
     }
 
     emit pDebug("Arena Cards: " + QString::number(lightForgeTiers.count()));
@@ -823,7 +801,7 @@ void DraftHandler::setDeckScores()
     {
         QString code = deckCard.getCode();
         if(code.isEmpty())    continue;
-        int scoreHA = hearthArenaTiers[code];
+        int scoreHA = getHAScore(code);
         float scoreHSR = (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][code];
         int includedDecks = (cardsIncludedDecksMap == nullptr) ? 0 : cardsIncludedDecksMap[this->arenaHero][code];
         float scoreFire = (fireWRMap == nullptr) ? 0 : fireWRMap[this->arenaHero][code];
@@ -1046,7 +1024,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
             ttoYourHand += toYourHand;
             tdiscover += discover;
 
-            deckRatingHA += hearthArenaTiers[code];
+            deckRatingHA += getHAScore(code);
             deckRatingFire += (fireWRMap == nullptr) ? 0 : fireWRMap[this->arenaHero][code];
             deckRatingHSR += (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][code];
         }
@@ -1686,7 +1664,7 @@ void DraftHandler::pickCard(QString code)
 
         int numCards = synergyHandler->draftedCardsCount();
         lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, draw, toYourHand, discover);
-        updateDeckScore(hearthArenaTiers[code],
+        updateDeckScore(getHAScore(code),
                         (fireWRMap == nullptr) ? 0 : fireWRMap[this->arenaHero][code],
                         (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][code]);
         if(draftMechanicsWindow != nullptr)
@@ -1830,6 +1808,8 @@ bool DraftHandler::isEmptyDeck()
 
 QStringList DraftHandler::getBundleCodes(const QString &code)
 {
+    QMap<QString, QStringList> * bundlesMap = Utility::getBundlesMap();
+
     if(multiclassArena)
     {
         if(bundlesMap[arenaHero].contains(code))
@@ -1865,8 +1845,7 @@ void DraftHandler::showHAScores(QString ogCodes[], QString hsrCodes[],QString ca
 
     for(int i=0; i<3; i++)
     {
-        QString code = getHACode(ogCodes[i]);
-        rating[i] = hearthArenaTiers[code];
+        rating[i] = getHAScore(ogCodes[i]);
 
         //Bundle
         if(isEmptyDeck())
@@ -1880,7 +1859,7 @@ void DraftHandler::showHAScores(QString ogCodes[], QString hsrCodes[],QString ca
                 for(const QString &codeSub: codesSub)
                 {
                     QString code = getHACode(codeSub);
-                    int score = hearthArenaTiers[code];
+                    int score = getHAScore(code);
                     rating[i] += score;
                     if(score != 0)  numScores++;
                 }
@@ -1896,6 +1875,12 @@ void DraftHandler::showHAScores(QString ogCodes[], QString hsrCodes[],QString ca
 }
 
 
+int DraftHandler::getHAScore(const QString &code)
+{
+    return hearthArenaTiers[getHACode(code)];
+}
+
+
 QString DraftHandler::getHACode(QString code)
 {
     if(!hearthArenaTiers.contains(code))
@@ -1904,11 +1889,31 @@ QString DraftHandler::getHACode(QString code)
             code = code.mid(5);
         else if(hearthArenaTiers.contains("CORE_" + code))
             code = "CORE_" + code;
+        else
+        {
+            QString name = Utility::cardEnNameFromCode(code);
+            const QStringList altCodes = Utility::cardEnCodesFromName(name);
+            for(const QString &altCode: altCodes)
+            {
+                if(hearthArenaTiers.contains(altCode))
+                {
+                    code = altCode;
+                }
+            }
+        }
     }
     return code;
 }
 
 
+QString DraftHandler::getHSRCode(QString code)
+{
+    return getHSRFireCode(code, true);
+}
+QString DraftHandler::getFireCode(QString code)
+{
+    return getHSRFireCode(code, false);
+}
 QString DraftHandler::getHSRFireCode(QString code, bool HSR)
 {
     auto &wrMap = HSR?cardsPlayedWinratesMap:fireWRMap;
@@ -1968,7 +1973,7 @@ void DraftHandler::showHSRScores(QString hsrCodes[], QString cardNames[])
 
                     for(const QString &codeSub: codesSub)
                     {
-                        QString code = getHSRFireCode(codeSub, true);
+                        QString code = getHSRCode(codeSub);
                         float score = cardsIncludedWinratesMap[this->arenaHero][code];
                         if(score != 0)  numScores++;
                         ratingIncluded[i] += score;
@@ -2001,7 +2006,7 @@ void DraftHandler::showFireScores(QString hsrCodes[], QString cardNames[])
     {
         for(int i=0; i<3; i++)
         {
-            QString code = getHSRFireCode(hsrCodes[i], false);
+            QString code = getFireCode(hsrCodes[i]);
             wrFire[i] = fireWRMap[this->arenaHero][code];
             samplesFire[i] = fireSamplesMap[this->arenaHero][code];
 
@@ -2017,7 +2022,7 @@ void DraftHandler::showFireScores(QString hsrCodes[], QString cardNames[])
 
                     for(const QString &codeSub: codesSub)
                     {
-                        QString code = getHSRFireCode(codeSub, false);
+                        QString code = getFireCode(codeSub);
                         float score = fireWRMap[this->arenaHero][code];
                         if(score != 0)  numScores++;
                         wrFire[i] += score;
@@ -2058,7 +2063,7 @@ void DraftHandler::showNewCards(DraftCard bestCards[])
     for(int i=0; i<3; i++)
     {
         ogCodes[i] = bestCards[i].getCode();
-        hsrCodes[i] = getHSRFireCode(ogCodes[i], true);
+        hsrCodes[i] = getHSRCode(ogCodes[i]);
         cardNames[i] = Utility::cardLocalNameFromCode(ogCodes[i]);
     }
 
@@ -2153,12 +2158,11 @@ void DraftHandler::showBundles(QString hsrCodes[])
             {
                 QString code = synergyCard.getCode();
                 if(code.isEmpty())    continue;
-                QString haCode = getHACode(code);
-                int scoreHA = hearthArenaTiers[haCode];
-                QString hsrCode = getHSRFireCode(code, true);
+                int scoreHA = getHAScore(code);
+                QString hsrCode = getHSRCode(code);
                 float scoreHSR = (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][hsrCode];
                 int includedDecks = (cardsIncludedDecksMap == nullptr) ? 0 : cardsIncludedDecksMap[this->arenaHero][hsrCode];
-                QString fireCode = getHSRFireCode(code, false);
+                QString fireCode = getFireCode(code);
                 float scoreFire = (fireWRMap == nullptr) ? 0 : fireWRMap[this->arenaHero][fireCode];
                 int samplesFire = (fireSamplesMap == nullptr) ? 0 : fireSamplesMap[this->arenaHero][fireCode];
                 synergyCard.setScores(scoreHA, scoreHSR, scoreFire, arenaHero, includedDecks, samplesFire);
@@ -3516,10 +3520,6 @@ void DraftHandler::setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWin
 {
     this->cardsPlayedWinratesMap = cardsPlayedWinratesMap;
 }
-void DraftHandler::setBundlesMap(QMap<QString, QStringList> bundlesMap[])
-{
-    this->bundlesMap = bundlesMap;
-}
 void DraftHandler::setFireWRMap(QMap<QString, float> fireWRMap[])
 {
     this->fireWRMap = fireWRMap;
@@ -3564,7 +3564,7 @@ void DraftHandler::clearTierLists()
 
 void DraftHandler::getCodeScores(const CardClass &heroClass, const QString &code, int &ha, float &hsr, float &fire)
 {
-    ha = hearthArenaTiers[code];
+    ha = getHAScore(code);
     hsr = (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[heroClass][code];
     fire = (fireWRMap == nullptr) ? 0 : fireWRMap[heroClass][code];
 }

@@ -105,6 +105,7 @@ private:
     static QStringList noDiacriticLetters;
     static bool trustHA;
     static QStringList arenaSets;
+    static QMap<QString, QStringList> *bundlesMap;
 
 
 //Metodos
@@ -179,6 +180,8 @@ public:
     static QJsonObject loadHearthArena();
     static void setTrustHA(bool trustHA);
     static void setArenaSets(QStringList arenaSets);
+    static void setBundlesMap(QMap<QString, QStringList> bundlesMap[]);
+    static QMap<QString, QStringList> * getBundlesMap();
     static bool createDir(const QString &pathDir);
     static void unZip(const QString &zipName, const QString &targetPath);
     static void checkTierlistsCount(const QStringList &arenaCodes);

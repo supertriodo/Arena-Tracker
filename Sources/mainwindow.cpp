@@ -555,7 +555,7 @@ void MainWindow::readyHSRPlayedWRMap(QMap<QString, float> *hsrPlayedWRMap)
 }
 void MainWindow::readyHSRBundlesMap(QMap<QString, QStringList> *hsrBundlesMap)
 {
-    draftHandler->setBundlesMap(hsrBundlesMap);
+    Utility::setBundlesMap(hsrBundlesMap);
 }
 void MainWindow::readyFireWRMap(QMap<QString, float> *fireWRMap)
 {
