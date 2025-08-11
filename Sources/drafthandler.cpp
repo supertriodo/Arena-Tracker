@@ -2294,7 +2294,7 @@ void DraftHandler::showNewRatings(const QString &cardName1, const QString &cardN
     //Mostrar score
     if(draftScoreWindow != nullptr)
     {
-        draftScoreWindow->setScores(rating1, rating2, rating3, draftMethod, includedDecks1, includedDecks2, includedDecks3);
+        draftScoreWindow->setScores(rating1, rating2, rating3, draftMethod, includedDecks1, includedDecks2, includedDecks3, isEmptyDeck());
     }
 }
 

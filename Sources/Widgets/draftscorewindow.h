@@ -74,7 +74,7 @@ private:
 
 public:
     void setScores(float rating1, float rating2, float rating3, DraftMethod draftMethod,
-                   int includedDecks1, int includedDecks2, int includedDecks3);
+                   int includedDecks1, int includedDecks2, int includedDecks3, bool restoreWindow);
     void hideScores(bool quick=false);
     void setLearningMode(bool value);
     void showTwitchScores(bool show=true);

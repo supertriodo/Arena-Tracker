@@ -362,7 +362,8 @@ bool DraftScoreWindow::isWantedMechanic(uint mechanicIcon)
 
 void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
                                  DraftMethod draftMethod,
-                                 int includedDecks1, int includedDecks2, int includedDecks3)
+                                 int includedDecks1, int includedDecks2, int includedDecks3,
+                                 bool restoreWindow)
 {
     float bestRating = std::max(std::max(rating1, rating2), rating3);
     float ratings[3] = {rating1, rating2, rating3};
@@ -410,8 +411,12 @@ void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
         //y show synergies contiene un resize necesario para que todas las columnas se vean cuadradas
         //tanto en premium como en free
         showSynergies();
-        this->showNormal();
-        this->activateWindow();
+
+        if(restoreWindow)
+        {
+            this->showNormal();
+            this->activateWindow();
+        }
     }
 }
 
