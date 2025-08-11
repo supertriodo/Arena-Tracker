@@ -55,6 +55,7 @@ void DraftDropCounter::reset()
     DraftItemCounter::reset();
     labelIcon->setDisabled(false);
     this->numCards = 0;
+    drawBorder(isGreenTargetDrop());
 }
 
 
