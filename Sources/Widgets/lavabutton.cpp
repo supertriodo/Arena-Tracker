@@ -1,7 +1,10 @@
 #include "lavabutton.h"
 #include "../themehandler.h"
 #include "Sources/constants.h"
-#include <QtWidgets>
+#include <QIcon>
+#include <QPainter>
+#include <QPainterPath>
+#include <QDesktopServices>
 
 LavaButton::LavaButton(QWidget *parent, float min, float max) : QLabel(parent)
 {

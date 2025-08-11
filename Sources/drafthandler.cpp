@@ -656,6 +656,8 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         comboBoxCard[i]->setCurrentIndex(0);
     }
 
+    lavaButton->reset();
+
     if(!alreadyDrafting)
     {
         //SizePreDraft
@@ -674,7 +676,6 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         scoreButtonLF->setEnabled(false);
         scoreButtonHSR->setEnabled(false);
         lavaButton->setEnabled(false);
-        lavaButton->reset();
         updateDeckScore();//Basicamente para updateLabelDeckScore
         updateScoresVisibility();
         updateAvgScoresVisibility();
@@ -1787,6 +1788,7 @@ void DraftHandler::refreshDraft()
     }
 
     synergyHandler->clearCounters();
+    lavaButton->reset();
     deckRatingHA = 0;
     deckRatingHSR = 0;
     deckRatingFire = 0;
@@ -1798,9 +1800,9 @@ void DraftHandler::refreshDraft()
     this->resetTwitchScores = false;
 
     //Force draft
-    newFindScreenLoop(false);
     QList<DeckCard> deckCardList = deckHandler->getDeckCardList();
     initSynergyCounters(deckCardList);
+    newFindScreenLoop(false);
 }
 
 
