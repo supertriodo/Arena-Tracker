@@ -18,6 +18,7 @@ KeySynergies::~KeySynergies()
 {
 }
 
+
 void KeySynergies::reset()
 {
     this->codeMap.clear();
@@ -85,6 +86,13 @@ void KeySynergies::createKeySynergies()
         keySynergiesMap.insert(key, KeySynergies(synergyTag));
         keySynergiesMap.insert(key+"All", KeySynergies(synergyTag));
     }
+}
+
+
+QString KeySynergies::getSynergyTag(const QString &key)
+{
+    if(!keySynergiesMap.contains(key))  return "";
+    return keySynergiesMap[key].synergyTag;
 }
 
 
@@ -225,6 +233,86 @@ bool KeySynergies::isWeakKey(const QString &key)
 {
     QStringList weakKeys = {"return"};
     return weakKeys.contains(key);
+}
+
+
+//Usada por LayeredSynergies para devolver sinergias parciales que luego haran union
+void KeySynergies::getPartKeySynergies(const QString &partSynergy, QMap<QString, QMap<QString, int> > &synergyTagMap)
+{
+    if(partSynergy.endsWith("AllSyn"))
+    {
+        QString key = partSynergy;
+        key.chop(6);
+        const QString &keyAll = key+"All";
+
+        if(keySynergiesMap.contains(keyAll))keySynergiesMap[keyAll].insertCards(synergyTagMap);
+    }
+    else if(partSynergy.endsWith("Syn"))
+    {
+        QString key = partSynergy;
+        key.chop(3);
+
+        if(keySynergiesMap.contains(key))   keySynergiesMap[key].insertCards(synergyTagMap);
+    }
+    else if(partSynergy.endsWith("Gen"))
+    {
+        QString key = partSynergy;
+        key.chop(3);
+        const QString &keyAll = key+"All";
+
+        if(keySynergiesMap.contains(keyAll))keySynergiesMap[keyAll].insertSynCards(synergyTagMap);
+    }
+    else
+    {
+        QString key = partSynergy;
+        const QString &keyAll = key+"All";
+
+        if(keySynergiesMap.contains(key))   keySynergiesMap[key].insertSynCards(synergyTagMap);
+        if(keySynergiesMap.contains(keyAll))keySynergiesMap[keyAll].insertSynCards(synergyTagMap);
+    }
+}
+
+
+//Usada por LayeredSynergies para verificar que el code hace sinergia con cada una de las partSynergy
+bool KeySynergies::isPartKey(const QString &partSynergy, const QString &code, QString &partSynergyTag,
+                             const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                             const QString &text, CardType cardType, int attack, int cost)
+{
+    if(partSynergy.endsWith("AllSyn"))
+    {
+        QString key = partSynergy;
+        key.chop(6);
+        partSynergyTag = getSynergyTag(key);
+
+        return isKey(key, code, mechanics, referencedTags, text, cardType, attack, cost) ||
+               isKeyGen(key+"Gen", code, mechanics, referencedTags, text, cardType, attack, cost);
+    }
+    else if(partSynergy.endsWith("Syn"))
+    {
+        QString key = partSynergy;
+        key.chop(3);
+        partSynergyTag = getSynergyTag(key);
+
+        return isKey(key, code, mechanics, referencedTags, text, cardType, attack, cost);
+    }
+    else if(partSynergy.endsWith("Gen"))
+    {
+        QString key = partSynergy;
+        key.chop(3);
+        partSynergyTag = getSynergyTag(key);
+        const QString &keyAll = key+"All";
+
+        return isKeyAllSyn(keyAll+"Syn", code, mechanics, referencedTags, text, cardType, attack, cost);
+    }
+    else
+    {
+        QString key = partSynergy;
+        partSynergyTag = getSynergyTag(key);
+        const QString &keyAll = key+"All";
+
+        return isKeySyn(key+"Syn", code, mechanics, referencedTags, text, cardType, attack, cost) ||
+               isKeyAllSyn(keyAll+"Syn", code, mechanics, referencedTags, text, cardType, attack, cost);
+    }
 }
 
 

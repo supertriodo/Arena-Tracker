@@ -27,12 +27,22 @@ private:
     static QMap<QString, QString> getMapKeySynergies();
     static bool isWeakKey(const QString &key);
 
-public:
     void increase(const QString &code);
     void increaseSyn(const QString &code);
     void insertCards(QMap<QString, QMap<QString, int> > &synergyTagMap);
     void insertSynCards(QMap<QString, QMap<QString, int> > &synergyTagMap);
 
+    static bool isKey(const QString &key, const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                      const QString &text, CardType cardType, int attack, int cost);
+    static bool isKeyGen(const QString &key, const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                         const QString &text, CardType cardType, int attack, int cost);
+    static bool isKeySyn(const QString &key, const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                         const QString &text, CardType cardType, int attack, int cost);
+    static bool isKeyAllSyn(const QString &key, const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                            const QString &text, CardType cardType, int attack, int cost);
+    static QString getSynergyTag(const QString &key);
+
+public:
     static QList<QString> getListKeySynergies();
     static void createKeySynergies();
     static void setSynergyCodes(QMap<QString, QList<QString> > *synergyCodes);
@@ -45,14 +55,10 @@ public:
     static void getKeySynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap,
                                 const QJsonArray &mechanics, const QJsonArray &referencedTags,
                                 const QString &text, CardType cardType, int attack, int cost);
-    static bool isKey(const QString &key, const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                      const QString &text, CardType cardType, int attack, int cost);
-    static bool isKeyGen(const QString &key, const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                         const QString &text, CardType cardType, int attack, int cost);
-    static bool isKeySyn(const QString &key, const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                         const QString &text, CardType cardType, int attack, int cost);
-    static bool isKeyAllSyn(const QString &key, const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                            const QString &text, CardType cardType, int attack, int cost);
+    static void getPartKeySynergies(const QString &partSynergy, QMap<QString, QMap<QString, int> > &synergyTagMap);
+    static bool isPartKey(const QString &partSynergy, const QString &code, QString &partSynergyTag,
+                          const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                          const QString &text, CardType cardType, int attack, int cost);
 };
 
 #endif // KEYSYNERGIES_H

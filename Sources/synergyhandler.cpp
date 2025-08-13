@@ -1,6 +1,7 @@
 ﻿#include "synergyhandler.h"
 #include "themehandler.h"
 #include "Synergies/keysynergies.h"
+#include "Synergies/layeredsynergies.h"
 #include <QtWidgets>
 
 SynergyHandler::SynergyHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
@@ -186,6 +187,7 @@ void SynergyHandler::createDraftItemCounters()
 
     KeySynergies::createKeySynergies();
     KeySynergies::setSynergyCodes(&synergyCodes);
+    LayeredSynergies::setSynergyCodes(&synergyCodes);
 
     QHBoxLayout *horLayoutMechanics = new QHBoxLayout();
     horLayoutMechanics->addLayout(mechanicsLayout);
@@ -397,6 +399,7 @@ void SynergyHandler::clearCounters()
         mechanicCounters[i]->reset();
     }
     KeySynergies::resetAll();
+    LayeredSynergies::reset();
 
     //Reset stats maps
     costMinions.clear();
@@ -999,6 +1002,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     else if(isDeathrattleGoodAllSyn(code, text))                            mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increaseSyn(code);
 
     KeySynergies::updateKeySynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
+    LayeredSynergies::updateLayeredSynergies(code);
 }
 
 
@@ -1444,6 +1448,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     else if(isDeathrattleGoodAllSyn(code, text))                mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertCards(synergyTagMap);
 
     KeySynergies::getKeySynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
+    LayeredSynergies::getLayeredSynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
 }
 
 
@@ -1562,6 +1567,20 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic, QRegularExpress
     if(mechanic.contains(regex2, match))
     {
         return true;
+    }
+    if(mechanic.startsWith('&'))
+    {
+        const QStringList layeredSynergy = mechanic.split('&', Qt::SkipEmptyParts);
+        bool allValid = true;
+        for(const auto &partSynergy: layeredSynergy)
+        {
+            if(!isValidSynergyCode(partSynergy, match))
+            {
+                allValid = false;
+                break;
+            }
+        }
+        return allValid;
     }
     QStringList validMecs = {
         "spellGen", "weaponGen", "locationGen",

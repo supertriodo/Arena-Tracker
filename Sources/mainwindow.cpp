@@ -4871,7 +4871,7 @@ void MainWindow::testDelay()
     // QTimer::singleShot(15000, this, SLOT(testPopularList()));
     // draftHandler->beginHeroDraft();
     // QTimer::singleShot(2000, this, [=] () {
-    //    draftHandler->beginDraft(Utility::classEnum2classLogNumber(WARLOCK), deckHandler->getDeckCardList());});
+    //    draftHandler->beginDraft(Utility::classEnum2classLogNumber(MAGE), deckHandler->getDeckCardList());});
 
     // testArenaGames();
     // testPlan();
@@ -4979,11 +4979,14 @@ void MainWindow::testDelay()
 //FOR EACH C++
 //Warning allocating an unneeded temporary container [clazy-container-anti-pattern]
 //const auto codeList = map->keys();
-//for(const QString &code: codeList)
+//for(const QString &code: qAsConst(codeList))
 
 //Sin const
 //QList<SecretIcon> secretIconList = copy->secretsList;
 //for(SecretIcon &secretIcon: secretIconList)
+
+//Sort list
+//std::sort(list.begin(), list.end());
 
 //Warning pass a context object as 3rd connect parameter [clazy-connect-3arg-lambda]
 //https://www.kdab.com/nailing-13-signal-slot-mistakes-clazy-1-3/
@@ -5069,11 +5072,11 @@ void MainWindow::testDelay()
 //Deathrattle cost sinergy
 //Incluir tipo de carta (minion, weapon, spell, location) en LLM
 //Revisar lifesteal para todos (minion, weapon, spell) y lifestealSyn/AllSyn para todos, sin son solo minion hacer compuesto &&
-//Refresh draft es force draft
+//Fix wr con 1 decimal en draft tab
 //drops en hand tab / replay tab
 //synergies de bundles
 //debugMissingSynergiesAllSets() de rotacion actual + bundles
-
+//Deck weight explained
 
 
 

@@ -343,7 +343,7 @@ void DraftMechanicsWindow::showHelp(bool reenter)
         centralWidget()->setStyleSheet(".QWidget{border-image: url(" +
                                        ThemeHandler::bgDraftMechanicsReenterFile() +
                                        ") 0 0 0 0 stretch stretch;border-width: 0px;}");
-        //Mostramos reenter message para TODOS: no premium y si mechanics overlay esta desactivado en config tab
+        //Mostramos reenter message para todos: no premium y si mechanics overlay esta desactivado en config tab
         if(isHidden())
         {
             this->hiddenBeforeReenter = true;
