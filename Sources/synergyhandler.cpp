@@ -2,6 +2,7 @@
 #include "themehandler.h"
 #include "Synergies/keysynergies.h"
 #include "Synergies/layeredsynergies.h"
+#include "Synergies/cardtypecounter.h"
 #include <QtWidgets>
 
 SynergyHandler::SynergyHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
@@ -26,6 +27,7 @@ void SynergyHandler::createDraftItemCounters()
     cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
     cardTypeCounters[V_MINION] = new DraftItemCounter(this, "Minion", "Minion Gen", mechanicsLayout, 0, 0,
                                                     QPixmap(ThemeHandler::minionsCounterFile()), 32, true, false);
+    cardTypeCounters[V_MINION_ALL] = new DraftItemCounter(this, "Minion");
     cardTypeCounters[V_SPELL] = new DraftItemCounter(this, "Spell", "Spell Gen", mechanicsLayout, 0, 1,
                                                      QPixmap(ThemeHandler::spellsCounterFile()), 32, true, false);
     cardTypeCounters[V_SPELL_ALL] = new DraftItemCounter(this, "Spell");
@@ -185,6 +187,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this, "Jade Golem");
     mechanicCounters[V_HERO_POWER] = new DraftItemCounter(this, "Hero Power");
 
+    CardTypeCounter::setSynergyCodes(&synergyCodes);
     KeySynergies::createKeySynergies();
     KeySynergies::setSynergyCodes(&synergyCodes);
     LayeredSynergies::setSynergyCodes(&synergyCodes);
@@ -781,7 +784,14 @@ void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard, QMap<QString, QS
     if(cardType == MINION || cardType == HERO || cardType == LOCATION)
     {
         cardTypeCounters[V_MINION]->increase(code);
+        cardTypeCounters[V_MINION_ALL]->increase(code);
         minionMap.insertMulti(code, "");
+    }
+    else if(isMinionGen(code))
+    {
+        cardTypeCounters[V_MINION_ALL]->increase(code);
+        cardTypeCounters[V_MINION]->increaseExtra(code);
+        minionMap.insertMulti(code, ".");
     }
     if(cardType == WEAPON)
     {
@@ -808,6 +818,8 @@ void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard, QMap<QString, QS
 
     if(isSpellSyn(code))                cardTypeCounters[V_SPELL]->increaseSyn(code);
     else if(isSpellAllSyn(code, text))  cardTypeCounters[V_SPELL_ALL]->increaseSyn(code);
+    if(isMinionSyn(code))               cardTypeCounters[V_MINION]->increaseSyn(code);
+    else if(isMinionAllSyn(code))       cardTypeCounters[V_MINION_ALL]->increaseSyn(code);
     if(isWeaponSyn(code))               cardTypeCounters[V_WEAPON]->increaseSyn(code);
     else if(isWeaponAllSyn(code, text)) cardTypeCounters[V_WEAPON_ALL]->increaseSyn(code);
     if(isLocationSyn(code))             cardTypeCounters[V_LOCATION]->increaseSyn(code);
@@ -1119,12 +1131,18 @@ void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString, QMap
     CardType cardType = deckCard.getType();
 
     //Evita mostrar spellSyn/spellAllSyn cards en cada hechizo que veamos, es sinergia debil
-//    if(cardType == SPELL)
-//    {
-//        cardTypeCounters[V_SPELL]->insertSynCards(synergyTagMap);
-//        cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergyTagMap);
-//    }
-//    else if(isSpellGen(code))                   cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergyTagMap);
+    // if(cardType == SPELL)
+    // {
+    //    cardTypeCounters[V_SPELL]->insertSynCards(synergyTagMap);
+    //    cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergyTagMap);
+    // }
+    // else if(isSpellGen(code))                   cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergyTagMap);
+    // if(cardType == MINION)
+    // {
+    //     cardTypeCounters[V_MINION]->insertSynCards(synergyTagMap);
+    //     cardTypeCounters[V_MINION_ALL]->insertSynCards(synergyTagMap);
+    // }
+    // else if(isMinionGen(code))                  cardTypeCounters[V_MINION_ALL]->insertSynCards(synergyTagMap);
     if(cardType == WEAPON)
     {
         cardTypeCounters[V_WEAPON]->insertSynCards(synergyTagMap);
@@ -1141,6 +1159,8 @@ void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString, QMap
 
     if(isSpellSyn(code))                        cardTypeCounters[V_SPELL]->insertCards(synergyTagMap);
     else if(isSpellAllSyn(code, text))          cardTypeCounters[V_SPELL_ALL]->insertCards(synergyTagMap);
+    if(isMinionSyn(code))                       cardTypeCounters[V_MINION]->insertCards(synergyTagMap);
+    else if(isMinionAllSyn(code))               cardTypeCounters[V_MINION_ALL]->insertCards(synergyTagMap);
     if(isWeaponSyn(code))                       cardTypeCounters[V_WEAPON]->insertCards(synergyTagMap);
     else if(isWeaponAllSyn(code, text))         cardTypeCounters[V_WEAPON_ALL]->insertCards(synergyTagMap);
     if(isLocationSyn(code))                     cardTypeCounters[V_LOCATION]->insertCards(synergyTagMap);
@@ -1583,9 +1603,9 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic, QRegularExpress
         return allValid;
     }
     QStringList validMecs = {
-        "spellGen", "weaponGen", "locationGen",
-        "spellSyn", "weaponSyn", "locationSyn",
-        "spellAllSyn", "weaponAllSyn", "locationAllSyn",
+        "spellGen", "minionGen", "weaponGen", "locationGen",
+        "spellSyn", "minionSyn", "weaponSyn", "locationSyn",
+        "spellAllSyn", "minionAllSyn", "weaponAllSyn", "locationAllSyn",
 
         "murlocGen", "demonGen", "mechGen", "elementalGen", "beastGen", "totemGen", "pirateGen",
         "dragonGen", "nagaGen", "undeadGen", "quilboarGen", "draeneiGen",
@@ -2030,6 +2050,11 @@ void SynergyHandler::debugDrops()
 bool SynergyHandler::isSpellGen(const QString &code)
 {
     if(synergyCodes.contains(code)) return synergyCodes[code].contains("spellGen");
+    return false;
+}
+bool SynergyHandler::isMinionGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("minionGen");
     return false;
 }
 bool SynergyHandler::isWeaponGen(const QString &code, const QString &text)
@@ -2559,6 +2584,22 @@ bool SynergyHandler::isSpellAllSyn(const QString &code, const QString &text)
         return  text.contains("spellburst") ||
                 (text.contains("spell") && (text.contains("you cast") || text.contains("cost")));
     }
+}
+bool SynergyHandler::isMinionSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("minionSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isMinionAllSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("minionAllSyn");
+    }
+    return false;
 }
 bool SynergyHandler::isWeaponSyn(const QString &code)
 {

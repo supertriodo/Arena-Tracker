@@ -101,6 +101,7 @@ private:
     void getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap);
 
     bool isSpellGen(const QString &code);
+    bool isMinionGen(const QString &code);
     bool isWeaponGen(const QString &code, const QString &text);
     bool isLocationGen(const QString &code);
     bool isMurlocGen(const QString &code);
@@ -187,6 +188,8 @@ private:
     bool isToYourHandSyn(const QString &code);
     bool isSpellSyn(const QString &code);
     bool isSpellAllSyn(const QString &code, const QString &text);
+    bool isMinionSyn(const QString &code);
+    bool isMinionAllSyn(const QString &code);
     bool isWeaponSyn(const QString &code);
     bool isWeaponAllSyn(const QString &code, const QString &text);
     bool isLocationSyn(const QString &code);
