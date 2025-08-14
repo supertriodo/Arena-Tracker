@@ -18,9 +18,13 @@ LIBS += -lz
 SOURCES += Sources/main.cpp\
     Sources/Cards/popularcard.cpp \
     Sources/Cards/synergycard.cpp \
+    Sources/Synergies/cardtypecounter.cpp \
     Sources/Synergies/draftdropcounter.cpp \
     Sources/Synergies/keysynergies.cpp \
     Sources/Synergies/layeredsynergies.cpp \
+    Sources/Synergies/mechaniccounter.cpp \
+    Sources/Synergies/racecounter.cpp \
+    Sources/Synergies/schoolcounter.cpp \
     Sources/Widgets/enemyranking.cpp \
     Sources/drawcardhandler.cpp \
     Sources/mainwindow.cpp \
@@ -87,9 +91,13 @@ SOURCES += Sources/main.cpp\
 HEADERS  += Sources/mainwindow.h \
     Sources/Cards/popularcard.h \
     Sources/Cards/synergycard.h \
+    Sources/Synergies/cardtypecounter.h \
     Sources/Synergies/draftdropcounter.h \
     Sources/Synergies/keysynergies.h \
     Sources/Synergies/layeredsynergies.h \
+    Sources/Synergies/mechaniccounter.h \
+    Sources/Synergies/racecounter.h \
+    Sources/Synergies/schoolcounter.h \
     Sources/Widgets/enemyranking.h \
     Sources/drawcardhandler.h \
     Sources/logloader.h \
