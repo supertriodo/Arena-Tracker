@@ -1,7 +1,6 @@
 #ifndef CARDTYPECOUNTER_H
 #define CARDTYPECOUNTER_H
 
-#include "Sources/Cards/deckcard.h"
 #include "Sources/Synergies/draftitemcounter.h"
 #include "Sources/utility.h"
 #include "qjsonarray.h"

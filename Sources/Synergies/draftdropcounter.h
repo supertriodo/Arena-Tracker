@@ -20,6 +20,9 @@ private:
     int numCards;
     int targetDrops;
 
+    static DraftDropCounter **dropCounters;
+    static QMap<QString, QList<QString>> *synergyCodes;
+
 //Metodos
 private:
     void drawBorder(bool greenBorder);
@@ -33,6 +36,24 @@ public:
     void setNumCards(int numCards);
     void increaseNumCards();
     MechanicBorderColor getMechanicBorderColor();
+
+    static DraftDropCounter ** createDropCounters(QObject *parent, QGridLayout *mechanicsLayout);
+    static void deleteDropCounters();
+    static void setTheme();
+    static void resetAll();
+    static void setHidden(bool hide);
+    static void setTransparency(Transparency transparency, bool mouseInApp);
+    static void setSynergyCodes(QMap<QString, QList<QString> > *synergyCodes);
+    static QStringList debugDropSynergies(const QString &code, int attack, int health, int cost);
+    static void getDropCounters(QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map);
+    static void getDropMechanicIcons(const QString &code, QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor,
+                                     int attack, int health, int cost);
+    static void updateDropCounters(const QString &code, QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
+                                   int attack, int health, int cost);
+
+    static bool isDrop2(const QString &code, int cost, int attack, int health);
+    static bool isDrop3(const QString &code, int cost, int attack, int health);
+    static bool isDrop4(const QString &code, int cost, int attack, int health);
 };
 
 #endif // DRAFTDROPCOUNTER_H

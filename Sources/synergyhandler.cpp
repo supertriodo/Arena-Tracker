@@ -95,17 +95,11 @@ void SynergyHandler::createDraftItemCounters()
     QGridLayout *mechanicsLayout = new QGridLayout();
 
     DraftItemCounter **cardTypeCounters = CardTypeCounter::createCardTypeCounters(this, mechanicsLayout);
+
     manaCounter = new DraftItemCounter(this, "Mana AVG", "Mana AVG", mechanicsLayout, 0, 3,
                                        QPixmap(ThemeHandler::manaCounterFile()), 32, false, false);
 
-    dropCounters = new DraftDropCounter *[V_NUM_DROPS];//TODO drops
-    dropCounters[V_DROP2] = new DraftDropCounter(this, "2 Drop", "2 Cost", mechanicsLayout, 1, 0, TARGET_DROP_2,
-                                                 QPixmap(ThemeHandler::drop2CounterFile()), 32, true, false);
-    dropCounters[V_DROP3] = new DraftDropCounter(this, "3 Drop", "3 Cost", mechanicsLayout, 1, 1, TARGET_DROP_3,
-                                                 QPixmap(ThemeHandler::drop3CounterFile()), 32, true, false);
-    dropCounters[V_DROP4] = new DraftDropCounter(this, "4 Drop", "4 Cost", mechanicsLayout, 1, 2, TARGET_DROP_4,
-                                                 QPixmap(ThemeHandler::drop4CounterFile()), 32, true, false);
-
+    DraftDropCounter **dropCounters = DraftDropCounter::createDropCounters(this, mechanicsLayout);
     DraftItemCounter **mechanicCounters = MechanicCounter::createMechanicCounters(this, mechanicsLayout);
     RaceCounter::createRaceCounters(this);
     SchoolCounter::createSchoolCounters(this);
@@ -114,6 +108,7 @@ void SynergyHandler::createDraftItemCounters()
     connectCounters(dropCounters, cardTypeCounters, mechanicCounters);
 
     CardTypeCounter::setSynergyCodes(&synergyCodes);
+    DraftDropCounter::setSynergyCodes(&synergyCodes);
     RaceCounter::setSynergyCodes(&synergyCodes);
     SchoolCounter::setSynergyCodes(&synergyCodes);
     MechanicCounter::setSynergyCodes(&synergyCodes);
@@ -134,12 +129,7 @@ void SynergyHandler::deleteDraftItemCounters()
     RaceCounter::deleteRaceCounters();
     SchoolCounter::deleteSchoolCounters();
     MechanicCounter::deleteMechanicCounters();
-
-    for(int i=0; i<V_NUM_DROPS; i++)
-    {
-        delete dropCounters[i];
-    }
-    delete []dropCounters;
+    DraftDropCounter::deleteDropCounters();
 }
 
 
@@ -148,10 +138,7 @@ void SynergyHandler::setTheme()
     CardTypeCounter::setTheme();
     MechanicCounter::setTheme();
     manaCounter->setTheme(QPixmap(ThemeHandler::manaCounterFile()), 32, false);
-
-    dropCounters[V_DROP2]->setTheme(QPixmap(ThemeHandler::drop2CounterFile()), 32, false);
-    dropCounters[V_DROP3]->setTheme(QPixmap(ThemeHandler::drop3CounterFile()), 32, false);
-    dropCounters[V_DROP4]->setTheme(QPixmap(ThemeHandler::drop4CounterFile()), 32, false);
+    DraftDropCounter::setTheme();
 }
 
 
@@ -283,10 +270,7 @@ void SynergyHandler::clearCounters()
     RaceCounter::resetAll();
     SchoolCounter::resetAll();
     MechanicCounter::resetAll();
-    for(int i=0; i<V_NUM_DROPS; i++)
-    {
-        dropCounters[i]->reset();
-    }
+    DraftDropCounter::resetAll();
     KeySynergies::resetAll();
     LayeredSynergies::reset();
 
@@ -305,21 +289,14 @@ void SynergyHandler::setHidden(bool hide)
 {
     CardTypeCounter::setHidden(hide);
     MechanicCounter::setHidden(hide);
+    DraftDropCounter::setHidden(hide);
     if(hide)
     {
         manaCounter->hide();
-
-        dropCounters[V_DROP2]->hide();
-        dropCounters[V_DROP3]->hide();
-        dropCounters[V_DROP4]->hide();
     }
     else
     {
         manaCounter->show();
-
-        dropCounters[V_DROP2]->show();
-        dropCounters[V_DROP3]->show();
-        dropCounters[V_DROP4]->show();
     }
 }
 
@@ -329,10 +306,7 @@ void SynergyHandler::setTransparency(Transparency transparency, bool mouseInApp)
     manaCounter->setTransparency(transparency, mouseInApp);
     CardTypeCounter::setTransparency(transparency, mouseInApp);
     MechanicCounter::setTransparency(transparency, mouseInApp);
-    for(int i=0; i<V_NUM_DROPS; i++)
-    {
-        dropCounters[i]->setTransparency(transparency, mouseInApp);
-    }
+    DraftDropCounter::setTransparency(transparency, mouseInApp);
 }
 
 
@@ -349,10 +323,7 @@ int SynergyHandler::getCounters(
     MechanicCounter::getMechanicCounters(aoeMap, tauntMap, survivabilityMap, drawMap,
                                          pingMap, damageMap, destroyMap, reachMap,
                                          draw, toYourHand, discover);
-
-    drop2Map = dropCounters[V_DROP2]->getCodeTagMap();
-    drop3Map = dropCounters[V_DROP3]->getCodeTagMap();
-    drop4Map = dropCounters[V_DROP4]->getCodeTagMap();
+    DraftDropCounter::getDropCounters(drop2Map, drop3Map, drop4Map);
 
     return manaCounter->count();
 }
@@ -385,7 +356,7 @@ void SynergyHandler::updateCounters(
     QList<CardRace> cardRace = deckCard.getRace();
     CardSchool cardSchool = deckCard.getSchool();
 
-    updateDropCounters(code, drop2Map, drop3Map, drop4Map, attack, health, cost);
+    DraftDropCounter::updateDropCounters(code, drop2Map, drop3Map, drop4Map, attack, health, cost);
     updateManaCounter(code, cost);
     CardTypeCounter::updateCardTypeCounters(code, spellMap, minionMap, weaponMap, text, cardType);
     RaceCounter::updateRaceCounters(code, mechanics, text, cardRace);
@@ -403,81 +374,6 @@ void SynergyHandler::updateCounters(
 void SynergyHandler::updateManaCounter(const QString &code, int cost)
 {
     manaCounter->increase(getCorrectedCardMana(code, cost), CardTypeCounter::draftedCardsCount());
-}
-
-
-void SynergyHandler::updateDropCounters(const QString &code, QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
-                                        int attack, int health, int cost)
-{
-    if(isDrop2(code, cost, attack, health))
-    {
-        dropCounters[V_DROP2]->increase(code);
-        drop2Map.insertMulti(code, "");
-        if(cost == 3)
-        {
-            dropCounters[V_DROP3]->increaseExtra(code, "2 Drop");
-            drop3Map.insertMulti(code, "2 Drop");
-        }
-        else if(cost == 4)
-        {
-            dropCounters[V_DROP4]->increaseExtra(code, "2 Drop");
-            drop4Map.insertMulti(code, "2 Drop");
-        }
-    }
-    else if(isDrop3(code, cost, attack, health))
-    {
-        dropCounters[V_DROP3]->increase(code);
-        drop3Map.insertMulti(code, "");
-        if(cost == 2)
-        {
-            dropCounters[V_DROP2]->increaseExtra(code, "3 Drop");
-            drop2Map.insertMulti(code, "3 Drop");
-        }
-        else if(cost == 4)
-        {
-            dropCounters[V_DROP4]->increaseExtra(code, "3 Drop");
-            drop4Map.insertMulti(code, "3 Drop");
-        }
-    }
-    else if(isDrop4(code, cost, attack, health))
-    {
-        dropCounters[V_DROP4]->increase(code);
-        drop4Map.insertMulti(code, "");
-        if(cost == 2)
-        {
-            dropCounters[V_DROP2]->increaseExtra(code, "4 Drop");
-            drop2Map.insertMulti(code, "4 Drop");
-        }
-        else if(cost == 3)
-        {
-            dropCounters[V_DROP3]->increaseExtra(code, "4 Drop");
-            drop3Map.insertMulti(code, "4 Drop");
-        }
-    }
-    else
-    {
-        if(cost == 2)
-        {
-            dropCounters[V_DROP2]->increaseExtra(code);
-            drop2Map.insertMulti(code, ".");
-        }
-        else if(cost == 3)
-        {
-            dropCounters[V_DROP3]->increaseExtra(code);
-            drop3Map.insertMulti(code, ".");
-        }
-        else if(cost == 4)
-        {
-            dropCounters[V_DROP4]->increaseExtra(code);
-            drop4Map.insertMulti(code, ".");
-        }
-    }
-
-    //Hay una carta mas en el mazo
-    for(int i=0; i<V_NUM_DROPS; i++)
-    {
-        dropCounters[i]->increaseNumCards();
-    }
 }
 
 
@@ -579,7 +475,7 @@ void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString
     CardSchool cardSchool = deckCard.getSchool();
 
 
-    getDropMechanicIcons(code, mechanicIcons, dropBorderColor, attack, health, cost);
+    DraftDropCounter::getDropMechanicIcons(code, mechanicIcons, dropBorderColor, attack, health, cost);
     CardTypeCounter::getCardTypeSynergies(code, synergyTagMap, text, cardType);
     RaceCounter::getRaceSynergies(code, synergyTagMap, mechanics, text, cardRace);
     SchoolCounter::getSchoolSynergies(code, synergyTagMap, text, cardSchool);
@@ -588,31 +484,6 @@ void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString
     getStatsCardsSynergies(code, synergyTagMap, cardType, attack, health, cost);
     LayeredSynergies::getLayeredSynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
     CardTypeCounter::getDirectLinkSynergies(code, directLinks, synergyTagMap["Extra"]);
-}
-
-
-void SynergyHandler::getDropMechanicIcons(const QString &code, QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor,
-                                          int attack, int health, int cost)
-{
-    if(isDrop2(code, cost, attack, health))
-    {
-        mechanicIcons[M_DROP2] = dropCounters[V_DROP2]->count() + 1;
-        dropBorderColor = dropCounters[V_DROP2]->getMechanicBorderColor();
-    }
-    else if(isDrop3(code, cost, attack, health))
-    {
-        mechanicIcons[M_DROP3] = dropCounters[V_DROP3]->count() + 1;
-        dropBorderColor = dropCounters[V_DROP3]->getMechanicBorderColor();
-    }
-    else if(isDrop4(code, cost, attack, health))
-    {
-        mechanicIcons[M_DROP4] = dropCounters[V_DROP4]->count() + 1;
-        dropBorderColor = dropCounters[V_DROP4]->getMechanicBorderColor();
-    }
-    else
-    {
-        dropBorderColor = MechanicBorderGrey;
-    }
 }
 
 
@@ -991,11 +862,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
 
-
-    if(isDrop2(code, cost, attack, health)) mec<<"drop2";
-    if(isDrop3(code, cost, attack, health)) mec<<"drop3";
-    if(isDrop4(code, cost, attack, health)) mec<<"drop4";
-
+    mec << DraftDropCounter::debugDropSynergies(code, attack, health, cost);
     mec << CardTypeCounter::debugCardTypeSynergies(code, text);
     mec << RaceCounter::debugRaceSynergies(code, mechanics, text);
     mec << SchoolCounter::debugSchoolSynergies(code, text);
@@ -1018,8 +885,6 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
 //            if(name == iname)   qDebug()<<"--REV NAME-- :"<<icode<<"-"<<origCode<<": ["<<synergyCodes[icode]<<"],";
 //        }
     }
-
-    Q_UNUSED(health);
 }
 
 
@@ -1078,9 +943,9 @@ void SynergyHandler::debugDrops()
         // if(cost == 4)
         {
             int played = statsMap[code].value("played").toInt();
-            bool drop2 = isDrop2(code, cost, attack, health);
-            bool drop3 = isDrop3(code, cost, attack, health);
-            bool drop4 = isDrop4(code, cost, attack, health);
+            bool drop2 = DraftDropCounter::isDrop2(code, cost, attack, health);
+            bool drop3 = DraftDropCounter::isDrop3(code, cost, attack, health);
+            bool drop4 = DraftDropCounter::isDrop4(code, cost, attack, health);
             bool drop = drop2 || drop3 || drop4;
             if(played>10000)
             {
@@ -1114,57 +979,6 @@ void SynergyHandler::debugDrops()
     }
 
     clearSynergyLists();
-}
-
-
-//Increase counters
-
-bool SynergyHandler::isDrop2(const QString &code, int cost, int attack, int health)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("drop2");
-    }
-    else if(cost == 2 && !(
-                (attack==1 && health<4) ||
-                (attack==2 && health<2)
-                ))
-    {
-        return true;
-    }
-    return false;
-}
-bool SynergyHandler::isDrop3(const QString &code, int cost, int attack, int health)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("drop3");
-    }
-    else if(cost == 3 && health != 1 && !(
-                (attack==1 && health<7) ||
-                (attack==2 && health<4)
-                ))
-    {
-        return true;
-    }
-    return false;
-}
-bool SynergyHandler::isDrop4(const QString &code, int cost, int attack, int health)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("drop4");
-    }
-    else if(cost == 4 && health != 1 && !(
-                (attack==1) ||
-                (attack==2 && health<5) ||
-                (attack==3 && health<5) ||
-                (attack==4 && health<3)
-                ))
-    {
-        return true;
-    }
-    return false;
 }
 
 

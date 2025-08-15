@@ -159,7 +159,6 @@ void PopularCardsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickrat
 void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[], const QStringList &arenaCodes,
                                                 SynergyHandler *synergyHandler)
 {
-    this->synergyHandler = synergyHandler;
     synergyHandler->initSynergyCodes(arenaCodes);
 
     for(const QString &code: arenaCodes)
@@ -177,9 +176,9 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
                 {
                     if(cardsPickratesMap[i][code]>=10)
                     {
-                        if(cost>4 || synergyHandler->isDrop2(code, cost, attack, health) ||
-                            synergyHandler->isDrop3(code, cost, attack, health) ||
-                            synergyHandler->isDrop4(code, cost, attack, health))
+                        if(cost>4 || DraftDropCounter::isDrop2(code, cost, attack, health) ||
+                            DraftDropCounter::isDrop3(code, cost, attack, health) ||
+                            DraftDropCounter::isDrop4(code, cost, attack, health))
                         {
                             cardsByPickrate[i][cost-2].append(code);
                         }
@@ -192,9 +191,9 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
                 {
                     if(cardClassItem<NUM_HEROS && cardsPickratesMap[cardClassItem][code]>=10)
                     {
-                        if(cost>4 || synergyHandler->isDrop2(code, cost, attack, health) ||
-                            synergyHandler->isDrop3(code, cost, attack, health) ||
-                            synergyHandler->isDrop4(code, cost, attack, health))
+                        if(cost>4 || DraftDropCounter::isDrop2(code, cost, attack, health) ||
+                            DraftDropCounter::isDrop3(code, cost, attack, health) ||
+                            DraftDropCounter::isDrop4(code, cost, attack, health))
                         {
                             cardsByPickrate[cardClassItem][cost-2].append(code);
                         }
@@ -257,7 +256,7 @@ void PopularCardsHandler::showPopularCards()
     for(QString &code: cardsByPickrate[enemyClass][enemyMana-2])
     {
         QStringList mechanics;
-        if(MechanicCounter::isAoeGen(code, ""))                                                  mechanics += "aoeMechanic.png";//TODO check synergyHandler use
+        if(MechanicCounter::isAoeGen(code, ""))                                                  mechanics += "aoeMechanic.png";
         if(MechanicCounter::isDestroyGen(code, QJsonArray(), ""))                                mechanics += "destroyMechanic.png";
         if(MechanicCounter::isDamageMinionsGen(code, QJsonArray(), QJsonArray(), "", MINION, 0)) mechanics += "damageMechanic.png";
 

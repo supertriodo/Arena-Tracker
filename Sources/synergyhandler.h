@@ -23,7 +23,6 @@ private:
     StatSynergies costMinions, attackMinions, healthMinions, costSpells;
     StatSynergies costWeapons, attackWeapons, healthWeapons;
     DraftItemCounter *manaCounter;
-    DraftDropCounter **dropCounters;
 
 //Metodos
 public:
@@ -59,10 +58,6 @@ public:
     int getManaCounterCount();
     void setHidden(bool hide);
 
-    bool isDrop2(const QString &code, int cost, int attack, int health);
-    bool isDrop3(const QString &code, int cost, int attack, int health);
-    bool isDrop4(const QString &code, int cost, int attack, int health);
-
 private:
     void initSynergyCode(const QString &code, const QJsonArray &synergies);
     void initDirectLink(const QString &code, const QString &code2, const QStringList &coreCodes,
@@ -74,12 +69,8 @@ private:
     void deleteDraftItemCounters();
 
     void updateManaCounter(const QString &code, int cost);
-    void updateDropCounters(const QString &code, QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
-                            int attack, int health, int cost);
     void updateStatsCards(const QString &code, CardType cardType, int attack, int health, int cost);
 
-    void getDropMechanicIcons(const QString &code, QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor,
-                              int attack, int health, int cost);
     void getStatsCardsSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap,
                                 CardType cardType, int attack, int health, int cost);
 

@@ -19,7 +19,6 @@ public:
 private:
     Ui::Extended *ui;
     EnemyHandHandler *enemyHandHandler;
-    SynergyHandler *synergyHandler;
     QList<PopularCard> popularCardList;
     CardClass enemyClass;
     bool cardsAnimating;

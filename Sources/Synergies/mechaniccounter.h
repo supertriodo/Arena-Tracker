@@ -1,7 +1,6 @@
 #ifndef MECHANICCOUNTER_H
 #define MECHANICCOUNTER_H
 
-#include "Sources/Cards/deckcard.h"
 #include "Sources/Synergies/draftitemcounter.h"
 #include "Sources/utility.h"
 #include "qjsonarray.h"
