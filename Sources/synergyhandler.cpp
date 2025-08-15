@@ -113,6 +113,7 @@ void SynergyHandler::createDraftItemCounters()
     SchoolCounter::setSynergyCodes(&synergyCodes);
     MechanicCounter::setSynergyCodes(&synergyCodes);
     KeySynergies::setSynergyCodes(&synergyCodes);
+    StatSynergies::setSynergyCodes(&synergyCodes);
     LayeredSynergies::setSynergyCodes(&synergyCodes);
 
     QHBoxLayout *horLayoutMechanics = new QHBoxLayout();
@@ -272,16 +273,8 @@ void SynergyHandler::clearCounters()
     MechanicCounter::resetAll();
     DraftDropCounter::resetAll();
     KeySynergies::resetAll();
+    StatSynergies::resetAll();
     LayeredSynergies::reset();
-
-    //Reset stats maps
-    costMinions.clear();
-    attackMinions.clear();
-    healthMinions.clear();
-    costSpells.clear();
-    costWeapons.clear();
-    attackWeapons.clear();
-    healthWeapons.clear();
 }
 
 
@@ -366,7 +359,7 @@ void SynergyHandler::updateCounters(
                                             draw, toYourHand, discover,
                                             mechanics, referencedTags, text, cardType, attack, cost);
     KeySynergies::updateKeySynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
-    updateStatsCards(code, cardType, attack, health, cost);
+    StatSynergies::updateStatsCards(code, cardType, attack, health, cost);
     LayeredSynergies::updateLayeredSynergies(code);
 }
 
@@ -374,89 +367,6 @@ void SynergyHandler::updateCounters(
 void SynergyHandler::updateManaCounter(const QString &code, int cost)
 {
     manaCounter->increase(getCorrectedCardMana(code, cost), CardTypeCounter::draftedCardsCount());
-}
-
-
-void SynergyHandler::updateStatsCards(const QString &code, CardType cardType, int attack, int health, int cost)
-{
-    if(cardType == MINION)
-    {
-        costMinions.appendStatValue(false, cost, code);
-        attackMinions.appendStatValue(false, attack, code);
-        healthMinions.appendStatValue(false, health, code);
-    }
-    else if(cardType == SPELL)
-    {
-        costSpells.appendStatValue(false, cost, code);
-    }
-    else if(cardType == WEAPON)
-    {
-        costWeapons.appendStatValue(false, cost, code);
-        attackWeapons.appendStatValue(false, attack, code);
-        healthWeapons.appendStatValue(false, health, code);
-    }
-
-    //Synergies
-    const QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);
-    for(const StatSyn &statSyn: statSyns)
-    {
-        switch(statSyn.cardType)
-        {
-            case S_MINION:
-                switch(statSyn.statKind)
-                {
-                    case S_COST:
-                        if(statSyn.isGen)   costMinions.appendStatValue(false, statSyn.statValue, code);
-                        else                costMinions.updateStatsMapSyn(statSyn, code);
-                    break;
-                    case S_ATTACK:
-                        if(statSyn.isGen)   attackMinions.appendStatValue(false, statSyn.statValue, code);
-                        else                attackMinions.updateStatsMapSyn(statSyn, code);
-                    break;
-                    case S_HEALTH:
-                        if(statSyn.isGen)   healthMinions.appendStatValue(false, statSyn.statValue, code);
-                        else                healthMinions.updateStatsMapSyn(statSyn, code);
-                    break;
-                }
-            break;
-            case S_SPELL:
-                switch(statSyn.statKind)
-                {
-                    case S_COST:
-                        if(statSyn.isGen)   costSpells.appendStatValue(false, statSyn.statValue, code);
-                        else                costSpells.updateStatsMapSyn(statSyn, code);
-                    break;
-                    case S_ATTACK:
-                    case S_HEALTH:
-                    break;
-                }
-            break;
-            case S_WEAPON:
-                switch(statSyn.statKind)
-                {
-                    case S_COST:
-                        if(statSyn.isGen)   costWeapons.appendStatValue(false, statSyn.statValue, code);
-                        else                costWeapons.updateStatsMapSyn(statSyn, code);
-                    break;
-                    case S_ATTACK:
-                        if(statSyn.isGen)   attackWeapons.appendStatValue(false, statSyn.statValue, code);
-                        else                attackWeapons.updateStatsMapSyn(statSyn, code);
-                    break;
-                    case S_HEALTH:
-                        if(statSyn.isGen)   healthWeapons.appendStatValue(false, statSyn.statValue, code);
-                        else                healthWeapons.updateStatsMapSyn(statSyn, code);
-                    break;
-                }
-            break;
-        }
-    }
-
-//    qDebug()<<"*****COST MAP*****";
-//    costMinions.qDebugContents();
-//    qDebug()<<"*****ATTACK MAP*****";
-//    attackMinions.qDebugContents();
-//    qDebug()<<"*****HEALTH MAP*****";
-//    healthMinions.qDebugContents();
 }
 
 
@@ -481,86 +391,9 @@ void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString
     SchoolCounter::getSchoolSynergies(code, synergyTagMap, text, cardSchool);
     MechanicCounter::getMechanicSynergies(code, synergyTagMap, mechanicIcons, mechanics, referencedTags, text, cardType, attack, cost);
     KeySynergies::getKeySynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
-    getStatsCardsSynergies(code, synergyTagMap, cardType, attack, health, cost);
+    StatSynergies::getStatsCardsSynergies(code, synergyTagMap, cardType, attack, health, cost);
     LayeredSynergies::getLayeredSynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
     CardTypeCounter::getDirectLinkSynergies(code, directLinks, synergyTagMap["Extra"]);
-}
-
-
-void SynergyHandler::getStatsCardsSynergies(const QString &code, QMap<QString, QMap<QString, int>> &synergyTagMap,
-                                            CardType cardType, int attack, int health, int cost)
-{
-    if(cardType == MINION)
-    {
-        costMinions.insertCards(true, cost, synergyTagMap["Cost"]);
-        attackMinions.insertCards(true, attack, synergyTagMap["Attack"]);
-        healthMinions.insertCards(true, health, synergyTagMap["Health"]);
-    }
-    else if(cardType == SPELL)
-    {
-        costSpells.insertCards(true, cost, synergyTagMap["Cost"]);
-    }
-    else if(cardType == WEAPON)
-    {
-        costWeapons.insertCards(true, cost, synergyTagMap["Cost"]);
-        attackWeapons.insertCards(true, attack, synergyTagMap["Attack"]);
-        healthWeapons.insertCards(true, health, synergyTagMap["Health"]);
-    }
-
-    //Synergies
-    const QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);
-    for(const StatSyn &statSyn: statSyns)
-    {
-        switch(statSyn.cardType)
-        {
-            case S_MINION:
-                switch(statSyn.statKind)
-                {
-                    case S_COST:
-                        if(statSyn.isGen)   costMinions.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
-                        else                costMinions.insertStatCards(statSyn, synergyTagMap["Cost"]);
-                    break;
-                    case S_ATTACK:
-                        if(statSyn.isGen)   attackMinions.insertCards(true, statSyn.statValue, synergyTagMap["Attack"]);
-                        else                attackMinions.insertStatCards(statSyn, synergyTagMap["Attack"]);
-                    break;
-                    case S_HEALTH:
-                        if(statSyn.isGen)   healthMinions.insertCards(true, statSyn.statValue, synergyTagMap["Health"]);
-                        else                healthMinions.insertStatCards(statSyn, synergyTagMap["Health"]);
-                    break;
-                }
-            break;
-            case S_SPELL:
-                switch(statSyn.statKind)
-                {
-                    case S_COST:
-                        if(statSyn.isGen)   costSpells.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
-                        else                costSpells.insertStatCards(statSyn, synergyTagMap["Cost"]);
-                    break;
-                    case S_ATTACK:
-                    case S_HEALTH:
-                    break;
-                }
-            break;
-            case S_WEAPON:
-                switch(statSyn.statKind)
-                {
-                    case S_COST:
-                        if(statSyn.isGen)   costWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
-                        else                costWeapons.insertStatCards(statSyn, synergyTagMap["Cost"]);
-                    break;
-                    case S_ATTACK:
-                        if(statSyn.isGen)   attackWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Attack"]);
-                        else                attackWeapons.insertStatCards(statSyn, synergyTagMap["Attack"]);
-                    break;
-                    case S_HEALTH:
-                        if(statSyn.isGen)   healthWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Health"]);
-                        else                healthWeapons.insertStatCards(statSyn, synergyTagMap["Health"]);
-                    break;
-                }
-            break;
-        }
-    }
 }
 
 

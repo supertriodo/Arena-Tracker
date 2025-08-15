@@ -20,8 +20,6 @@ public:
 private:
     Ui::Extended *ui;
     QMap<QString, QList<QString>> synergyCodes, directLinks;
-    StatSynergies costMinions, attackMinions, healthMinions, costSpells;
-    StatSynergies costWeapons, attackWeapons, healthWeapons;
     DraftItemCounter *manaCounter;
 
 //Metodos
@@ -69,10 +67,6 @@ private:
     void deleteDraftItemCounters();
 
     void updateManaCounter(const QString &code, int cost);
-    void updateStatsCards(const QString &code, CardType cardType, int attack, int health, int cost);
-
-    void getStatsCardsSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap,
-                                CardType cardType, int attack, int health, int cost);
 
 signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="SynergyHandler");
