@@ -76,12 +76,6 @@ void PlanHandler::completeUI()
 }
 
 
-void PlanHandler::setSynergyHandler(SynergyHandler *synergyHandler)
-{
-    this->synergyHandler = synergyHandler;
-}
-
-
 void PlanHandler::setPremium(bool premium)
 {
     if(premium)
@@ -1606,7 +1600,7 @@ CardGraphicsItem * PlanHandler::cardDraw(bool friendly, int id, QString code, QS
     QStringList mechanics;
     if(!code.isEmpty())
     {
-        if(MechanicCounter::isAoeGen(code, ""))                                                  mechanics += "aoeMechanic.png";//TODO check use synergyHandler
+        if(MechanicCounter::isAoeGen(code, ""))                                                  mechanics += "aoeMechanic.png";
         if(MechanicCounter::isDestroyGen(code, QJsonArray(), ""))                                mechanics += "destroyMechanic.png";
         if(MechanicCounter::isDamageMinionsGen(code, QJsonArray(), QJsonArray(), "", MINION, 0)) mechanics += "damageMechanic.png";
     }

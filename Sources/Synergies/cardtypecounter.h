@@ -32,7 +32,8 @@ public:
     static void getDirectLinkSynergies(const QString &code, const QMap<QString, QList<QString> > &directLinks, QMap<QString, int> &synergies);
     static void getCardTypeCounters(QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap);
     static void getCardTypeSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap, const QString &text, CardType cardType);
-    static void updateCardTypeCounters(DeckCard &deckCard, QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap);
+    static void updateCardTypeCounters(const QString &code, QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
+                                       const QString &text, CardType cardType);
 
 private:
     static bool isCardType(CardType key, CardType cardType);

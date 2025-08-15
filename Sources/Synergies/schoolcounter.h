@@ -27,7 +27,7 @@ public:
     static QStringList debugSchoolSynergies(const QString &code, const QString &text);
     static void getSchoolSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap,
                                    const QString &text, const CardSchool &cardSchool);
-    static void updateSchoolCounters(DeckCard &deckCard);
+    static void updateSchoolCounters(const QString &code, const QString &text, CardSchool cardSchool);
 
 private:
     //Gen

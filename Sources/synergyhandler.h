@@ -55,6 +55,7 @@ public:
     void setTransparency(Transparency transparency, bool mouseInApp);
     void setTheme();
     int getCorrectedCardMana(DeckCard &deckCard);
+    int getCorrectedCardMana(const QString &code, int cost);
     int getManaCounterCount();
     void setHidden(bool hide);
 
@@ -72,10 +73,10 @@ private:
     void createDraftItemCounters();
     void deleteDraftItemCounters();
 
-    void updateManaCounter(DeckCard &deckCard);
-    void updateDropCounters(DeckCard &deckCard, QMap<QString, QString> &drop2Map,
-                            QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map);
-    void updateStatsCards(DeckCard &deckCard);
+    void updateManaCounter(const QString &code, int cost);
+    void updateDropCounters(const QString &code, QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
+                            int attack, int health, int cost);
+    void updateStatsCards(const QString &code, CardType cardType, int attack, int health, int cost);
 
     void getDropMechanicIcons(const QString &code, QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor,
                               int attack, int health, int cost);

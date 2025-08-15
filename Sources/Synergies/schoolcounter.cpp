@@ -137,12 +137,8 @@ void SchoolCounter::getSchoolSynergies(const QString &code, QMap<QString, QMap<Q
 }
 
 
-void SchoolCounter::updateSchoolCounters(DeckCard &deckCard)
+void SchoolCounter::updateSchoolCounters(const QString &code, const QString &text, CardSchool cardSchool)
 {
-    QString code = deckCard.getCode();
-    QString text = Utility::cardEnTextFromCode(code).toLower();
-    CardSchool cardSchool = deckCard.getSchool();
-
     if(cardSchool == ARCANE)
     {
         schoolCounters[V_ARCANE]->increase(code);

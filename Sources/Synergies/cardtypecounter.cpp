@@ -182,12 +182,9 @@ void CardTypeCounter::getCardTypeSynergies(const QString &code, QMap<QString, QM
 }
 
 
-void CardTypeCounter::updateCardTypeCounters(DeckCard &deckCard, QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap)
+void CardTypeCounter::updateCardTypeCounters(const QString &code, QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
+                                             const QString &text, CardType cardType)
 {
-    QString code = deckCard.getCode();
-    QString text = Utility::cardEnTextFromCode(code).toLower();
-    CardType cardType = deckCard.getType();
-
     if(isCardType(SPELL, cardType))
     {
         cardTypeCounters[V_SPELL]->increase(code);

@@ -27,7 +27,8 @@ public:
     static QStringList debugRaceSynergies(const QString &code, const QJsonArray &mechanics, const QString &text);
     static void getRaceSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap,
                                  const QJsonArray &mechanics, const QString &text, const QList<CardRace> &cardRace);
-    static void updateRaceCounters(DeckCard &deckCard);
+    static void updateRaceCounters(const QString &code, const QJsonArray &mechanics,
+                                   const QString &text, const QList<CardRace> &cardRace);
 
 private:
     //Gen

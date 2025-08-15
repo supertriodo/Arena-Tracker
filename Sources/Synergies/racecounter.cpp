@@ -197,13 +197,9 @@ void RaceCounter::getRaceSynergies(const QString &code, QMap<QString, QMap<QStri
 }
 
 
-void RaceCounter::updateRaceCounters(DeckCard &deckCard)
+void RaceCounter::updateRaceCounters(const QString &code, const QJsonArray &mechanics,
+                                     const QString &text, const QList<CardRace> &cardRace)
 {
-    QString code = deckCard.getCode();
-    QString text = Utility::cardEnTextFromCode(code).toLower();
-    QList<CardRace> cardRace = deckCard.getRace();
-    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-
     if(cardRace.contains(MURLOC) || cardRace.contains(ALL))
     {
         raceCounters[V_MURLOC]->increase(code);

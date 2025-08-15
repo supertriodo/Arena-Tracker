@@ -380,36 +380,35 @@ void SynergyHandler::updateCounters(
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
-    int cost = deckCard.getCost();
-
-    updateDropCounters(deckCard, drop2Map, drop3Map, drop4Map);
-    updateManaCounter(deckCard);
-    CardTypeCounter::updateCardTypeCounters(deckCard, spellMap, minionMap, weaponMap);
-    RaceCounter::updateRaceCounters(deckCard);
-    SchoolCounter::updateSchoolCounters(deckCard);
-    MechanicCounter::updateMechanicCounters(deckCard, aoeMap, tauntMap, survivabilityMap, drawMap,
-                           pingMap, damageMap, destroyMap, reachMap,
-                           draw, toYourHand, discover);
-    KeySynergies::updateKeySynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
-    updateStatsCards(deckCard);
-    LayeredSynergies::updateLayeredSynergies(code);//TODO arguments
-}
-
-
-void SynergyHandler::updateManaCounter(DeckCard &deckCard)
-{
-    manaCounter->increase(getCorrectedCardMana(deckCard), CardTypeCounter::draftedCardsCount());//TODO deckCard
-}
-
-
-void SynergyHandler::updateDropCounters(DeckCard &deckCard, QMap<QString, QString> &drop2Map, QMap<QString,
-                                        QString> &drop3Map, QMap<QString, QString> &drop4Map)
-{
-    QString code = deckCard.getCode();
-    int cost = deckCard.getCost();
-    int attack = Utility::getCardAttribute(code, "attack").toInt();
     int health = Utility::getCardAttribute(code, "health").toInt();
+    int cost = deckCard.getCost();
+    QList<CardRace> cardRace = deckCard.getRace();
+    CardSchool cardSchool = deckCard.getSchool();
 
+    updateDropCounters(code, drop2Map, drop3Map, drop4Map, attack, health, cost);
+    updateManaCounter(code, cost);
+    CardTypeCounter::updateCardTypeCounters(code, spellMap, minionMap, weaponMap, text, cardType);
+    RaceCounter::updateRaceCounters(code, mechanics, text, cardRace);
+    SchoolCounter::updateSchoolCounters(code, text, cardSchool);
+    MechanicCounter::updateMechanicCounters(code, aoeMap, tauntMap, survivabilityMap, drawMap,
+                                            pingMap, damageMap, destroyMap, reachMap,
+                                            draw, toYourHand, discover,
+                                            mechanics, referencedTags, text, cardType, attack, cost);
+    KeySynergies::updateKeySynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
+    updateStatsCards(code, cardType, attack, health, cost);
+    LayeredSynergies::updateLayeredSynergies(code);
+}
+
+
+void SynergyHandler::updateManaCounter(const QString &code, int cost)
+{
+    manaCounter->increase(getCorrectedCardMana(code, cost), CardTypeCounter::draftedCardsCount());
+}
+
+
+void SynergyHandler::updateDropCounters(const QString &code, QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
+                                        int attack, int health, int cost)
+{
     if(isDrop2(code, cost, attack, health))
     {
         dropCounters[V_DROP2]->increase(code);
@@ -482,31 +481,21 @@ void SynergyHandler::updateDropCounters(DeckCard &deckCard, QMap<QString, QStrin
 }
 
 
-void SynergyHandler::updateStatsCards(DeckCard &deckCard)
+void SynergyHandler::updateStatsCards(const QString &code, CardType cardType, int attack, int health, int cost)
 {
-    QString code = deckCard.getCode();
-
-    if(deckCard.getType() == MINION)
+    if(cardType == MINION)
     {
-        //Stats
-        int attack = Utility::getCardAttribute(code, "attack").toInt();
-        int health = Utility::getCardAttribute(code, "health").toInt();
-
-        costMinions.appendStatValue(false, deckCard.getCost(), code);
+        costMinions.appendStatValue(false, cost, code);
         attackMinions.appendStatValue(false, attack, code);
         healthMinions.appendStatValue(false, health, code);
     }
-    else if(deckCard.getType() == SPELL)
+    else if(cardType == SPELL)
     {
-        costSpells.appendStatValue(false, deckCard.getCost(), code);
+        costSpells.appendStatValue(false, cost, code);
     }
-    else if(deckCard.getType() == WEAPON)
+    else if(cardType == WEAPON)
     {
-        //Stats
-        int attack = Utility::getCardAttribute(code, "attack").toInt();
-        int health = Utility::getCardAttribute(code, "health").toInt();
-
-        costWeapons.appendStatValue(false, deckCard.getCost(), code);
+        costWeapons.appendStatValue(false, cost, code);
         attackWeapons.appendStatValue(false, attack, code);
         healthWeapons.appendStatValue(false, health, code);
     }
@@ -1181,7 +1170,10 @@ bool SynergyHandler::isDrop4(const QString &code, int cost, int attack, int heal
 
 int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 {
-    QString code = deckCard.getCode();
+    return getCorrectedCardMana(deckCard.getCode(), deckCard.getCost());
+}
+int SynergyHandler::getCorrectedCardMana(const QString &code, int cost)
+{
     QString otherCode = Utility::otherCodeConstant(code);
 
     //Evitar draw/discover cost 0/1/2 -> no draw y mantenemos coste original
@@ -1280,7 +1272,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     }
 
     int overload = Utility::getCardAttribute(code, "overload").toInt();
-    return std::min(10, deckCard.getCost()) + overload;
+    return std::min(10, cost) + overload;
 }
 
 
@@ -1487,5 +1479,3 @@ REGLAS
         - Drop4 (Derrota 4/4 --> 5+/2+, 4/3+, 3/5+, 2/5+, no 1/x), no health 1
 */
 
-
-//TODO

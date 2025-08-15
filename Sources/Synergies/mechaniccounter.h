@@ -37,12 +37,14 @@ public:
     static void getMechanicSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap, QMap<MechanicIcons, int> &mechanicIcons,
                                      const QJsonArray &mechanics, const QJsonArray &referencedTags,
                                      const QString &text, CardType cardType, int attack, int cost);
-    static void updateMechanicCounters(DeckCard &deckCard,
+    static void updateMechanicCounters(const QString &code,
                                        QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
                                        QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
                                        QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
                                        QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
-                                       int &draw, int &toYourHand, int &discover);
+                                       int &draw, int &toYourHand, int &discover,
+                                       const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                                       const QString &text, CardType cardType, int attack, int cost);
 
     //Gen
     static bool isAoeGen(const QString &code, const QString &text);

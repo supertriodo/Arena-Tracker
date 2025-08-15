@@ -827,10 +827,6 @@ void MainWindow::createDraftHandler()
     bool multiclassArena = settings.value("multiclassArena", false).toBool();
     draftHandler->setMulticlassArena(multiclassArena);
     pDebug("multiclassArena = " + QString(multiclassArena?"true":"false"));
-
-    //SynergyHandler
-    SynergyHandler *synergyHandler = draftHandler->getSynergyHandler();
-    planHandler->setSynergyHandler(synergyHandler);
 }
 
 

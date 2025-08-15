@@ -296,21 +296,16 @@ void MechanicCounter::getMechanicSynergies(const QString &code, QMap<QString, QM
 }
 
 
-void MechanicCounter::updateMechanicCounters(DeckCard &deckCard,
+void MechanicCounter::updateMechanicCounters(const QString &code,
                                              QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
                                              QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
                                              QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
                                              QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
-                                             int &draw, int &toYourHand, int &discover)
+                                             int &draw, int &toYourHand, int &discover,
+                                             const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                                             const QString &text, CardType cardType, int attack, int cost)
 {
     bool isSurvivability = false;
-    QString code = deckCard.getCode();
-    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-    QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-    QString text = Utility::cardEnTextFromCode(code).toLower();
-    CardType cardType = deckCard.getType();
-    int attack = Utility::getCardAttribute(code, "attack").toInt();
-    int cost = deckCard.getCost();
 
     //GEN
     if(isDiscoverDrawGen(code, cost, mechanics, referencedTags, text))
