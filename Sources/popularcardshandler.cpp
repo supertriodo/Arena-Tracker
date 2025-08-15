@@ -1,4 +1,5 @@
 #include "popularcardshandler.h"
+#include "Synergies/mechaniccounter.h"
 #include <QtWidgets>
 
 PopularCardsHandler::PopularCardsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandler *enemyHandHandler) : QObject(parent)
@@ -256,9 +257,9 @@ void PopularCardsHandler::showPopularCards()
     for(QString &code: cardsByPickrate[enemyClass][enemyMana-2])
     {
         QStringList mechanics;
-        if(synergyHandler->isAoeGen(code, ""))                                                  mechanics += "aoeMechanic.png";
-        if(synergyHandler->isDestroyGen(code, QJsonArray(), ""))                                mechanics += "destroyMechanic.png";
-        if(synergyHandler->isDamageMinionsGen(code, QJsonArray(), QJsonArray(), "", MINION, 0)) mechanics += "damageMechanic.png";
+        if(MechanicCounter::isAoeGen(code, ""))                                                  mechanics += "aoeMechanic.png";//TODO check synergyHandler use
+        if(MechanicCounter::isDestroyGen(code, QJsonArray(), ""))                                mechanics += "destroyMechanic.png";
+        if(MechanicCounter::isDamageMinionsGen(code, QJsonArray(), QJsonArray(), "", MINION, 0)) mechanics += "damageMechanic.png";
 
         QString manaText = (cardsPickratesMap == nullptr) ? "-" : QString::number((int)round(cardsPickratesMap[enemyClass][code]))+"%";
         PopularCard popularCard(code, manaText, mechanics);

@@ -3,6 +3,9 @@
 #include "Synergies/keysynergies.h"
 #include "Synergies/layeredsynergies.h"
 #include "Synergies/cardtypecounter.h"
+#include "Synergies/racecounter.h"
+#include "Synergies/schoolcounter.h"
+#include "Synergies/mechaniccounter.h"
 #include <QtWidgets>
 
 SynergyHandler::SynergyHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
@@ -19,24 +22,8 @@ SynergyHandler::~SynergyHandler()
 }
 
 
-void SynergyHandler::createDraftItemCounters()
+void SynergyHandler::connectCounters(DraftDropCounter **dropCounters, DraftItemCounter **cardTypeCounters, DraftItemCounter **mechanicCounters)
 {
-    QGridLayout *mechanicsLayout = new QGridLayout();
-
-
-    cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
-    cardTypeCounters[V_MINION] = new DraftItemCounter(this, "Minion", "Minion Gen", mechanicsLayout, 0, 0,
-                                                    QPixmap(ThemeHandler::minionsCounterFile()), 32, true, false);
-    cardTypeCounters[V_MINION_ALL] = new DraftItemCounter(this, "Minion");
-    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, "Spell", "Spell Gen", mechanicsLayout, 0, 1,
-                                                     QPixmap(ThemeHandler::spellsCounterFile()), 32, true, false);
-    cardTypeCounters[V_SPELL_ALL] = new DraftItemCounter(this, "Spell");
-    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, "Weapon", "Weapon Gen", mechanicsLayout, 0, 2,
-                                                      QPixmap(ThemeHandler::weaponsCounterFile()), 32, true, false);
-    cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this, "Weapon");
-    cardTypeCounters[V_LOCATION] = new DraftItemCounter(this, "Location");
-    cardTypeCounters[V_LOCATION_ALL] = new DraftItemCounter(this, "Location");
-
     connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
             this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
     connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
@@ -51,16 +38,6 @@ void SynergyHandler::createDraftItemCounters()
     connect(cardTypeCounters[V_WEAPON], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
 
-    manaCounter = new DraftItemCounter(this, "Mana AVG", "Mana AVG", mechanicsLayout, 0, 3,
-                                       QPixmap(ThemeHandler::manaCounterFile()), 32, false, false);
-
-    dropCounters = new DraftDropCounter *[V_NUM_DROPS];
-    dropCounters[V_DROP2] = new DraftDropCounter(this, "2 Drop", "2 Cost", mechanicsLayout, 1, 0, TARGET_DROP_2,
-                                                 QPixmap(ThemeHandler::drop2CounterFile()), 32, true, false);
-    dropCounters[V_DROP3] = new DraftDropCounter(this, "3 Drop", "3 Cost", mechanicsLayout, 1, 1, TARGET_DROP_3,
-                                                 QPixmap(ThemeHandler::drop3CounterFile()), 32, true, false);
-    dropCounters[V_DROP4] = new DraftDropCounter(this, "4 Drop", "4 Cost", mechanicsLayout, 1, 2, TARGET_DROP_4,
-                                                 QPixmap(ThemeHandler::drop4CounterFile()), 32, true, false);
 
     connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
             this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
@@ -76,70 +53,6 @@ void SynergyHandler::createDraftItemCounters()
     connect(dropCounters[V_DROP4], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
 
-    raceCounters = new DraftItemCounter *[V_NUM_RACES];
-    raceCounters[V_ELEMENTAL] = new DraftItemCounter(this, "Elemental");
-    raceCounters[V_BEAST] = new DraftItemCounter(this, "Beast");
-    raceCounters[V_MURLOC] = new DraftItemCounter(this, "Murloc");
-    raceCounters[V_DRAGON] = new DraftItemCounter(this, "Dragon");
-    raceCounters[V_PIRATE] = new DraftItemCounter(this, "Pirate");
-    raceCounters[V_MECHANICAL] = new DraftItemCounter(this, "Mech");
-    raceCounters[V_DEMON] = new DraftItemCounter(this, "Demon");
-    raceCounters[V_TOTEM] = new DraftItemCounter(this, "Totem");
-    raceCounters[V_NAGA] = new DraftItemCounter(this, "Naga");
-    raceCounters[V_UNDEAD] = new DraftItemCounter(this, "Undead");
-    raceCounters[V_QUILBOAR] = new DraftItemCounter(this, "Quilboar");
-    raceCounters[V_DRAENEI] = new DraftItemCounter(this, "Draenei");
-    //New race step
-
-    raceCounters[V_ELEMENTAL_ALL] = new DraftItemCounter(this, "Elemental");
-    raceCounters[V_BEAST_ALL] = new DraftItemCounter(this, "Beast");
-    raceCounters[V_MURLOC_ALL] = new DraftItemCounter(this, "Murloc");
-    raceCounters[V_DRAGON_ALL] = new DraftItemCounter(this, "Dragon");
-    raceCounters[V_PIRATE_ALL] = new DraftItemCounter(this, "Pirate");
-    raceCounters[V_MECHANICAL_ALL] = new DraftItemCounter(this, "Mech");
-    raceCounters[V_DEMON_ALL] = new DraftItemCounter(this, "Demon");
-    raceCounters[V_TOTEM_ALL] = new DraftItemCounter(this, "Totem");
-    raceCounters[V_NAGA_ALL] = new DraftItemCounter(this, "Naga");
-    raceCounters[V_UNDEAD_ALL] = new DraftItemCounter(this, "Undead");
-    raceCounters[V_QUILBOAR_ALL] = new DraftItemCounter(this, "Quilboar");
-    raceCounters[V_DRAENEI_ALL] = new DraftItemCounter(this, "Draenei");
-    //New race step
-
-    schoolCounters = new DraftItemCounter *[V_NUM_SCHOOLS];
-    schoolCounters[V_ARCANE] = new DraftItemCounter(this, "Arcane");
-    schoolCounters[V_FEL] = new DraftItemCounter(this, "Fel");
-    schoolCounters[V_FIRE] = new DraftItemCounter(this, "Fire");
-    schoolCounters[V_FROST] = new DraftItemCounter(this, "Frost");
-    schoolCounters[V_HOLY] = new DraftItemCounter(this, "Holy");
-    schoolCounters[V_SHADOW] = new DraftItemCounter(this, "Shadow");
-    schoolCounters[V_NATURE] = new DraftItemCounter(this, "Nature");
-
-    schoolCounters[V_ARCANE_ALL] = new DraftItemCounter(this, "Arcane");
-    schoolCounters[V_FEL_ALL] = new DraftItemCounter(this, "Fel");
-    schoolCounters[V_FIRE_ALL] = new DraftItemCounter(this, "Fire");
-    schoolCounters[V_FROST_ALL] = new DraftItemCounter(this, "Frost");
-    schoolCounters[V_HOLY_ALL] = new DraftItemCounter(this, "Holy");
-    schoolCounters[V_SHADOW_ALL] = new DraftItemCounter(this, "Shadow");
-    schoolCounters[V_NATURE_ALL] = new DraftItemCounter(this, "Nature");
-
-    mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
-    mechanicCounters[V_REACH] = new DraftItemCounter(this, "Reach", "Reach", mechanicsLayout, 2, 0,
-                                                     QPixmap(ThemeHandler::reachMechanicFile()), 32, true, false);
-    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, "Taunt", "Taunt", mechanicsLayout, 2, 1,
-                                                         QPixmap(ThemeHandler::tauntMechanicFile()), 32, true, false);
-    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, "Survival", "Survival", mechanicsLayout, 2, 2,
-                                                             QPixmap(ThemeHandler::survivalMechanicFile()), 32, true, false);
-    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, "Draw", "Draw", mechanicsLayout, 2, 3,
-                                                             QPixmap(ThemeHandler::drawMechanicFile()), 32, true, false);
-
-    mechanicCounters[V_PING] = new DraftItemCounter(this, "Ping", "Ping", mechanicsLayout, 3, 0,
-                                                    QPixmap(ThemeHandler::pingMechanicFile()), 32, true, false);
-    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, "Removal", "Removal", mechanicsLayout, 3, 1,
-                                                      QPixmap(ThemeHandler::damageMechanicFile()), 32, true, false);
-    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, "Hard Removal", "Hard Removal", mechanicsLayout, 3, 2,
-                                                       QPixmap(ThemeHandler::destroyMechanicFile()), 32, true, false);
-    mechanicCounters[V_AOE] = new DraftItemCounter(this, "AOE", "AOE", mechanicsLayout, 3, 3,
-                                                   QPixmap(ThemeHandler::aoeMechanicFile()), 32, true, false);
 
     connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
             this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
@@ -174,21 +87,36 @@ void SynergyHandler::createDraftItemCounters()
             this, SIGNAL(itemLeave()));
     connect(mechanicCounters[V_REACH], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
+}
 
-    mechanicCounters[V_DISCOVER] = new DraftItemCounter(this, "Discover");
-    mechanicCounters[V_DRAW] = new DraftItemCounter(this, "Draw");
-    mechanicCounters[V_TOYOURHAND] = new DraftItemCounter(this, "Gen Cards");
-    mechanicCounters[V_TAUNT] = new DraftItemCounter(this, "Taunt");
-    mechanicCounters[V_RESTORE_FRIENDLY_HEROE] = new DraftItemCounter(this, "Heal");
-    mechanicCounters[V_ARMOR] = new DraftItemCounter(this, "Armor");
 
-    mechanicCounters[V_DEATHRATTLE] = new DraftItemCounter(this, "Deathrattle");
-    mechanicCounters[V_DEATHRATTLE_GOOD_ALL] = new DraftItemCounter(this, "Deathrattle");
-    mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this, "Jade Golem");
-    mechanicCounters[V_HERO_POWER] = new DraftItemCounter(this, "Hero Power");
+void SynergyHandler::createDraftItemCounters()
+{
+    QGridLayout *mechanicsLayout = new QGridLayout();
+
+    DraftItemCounter **cardTypeCounters = CardTypeCounter::createCardTypeCounters(this, mechanicsLayout);
+    manaCounter = new DraftItemCounter(this, "Mana AVG", "Mana AVG", mechanicsLayout, 0, 3,
+                                       QPixmap(ThemeHandler::manaCounterFile()), 32, false, false);
+
+    dropCounters = new DraftDropCounter *[V_NUM_DROPS];//TODO drops
+    dropCounters[V_DROP2] = new DraftDropCounter(this, "2 Drop", "2 Cost", mechanicsLayout, 1, 0, TARGET_DROP_2,
+                                                 QPixmap(ThemeHandler::drop2CounterFile()), 32, true, false);
+    dropCounters[V_DROP3] = new DraftDropCounter(this, "3 Drop", "3 Cost", mechanicsLayout, 1, 1, TARGET_DROP_3,
+                                                 QPixmap(ThemeHandler::drop3CounterFile()), 32, true, false);
+    dropCounters[V_DROP4] = new DraftDropCounter(this, "4 Drop", "4 Cost", mechanicsLayout, 1, 2, TARGET_DROP_4,
+                                                 QPixmap(ThemeHandler::drop4CounterFile()), 32, true, false);
+
+    DraftItemCounter **mechanicCounters = MechanicCounter::createMechanicCounters(this, mechanicsLayout);
+    RaceCounter::createRaceCounters(this);
+    SchoolCounter::createSchoolCounters(this);
+    KeySynergies::createKeySynergies();
+
+    connectCounters(dropCounters, cardTypeCounters, mechanicCounters);
 
     CardTypeCounter::setSynergyCodes(&synergyCodes);
-    KeySynergies::createKeySynergies();
+    RaceCounter::setSynergyCodes(&synergyCodes);
+    SchoolCounter::setSynergyCodes(&synergyCodes);
+    MechanicCounter::setSynergyCodes(&synergyCodes);
     KeySynergies::setSynergyCodes(&synergyCodes);
     LayeredSynergies::setSynergyCodes(&synergyCodes);
 
@@ -202,58 +130,28 @@ void SynergyHandler::createDraftItemCounters()
 void SynergyHandler::deleteDraftItemCounters()
 {
     delete manaCounter;
-    for(int i=0; i<V_NUM_TYPES; i++)
-    {
-        delete cardTypeCounters[i];
-    }
-    delete []cardTypeCounters;
+    CardTypeCounter::deleteCardTypeCounters();
+    RaceCounter::deleteRaceCounters();
+    SchoolCounter::deleteSchoolCounters();
+    MechanicCounter::deleteMechanicCounters();
 
     for(int i=0; i<V_NUM_DROPS; i++)
     {
         delete dropCounters[i];
     }
     delete []dropCounters;
-
-    for(int i=0; i<V_NUM_RACES; i++)
-    {
-        delete raceCounters[i];
-    }
-    delete []raceCounters;
-
-    for(int i=0; i<V_NUM_SCHOOLS; i++)
-    {
-        delete schoolCounters[i];
-    }
-    delete []schoolCounters;
-
-    for(int i=0; i<V_NUM_MECHANICS; i++)
-    {
-        delete mechanicCounters[i];
-    }
-    delete []mechanicCounters;
 }
 
 
 void SynergyHandler::setTheme()
 {
-    cardTypeCounters[V_MINION]->setTheme(QPixmap(ThemeHandler::minionsCounterFile()), 32, false);
-    cardTypeCounters[V_SPELL]->setTheme(QPixmap(ThemeHandler::spellsCounterFile()), 32, false);
-    cardTypeCounters[V_WEAPON]->setTheme(QPixmap(ThemeHandler::weaponsCounterFile()), 32, false);
+    CardTypeCounter::setTheme();
+    MechanicCounter::setTheme();
     manaCounter->setTheme(QPixmap(ThemeHandler::manaCounterFile()), 32, false);
 
     dropCounters[V_DROP2]->setTheme(QPixmap(ThemeHandler::drop2CounterFile()), 32, false);
     dropCounters[V_DROP3]->setTheme(QPixmap(ThemeHandler::drop3CounterFile()), 32, false);
     dropCounters[V_DROP4]->setTheme(QPixmap(ThemeHandler::drop4CounterFile()), 32, false);
-
-    mechanicCounters[V_AOE]->setTheme(QPixmap(ThemeHandler::aoeMechanicFile()), 32, false);
-    mechanicCounters[V_TAUNT_ALL]->setTheme(QPixmap(ThemeHandler::tauntMechanicFile()), 32, false);
-    mechanicCounters[V_SURVIVABILITY]->setTheme(QPixmap(ThemeHandler::survivalMechanicFile()), 32, false);
-    mechanicCounters[V_DISCOVER_DRAW]->setTheme(QPixmap(ThemeHandler::drawMechanicFile()), 32, false);
-
-    mechanicCounters[V_PING]->setTheme(QPixmap(ThemeHandler::pingMechanicFile()), 32, false);
-    mechanicCounters[V_DAMAGE]->setTheme(QPixmap(ThemeHandler::damageMechanicFile()), 32, false);
-    mechanicCounters[V_DESTROY]->setTheme(QPixmap(ThemeHandler::destroyMechanicFile()), 32, false);
-    mechanicCounters[V_REACH]->setTheme(QPixmap(ThemeHandler::reachMechanicFile()), 32, false);
 }
 
 
@@ -381,25 +279,13 @@ void SynergyHandler::clearCounters()
 {
     //Reset counters
     manaCounter->reset();
-    for(int i=0; i<V_NUM_TYPES; i++)
-    {
-        cardTypeCounters[i]->reset();
-    }
+    CardTypeCounter::resetAll();
+    RaceCounter::resetAll();
+    SchoolCounter::resetAll();
+    MechanicCounter::resetAll();
     for(int i=0; i<V_NUM_DROPS; i++)
     {
         dropCounters[i]->reset();
-    }
-    for(int i=0; i<V_NUM_RACES; i++)
-    {
-        raceCounters[i]->reset();
-    }
-    for(int i=0; i<V_NUM_SCHOOLS; i++)
-    {
-        schoolCounters[i]->reset();
-    }
-    for(int i=0; i<V_NUM_MECHANICS; i++)
-    {
-        mechanicCounters[i]->reset();
     }
     KeySynergies::resetAll();
     LayeredSynergies::reset();
@@ -417,76 +303,35 @@ void SynergyHandler::clearCounters()
 
 void SynergyHandler::setHidden(bool hide)
 {
+    CardTypeCounter::setHidden(hide);
+    MechanicCounter::setHidden(hide);
     if(hide)
     {
-        cardTypeCounters[V_MINION]->hide();
-        cardTypeCounters[V_SPELL]->hide();
-        cardTypeCounters[V_WEAPON]->hide();
         manaCounter->hide();
 
         dropCounters[V_DROP2]->hide();
         dropCounters[V_DROP3]->hide();
         dropCounters[V_DROP4]->hide();
-
-        mechanicCounters[V_AOE]->hide();
-        mechanicCounters[V_TAUNT_ALL]->hide();
-        mechanicCounters[V_SURVIVABILITY]->hide();
-        mechanicCounters[V_DISCOVER_DRAW]->hide();
-
-        mechanicCounters[V_PING]->hide();
-        mechanicCounters[V_DAMAGE]->hide();
-        mechanicCounters[V_DESTROY]->hide();
-        mechanicCounters[V_REACH]->hide();
     }
     else
     {
-        cardTypeCounters[V_MINION]->show();
-        cardTypeCounters[V_SPELL]->show();
-        cardTypeCounters[V_WEAPON]->show();
         manaCounter->show();
 
         dropCounters[V_DROP2]->show();
         dropCounters[V_DROP3]->show();
         dropCounters[V_DROP4]->show();
-
-        mechanicCounters[V_AOE]->show();
-        mechanicCounters[V_TAUNT_ALL]->show();
-        mechanicCounters[V_SURVIVABILITY]->show();
-        mechanicCounters[V_DISCOVER_DRAW]->show();
-
-        mechanicCounters[V_PING]->show();
-        mechanicCounters[V_DAMAGE]->show();
-        mechanicCounters[V_DESTROY]->show();
-        mechanicCounters[V_REACH]->show();
     }
-}
-
-
-int SynergyHandler::draftedCardsCount()
-{
-    int num = 0;
-    for(int i=0; i<V_NUM_TYPES; i++)
-    {
-        num += cardTypeCounters[i]->count();
-    }
-    return num;
 }
 
 
 void SynergyHandler::setTransparency(Transparency transparency, bool mouseInApp)
 {
     manaCounter->setTransparency(transparency, mouseInApp);
-    for(int i=0; i<V_NUM_TYPES; i++)
-    {
-        cardTypeCounters[i]->setTransparency(transparency, mouseInApp);
-    }
+    CardTypeCounter::setTransparency(transparency, mouseInApp);
+    MechanicCounter::setTransparency(transparency, mouseInApp);
     for(int i=0; i<V_NUM_DROPS; i++)
     {
         dropCounters[i]->setTransparency(transparency, mouseInApp);
-    }
-    for(int i=0; i<V_NUM_MECHANICS; i++)
-    {
-        mechanicCounters[i]->setTransparency(transparency, mouseInApp);
     }
 }
 
@@ -500,54 +345,14 @@ int SynergyHandler::getCounters(
         QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
         int &draw, int &toYourHand, int &discover)
 {
-    spellMap = cardTypeCounters[V_SPELL]->getCodeTagMap();
-    minionMap = cardTypeCounters[V_MINION]->getCodeTagMap();
-    weaponMap = cardTypeCounters[V_WEAPON]->getCodeTagMap();
+    CardTypeCounter::getCardTypeCounters(spellMap, minionMap, weaponMap);
+    MechanicCounter::getMechanicCounters(aoeMap, tauntMap, survivabilityMap, drawMap,
+                                         pingMap, damageMap, destroyMap, reachMap,
+                                         draw, toYourHand, discover);
 
     drop2Map = dropCounters[V_DROP2]->getCodeTagMap();
     drop3Map = dropCounters[V_DROP3]->getCodeTagMap();
     drop4Map = dropCounters[V_DROP4]->getCodeTagMap();
-
-    aoeMap = mechanicCounters[V_AOE]->getCodeTagMap();
-    tauntMap = mechanicCounters[V_TAUNT_ALL]->getCodeTagMap();
-    survivabilityMap = mechanicCounters[V_SURVIVABILITY]->getCodeTagMap();
-    drawMap = mechanicCounters[V_DISCOVER_DRAW]->getCodeTagMap();
-    pingMap = mechanicCounters[V_PING]->getCodeTagMap();
-    damageMap = mechanicCounters[V_DAMAGE]->getCodeTagMap();
-    destroyMap = mechanicCounters[V_DESTROY]->getCodeTagMap();
-    reachMap = mechanicCounters[V_REACH]->getCodeTagMap();
-
-    discover = draw = toYourHand = 0;
-    {
-        QMap<QString, int> codeMap = mechanicCounters[V_DISCOVER]->getCodeMap();
-        const QList<QString> codeList = codeMap.keys();
-        for(const QString &code: codeList)
-        {
-            QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-            QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-            discover += codeMap[code] * numDiscoverGen(code, mechanics, referencedTags);
-        }
-    }
-    {
-        QMap<QString, int> codeMap = mechanicCounters[V_DRAW]->getCodeMap();
-        const QList<QString> codeList = codeMap.keys();
-        for(const QString &code: codeList)
-        {
-            QString text = Utility::cardEnTextFromCode(code).toLower();
-            draw += codeMap[code] * numDrawGen(code, text);
-        }
-    }
-    {
-        QMap<QString, int> codeMap = mechanicCounters[V_TOYOURHAND]->getCodeMap();
-        const QList<QString> codeList = codeMap.keys();
-        for(const QString &code: codeList)
-        {
-            QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-            QString text = Utility::cardEnTextFromCode(code).toLower();
-            int cost = Utility::getCardAttribute(code, "cost").toInt();
-            toYourHand += codeMap[code] * numToYourHandGen(code, cost, mechanics, text);
-        }
-    }
 
     return manaCounter->count();
 }
@@ -569,261 +374,31 @@ void SynergyHandler::updateCounters(
         QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
         int &draw, int &toYourHand, int &discover)
 {
-    updateRaceCounters(deckCard);
-    updateSchoolCounters(deckCard);
-    updateCardTypeCounters(deckCard, spellMap, minionMap, weaponMap);
+    QString code = deckCard.getCode();
+    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+    QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
+    QString text = Utility::cardEnTextFromCode(code).toLower();
+    CardType cardType = deckCard.getType();
+    int attack = Utility::getCardAttribute(code, "attack").toInt();
+    int cost = deckCard.getCost();
+
     updateDropCounters(deckCard, drop2Map, drop3Map, drop4Map);
     updateManaCounter(deckCard);
-    updateMechanicCounters(deckCard, aoeMap, tauntMap, survivabilityMap, drawMap,
+    CardTypeCounter::updateCardTypeCounters(deckCard, spellMap, minionMap, weaponMap);
+    RaceCounter::updateRaceCounters(deckCard);
+    SchoolCounter::updateSchoolCounters(deckCard);
+    MechanicCounter::updateMechanicCounters(deckCard, aoeMap, tauntMap, survivabilityMap, drawMap,
                            pingMap, damageMap, destroyMap, reachMap,
                            draw, toYourHand, discover);
+    KeySynergies::updateKeySynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
     updateStatsCards(deckCard);
+    LayeredSynergies::updateLayeredSynergies(code);//TODO arguments
 }
 
 
 void SynergyHandler::updateManaCounter(DeckCard &deckCard)
 {
-    manaCounter->increase(getCorrectedCardMana(deckCard), draftedCardsCount());
-}
-
-
-void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
-{
-    QString code = deckCard.getCode();
-    QString text = Utility::cardEnTextFromCode(code).toLower();
-    QList<CardRace> cardRace = deckCard.getRace();
-    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-
-    if(cardRace.contains(MURLOC) || cardRace.contains(ALL))
-    {
-        raceCounters[V_MURLOC]->increase(code);
-        raceCounters[V_MURLOC_ALL]->increase(code);
-    }
-    else if(isMurlocGen(code))      raceCounters[V_MURLOC_ALL]->increase(code);
-    if(cardRace.contains(DEMON) || cardRace.contains(ALL))
-    {
-        raceCounters[V_DEMON]->increase(code);
-        raceCounters[V_DEMON_ALL]->increase(code);
-    }
-    else if(isDemonGen(code))       raceCounters[V_DEMON_ALL]->increase(code);
-    if(cardRace.contains(MECHANICAL) || cardRace.contains(ALL))
-    {
-        raceCounters[V_MECHANICAL]->increase(code);
-        raceCounters[V_MECHANICAL_ALL]->increase(code);
-    }
-    else if(isMechGen(code))        raceCounters[V_MECHANICAL_ALL]->increase(code);
-    if(cardRace.contains(ELEMENTAL) || cardRace.contains(ALL))
-    {
-        raceCounters[V_ELEMENTAL]->increase(code);
-        raceCounters[V_ELEMENTAL_ALL]->increase(code);
-    }
-    else if(isElementalGen(code))   raceCounters[V_ELEMENTAL_ALL]->increase(code);
-    if(cardRace.contains(BEAST) || cardRace.contains(ALL))
-    {
-        raceCounters[V_BEAST]->increase(code);
-        raceCounters[V_BEAST_ALL]->increase(code);
-    }
-    else if(isBeastGen(code))       raceCounters[V_BEAST_ALL]->increase(code);
-    if(cardRace.contains(TOTEM) || cardRace.contains(ALL))
-    {
-        raceCounters[V_TOTEM]->increase(code);
-        raceCounters[V_TOTEM_ALL]->increase(code);
-    }
-    else if(isTotemGen(code))       raceCounters[V_TOTEM_ALL]->increase(code);
-    if(cardRace.contains(PIRATE) || cardRace.contains(ALL))
-    {
-        raceCounters[V_PIRATE]->increase(code);
-        raceCounters[V_PIRATE_ALL]->increase(code);
-    }
-    else if(isPirateGen(code))      raceCounters[V_PIRATE_ALL]->increase(code);
-    if(cardRace.contains(DRAGON) || cardRace.contains(ALL))
-    {
-        raceCounters[V_DRAGON]->increase(code);
-        raceCounters[V_DRAGON_ALL]->increase(code);
-    }
-    else if(isDragonGen(code))      raceCounters[V_DRAGON_ALL]->increase(code);
-    if(cardRace.contains(NAGA) || cardRace.contains(ALL))
-    {
-        raceCounters[V_NAGA]->increase(code);
-        raceCounters[V_NAGA_ALL]->increase(code);
-    }
-    else if(isNagaGen(code))        raceCounters[V_NAGA_ALL]->increase(code);
-    if(cardRace.contains(UNDEAD) || cardRace.contains(ALL))
-    {
-        raceCounters[V_UNDEAD]->increase(code);
-        raceCounters[V_UNDEAD_ALL]->increase(code);
-    }
-    else if(isUndeadGen(code))      raceCounters[V_UNDEAD_ALL]->increase(code);
-    if(cardRace.contains(QUILBOAR) || cardRace.contains(ALL))
-    {
-        raceCounters[V_QUILBOAR]->increase(code);
-        raceCounters[V_QUILBOAR_ALL]->increase(code);
-    }
-    else if(isQuilboarGen(code))    raceCounters[V_QUILBOAR_ALL]->increase(code);
-    if(cardRace.contains(DRAENEI) || cardRace.contains(ALL))
-    {
-        raceCounters[V_DRAENEI]->increase(code);
-        raceCounters[V_DRAENEI_ALL]->increase(code);
-    }
-    else if(isDraeneiGen(code))    raceCounters[V_DRAENEI_ALL]->increase(code);
-    //New race step
-
-    if(isMurlocSyn(code))                           raceCounters[V_MURLOC]->increaseSyn(code);
-    else if(isMurlocAllSyn(code, text))             raceCounters[V_MURLOC_ALL]->increaseSyn(code);
-    if(isDemonSyn(code))                            raceCounters[V_DEMON]->increaseSyn(code);
-    else if(isDemonAllSyn(code, text))              raceCounters[V_DEMON_ALL]->increaseSyn(code);
-    if(isMechSyn(code))                             raceCounters[V_MECHANICAL]->increaseSyn(code);
-    else if(isMechAllSyn(code, mechanics, text))    raceCounters[V_MECHANICAL_ALL]->increaseSyn(code);
-    if(isElementalSyn(code))                        raceCounters[V_ELEMENTAL]->increaseSyn(code);
-    else if(isElementalAllSyn(code, text))          raceCounters[V_ELEMENTAL_ALL]->increaseSyn(code);
-    if(isBeastSyn(code))                            raceCounters[V_BEAST]->increaseSyn(code);
-    else if(isBeastAllSyn(code, text))              raceCounters[V_BEAST_ALL]->increaseSyn(code);
-    if(isTotemSyn(code))                            raceCounters[V_TOTEM]->increaseSyn(code);
-    else if(isTotemAllSyn(code, text))              raceCounters[V_TOTEM_ALL]->increaseSyn(code);
-    if(isPirateSyn(code))                           raceCounters[V_PIRATE]->increaseSyn(code);
-    else if(isPirateAllSyn(code, text))             raceCounters[V_PIRATE_ALL]->increaseSyn(code);
-    if(isDragonSyn(code))                           raceCounters[V_DRAGON]->increaseSyn(code);
-    else if(isDragonAllSyn(code, text))             raceCounters[V_DRAGON_ALL]->increaseSyn(code);
-    if(isNagaSyn(code))                             raceCounters[V_NAGA]->increaseSyn(code);
-    else if(isNagaAllSyn(code, text))               raceCounters[V_NAGA_ALL]->increaseSyn(code);
-    if(isUndeadSyn(code))                           raceCounters[V_UNDEAD]->increaseSyn(code);
-    else if(isUndeadAllSyn(code, text))             raceCounters[V_UNDEAD_ALL]->increaseSyn(code);
-    if(isQuilboarSyn(code))                         raceCounters[V_QUILBOAR]->increaseSyn(code);
-    else if(isQuilboarAllSyn(code, text))           raceCounters[V_QUILBOAR_ALL]->increaseSyn(code);
-    if(isDraeneiSyn(code))                         raceCounters[V_DRAENEI]->increaseSyn(code);
-    else if(isDraeneiAllSyn(code, text))           raceCounters[V_DRAENEI_ALL]->increaseSyn(code);
-    //New race step
-}
-
-
-void SynergyHandler::updateSchoolCounters(DeckCard &deckCard)
-{
-    QString code = deckCard.getCode();
-    QString text = Utility::cardEnTextFromCode(code).toLower();
-    CardSchool cardSchool = deckCard.getSchool();
-
-    if(cardSchool == ARCANE)
-    {
-        schoolCounters[V_ARCANE]->increase(code);
-        schoolCounters[V_ARCANE_ALL]->increase(code);
-    }
-    else if(isArcaneGen(code))      schoolCounters[V_ARCANE_ALL]->increase(code);
-    if(cardSchool == FEL)
-    {
-        schoolCounters[V_FEL]->increase(code);
-        schoolCounters[V_FEL_ALL]->increase(code);
-    }
-    else if(isFelGen(code))         schoolCounters[V_FEL_ALL]->increase(code);
-    if(cardSchool == FIRE)
-    {
-        schoolCounters[V_FIRE]->increase(code);
-        schoolCounters[V_FIRE_ALL]->increase(code);
-    }
-    else if(isFireGen(code))        schoolCounters[V_FIRE_ALL]->increase(code);
-    if(cardSchool == FROST)
-    {
-        schoolCounters[V_FROST]->increase(code);
-        schoolCounters[V_FROST_ALL]->increase(code);
-    }
-    else if(isFrostGen(code))       schoolCounters[V_FROST_ALL]->increase(code);
-    if(cardSchool == HOLY)
-    {
-        schoolCounters[V_HOLY]->increase(code);
-        schoolCounters[V_HOLY_ALL]->increase(code);
-    }
-    else if(isHolyGen(code))        schoolCounters[V_HOLY_ALL]->increase(code);
-    if(cardSchool == SHADOW)
-    {
-        schoolCounters[V_SHADOW]->increase(code);
-        schoolCounters[V_SHADOW_ALL]->increase(code);
-    }
-    else if(isShadowGen(code))      schoolCounters[V_SHADOW_ALL]->increase(code);
-    if(cardSchool == NATURE)
-    {
-        schoolCounters[V_NATURE]->increase(code);
-        schoolCounters[V_NATURE_ALL]->increase(code);
-    }
-    else if(isNatureGen(code))      schoolCounters[V_NATURE_ALL]->increase(code);
-
-    if(isArcaneSyn(code))                           schoolCounters[V_ARCANE]->increaseSyn(code);
-    else if(isArcaneAllSyn(code, text))             schoolCounters[V_ARCANE_ALL]->increaseSyn(code);
-    if(isFelSyn(code))                              schoolCounters[V_FEL]->increaseSyn(code);
-    else if(isFelAllSyn(code, text))                schoolCounters[V_FEL_ALL]->increaseSyn(code);
-    if(isFireSyn(code))                             schoolCounters[V_FIRE]->increaseSyn(code);
-    else if(isFireAllSyn(code, text))               schoolCounters[V_FIRE_ALL]->increaseSyn(code);
-    if(isFrostSyn(code))                            schoolCounters[V_FROST]->increaseSyn(code);
-    else if(isFrostAllSyn(code, text))              schoolCounters[V_FROST_ALL]->increaseSyn(code);
-    if(isHolySyn(code))                             schoolCounters[V_HOLY]->increaseSyn(code);
-    else if(isHolyAllSyn(code, text))               schoolCounters[V_HOLY_ALL]->increaseSyn(code);
-    if(isShadowSyn(code))                           schoolCounters[V_SHADOW]->increaseSyn(code);
-    else if(isShadowAllSyn(code, text))             schoolCounters[V_SHADOW_ALL]->increaseSyn(code);
-    if(isNatureSyn(code))                           schoolCounters[V_NATURE]->increaseSyn(code);
-    else if(isNatureAllSyn(code, text))             schoolCounters[V_NATURE_ALL]->increaseSyn(code);
-}
-
-
-void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard, QMap<QString, QString> &spellMap, QMap<QString,
-                                            QString> &minionMap, QMap<QString, QString> &weaponMap)
-{
-    QString code = deckCard.getCode();
-    QString text = Utility::cardEnTextFromCode(code).toLower();
-    CardType cardType = deckCard.getType();
-
-    if(cardType == SPELL)
-    {
-        cardTypeCounters[V_SPELL]->increase(code);
-        cardTypeCounters[V_SPELL_ALL]->increase(code);
-        spellMap.insertMulti(code, "");
-    }
-    else if(isSpellGen(code))
-    {
-        cardTypeCounters[V_SPELL_ALL]->increase(code);
-        cardTypeCounters[V_SPELL]->increaseExtra(code);
-        spellMap.insertMulti(code, ".");
-    }
-    if(cardType == MINION || cardType == HERO || cardType == LOCATION)
-    {
-        cardTypeCounters[V_MINION]->increase(code);
-        cardTypeCounters[V_MINION_ALL]->increase(code);
-        minionMap.insertMulti(code, "");
-    }
-    else if(isMinionGen(code))
-    {
-        cardTypeCounters[V_MINION_ALL]->increase(code);
-        cardTypeCounters[V_MINION]->increaseExtra(code);
-        minionMap.insertMulti(code, ".");
-    }
-    if(cardType == WEAPON)
-    {
-        cardTypeCounters[V_WEAPON]->increase(code);
-        cardTypeCounters[V_WEAPON_ALL]->increase(code);
-        weaponMap.insertMulti(code, "");
-    }
-    else if(isWeaponGen(code, text))
-    {
-        cardTypeCounters[V_WEAPON_ALL]->increase(code);
-        cardTypeCounters[V_WEAPON]->increaseExtra(code);
-        weaponMap.insertMulti(code, ".");
-    }
-    if(cardType == LOCATION)
-    {
-        cardTypeCounters[V_LOCATION]->increase(code);
-        cardTypeCounters[V_LOCATION_ALL]->increase(code);
-    }
-    else if(isLocationGen(code))
-    {
-        cardTypeCounters[V_LOCATION_ALL]->increase(code);
-    }
-
-
-    if(isSpellSyn(code))                cardTypeCounters[V_SPELL]->increaseSyn(code);
-    else if(isSpellAllSyn(code, text))  cardTypeCounters[V_SPELL_ALL]->increaseSyn(code);
-    if(isMinionSyn(code))               cardTypeCounters[V_MINION]->increaseSyn(code);
-    else if(isMinionAllSyn(code))       cardTypeCounters[V_MINION_ALL]->increaseSyn(code);
-    if(isWeaponSyn(code))               cardTypeCounters[V_WEAPON]->increaseSyn(code);
-    else if(isWeaponAllSyn(code, text)) cardTypeCounters[V_WEAPON_ALL]->increaseSyn(code);
-    if(isLocationSyn(code))             cardTypeCounters[V_LOCATION]->increaseSyn(code);
-    else if(isLocationAllSyn(code, text)) cardTypeCounters[V_LOCATION_ALL]->increaseSyn(code);
+    manaCounter->increase(getCorrectedCardMana(deckCard), CardTypeCounter::draftedCardsCount());//TODO deckCard
 }
 
 
@@ -904,117 +479,6 @@ void SynergyHandler::updateDropCounters(DeckCard &deckCard, QMap<QString, QStrin
     {
         dropCounters[i]->increaseNumCards();
     }
-}
-
-
-void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
-                                            QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
-                                            QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
-                                            QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
-                                            QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
-                                            int &draw, int &toYourHand, int &discover)
-{
-    bool isSurvivability = false;
-    QString code = deckCard.getCode();
-    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-    QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-    QString text = Utility::cardEnTextFromCode(code).toLower();
-    CardType cardType = deckCard.getType();
-    int attack = Utility::getCardAttribute(code, "attack").toInt();
-    int cost = deckCard.getCost();
-
-    //GEN
-    if(isDiscoverDrawGen(code, cost, mechanics, referencedTags, text))
-    {
-        mechanicCounters[V_DISCOVER_DRAW]->increase(code);
-        drawMap.insertMulti(code, "");
-    }
-    if(isAoeGen(code, text))
-    {
-        mechanicCounters[V_AOE]->increase(code);
-        aoeMap.insertMulti(code, "");
-    }
-    if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))
-    {
-        mechanicCounters[V_PING]->increase(code);
-        pingMap.insertMulti(code, "");
-    }
-    if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack))
-    {
-        mechanicCounters[V_DAMAGE]->increase(code);
-        damageMap.insertMulti(code, "");
-    }
-    if(isDestroyGen(code, mechanics, text))
-    {
-        mechanicCounters[V_DESTROY]->increase(code);
-        destroyMap.insertMulti(code, "");
-    }
-    if(isReachGen(code, mechanics, referencedTags, text, cardType, attack))
-    {
-        mechanicCounters[V_REACH]->increase(code);
-        reachMap.insertMulti(code, "");
-    }
-    if(isRestoreFriendlyHeroGen(code, mechanics, referencedTags, text))
-    {
-        mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increase(code);
-        isSurvivability = true;
-    }
-    if(isArmorGen(code, text))
-    {
-        mechanicCounters[V_ARMOR]->increase(code);
-        isSurvivability = true;
-    }
-    if(isSurvivability)
-    {
-        mechanicCounters[V_SURVIVABILITY]->increase(code);
-        survivabilityMap.insertMulti(code, "");
-    }
-    if(isTaunt(code, mechanics))
-    {
-        mechanicCounters[V_TAUNT]->increase(code);
-        mechanicCounters[V_TAUNT_ALL]->increase(code);
-        tauntMap.insertMulti(code, "");
-    }
-    else if(isTauntGen(code, referencedTags))
-    {
-        mechanicCounters[V_TAUNT_ALL]->increase(code);
-        tauntMap.insertMulti(code, "");
-    }
-    discover = numDiscoverGen(code, mechanics, referencedTags);
-    draw = numDrawGen(code, text);
-    toYourHand = numToYourHandGen(code, cost, mechanics, text);
-    if(discover > 0)                                                        mechanicCounters[V_DISCOVER]->increase(code);
-    if(draw > 0)                                                            mechanicCounters[V_DRAW]->increase(code);
-    if(toYourHand > 0)                                                      mechanicCounters[V_TOYOURHAND]->increase(code);
-
-    //Sinergia deathrattle
-    if(isDeathrattleMinion(code, mechanics, cardType))                      mechanicCounters[V_DEATHRATTLE]->increase(code);
-    if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType))     mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increase(code);
-
-    //Sinergias gen-gen
-    if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
-    if(isHeroPowerGen(code, text))                                          mechanicCounters[V_HERO_POWER]->increase(code);
-
-
-    //SYN
-    if(isDiscoverSyn(code))                                                 mechanicCounters[V_DISCOVER]->increaseSyn(code);
-    if(isDrawSyn(code))                                                     mechanicCounters[V_DRAW]->increaseSyn(code);
-    if(isToYourHandSyn(code))                                               mechanicCounters[V_TOYOURHAND]->increaseSyn(code);
-    if(isRestoreFriendlyHeroSyn(code))                                      mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increaseSyn(code);
-    if(isArmorSyn(code))                                                    mechanicCounters[V_ARMOR]->increaseSyn(code);
-    if(isReachSyn(code))                                                    mechanicCounters[V_REACH]->increaseSyn(code);
-    if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
-    else if(isTauntAllSyn(code))                                            mechanicCounters[V_TAUNT_ALL]->increaseSyn(code);
-    if(isPingSyn(code))                                                     mechanicCounters[V_PING]->increaseSyn(code);
-    if(isDamageMinionsSyn(code))                                            mechanicCounters[V_DAMAGE]->increaseSyn(code);
-    if(isDestroySyn(code))                                                  mechanicCounters[V_DESTROY]->increaseSyn(code);
-    if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
-
-    if(isDeathrattleSyn(code))                                              mechanicCounters[V_DEATHRATTLE]->increaseSyn(code);
-    else if(isDeathrattleGoodAllSyn(code, text))                            mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increaseSyn(code);
-
-    KeySynergies::updateKeySynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
-    LayeredSynergies::updateLayeredSynergies(code);
 }
 
 
@@ -1114,68 +578,33 @@ void SynergyHandler::updateStatsCards(DeckCard &deckCard)
 void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap,
                                   QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor)
 {
-    getCardTypeSynergies(deckCard, synergyTagMap);
-    getDropMechanicIcons(deckCard, mechanicIcons, dropBorderColor);
-    getRaceSynergies(deckCard, synergyTagMap);
-    getSchoolSynergies(deckCard, synergyTagMap);
-    getMechanicSynergies(deckCard, synergyTagMap, mechanicIcons);
-    getDirectLinkSynergies(deckCard, synergyTagMap["Extra"]);
-    getStatsCardsSynergies(deckCard, synergyTagMap);
-}
-
-
-void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap)
-{
     QString code = deckCard.getCode();
+    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+    QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
-
-    //Evita mostrar spellSyn/spellAllSyn cards en cada hechizo que veamos, es sinergia debil
-    // if(cardType == SPELL)
-    // {
-    //    cardTypeCounters[V_SPELL]->insertSynCards(synergyTagMap);
-    //    cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergyTagMap);
-    // }
-    // else if(isSpellGen(code))                   cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergyTagMap);
-    // if(cardType == MINION)
-    // {
-    //     cardTypeCounters[V_MINION]->insertSynCards(synergyTagMap);
-    //     cardTypeCounters[V_MINION_ALL]->insertSynCards(synergyTagMap);
-    // }
-    // else if(isMinionGen(code))                  cardTypeCounters[V_MINION_ALL]->insertSynCards(synergyTagMap);
-    if(cardType == WEAPON)
-    {
-        cardTypeCounters[V_WEAPON]->insertSynCards(synergyTagMap);
-        cardTypeCounters[V_WEAPON_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isWeaponGen(code, text))            cardTypeCounters[V_WEAPON_ALL]->insertSynCards(synergyTagMap);
-    if(cardType == LOCATION)
-    {
-        cardTypeCounters[V_LOCATION]->insertSynCards(synergyTagMap);
-        cardTypeCounters[V_LOCATION_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isLocationGen(code))                cardTypeCounters[V_LOCATION_ALL]->insertSynCards(synergyTagMap);
+    int attack = Utility::getCardAttribute(code, "attack").toInt();
+    int health = Utility::getCardAttribute(code, "health").toInt();
+    int cost = deckCard.getCost();
+    QList<CardRace> cardRace = deckCard.getRace();
+    CardSchool cardSchool = deckCard.getSchool();
 
 
-    if(isSpellSyn(code))                        cardTypeCounters[V_SPELL]->insertCards(synergyTagMap);
-    else if(isSpellAllSyn(code, text))          cardTypeCounters[V_SPELL_ALL]->insertCards(synergyTagMap);
-    if(isMinionSyn(code))                       cardTypeCounters[V_MINION]->insertCards(synergyTagMap);
-    else if(isMinionAllSyn(code))               cardTypeCounters[V_MINION_ALL]->insertCards(synergyTagMap);
-    if(isWeaponSyn(code))                       cardTypeCounters[V_WEAPON]->insertCards(synergyTagMap);
-    else if(isWeaponAllSyn(code, text))         cardTypeCounters[V_WEAPON_ALL]->insertCards(synergyTagMap);
-    if(isLocationSyn(code))                     cardTypeCounters[V_LOCATION]->insertCards(synergyTagMap);
-    else if(isLocationAllSyn(code, text))       cardTypeCounters[V_LOCATION_ALL]->insertCards(synergyTagMap);
+    getDropMechanicIcons(code, mechanicIcons, dropBorderColor, attack, health, cost);
+    CardTypeCounter::getCardTypeSynergies(code, synergyTagMap, text, cardType);
+    RaceCounter::getRaceSynergies(code, synergyTagMap, mechanics, text, cardRace);
+    SchoolCounter::getSchoolSynergies(code, synergyTagMap, text, cardSchool);
+    MechanicCounter::getMechanicSynergies(code, synergyTagMap, mechanicIcons, mechanics, referencedTags, text, cardType, attack, cost);
+    KeySynergies::getKeySynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
+    getStatsCardsSynergies(code, synergyTagMap, cardType, attack, health, cost);
+    LayeredSynergies::getLayeredSynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
+    CardTypeCounter::getDirectLinkSynergies(code, directLinks, synergyTagMap["Extra"]);
 }
 
 
-void SynergyHandler::getDropMechanicIcons(DeckCard &deckCard, QMap<MechanicIcons, int> &mechanicIcons,
-                                          MechanicBorderColor &dropBorderColor)
+void SynergyHandler::getDropMechanicIcons(const QString &code, QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor,
+                                          int attack, int health, int cost)
 {
-    QString code = deckCard.getCode();
-    int cost = deckCard.getCost();
-    int attack = Utility::getCardAttribute(code, "attack").toInt();
-    int health = Utility::getCardAttribute(code, "health").toInt();
-
     if(isDrop2(code, cost, attack, health))
     {
         mechanicIcons[M_DROP2] = dropCounters[V_DROP2]->count() + 1;
@@ -1198,323 +627,22 @@ void SynergyHandler::getDropMechanicIcons(DeckCard &deckCard, QMap<MechanicIcons
 }
 
 
-void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap)
+void SynergyHandler::getStatsCardsSynergies(const QString &code, QMap<QString, QMap<QString, int>> &synergyTagMap,
+                                            CardType cardType, int attack, int health, int cost)
 {
-    QString code = deckCard.getCode();
-    QString text = Utility::cardEnTextFromCode(code).toLower();
-    QList<CardRace> cardRace = deckCard.getRace();
-    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-
-    if(cardRace.contains(MURLOC) || cardRace.contains(ALL))
+    if(cardType == MINION)
     {
-        raceCounters[V_MURLOC]->insertSynCards(synergyTagMap);
-        raceCounters[V_MURLOC_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isMurlocGen(code))      raceCounters[V_MURLOC_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace.contains(DEMON) || cardRace.contains(ALL))
-    {
-        raceCounters[V_DEMON]->insertSynCards(synergyTagMap);
-        raceCounters[V_DEMON_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isDemonGen(code))       raceCounters[V_DEMON_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace.contains(MECHANICAL) || cardRace.contains(ALL))
-    {
-        raceCounters[V_MECHANICAL]->insertSynCards(synergyTagMap);
-        raceCounters[V_MECHANICAL_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isMechGen(code))        raceCounters[V_MECHANICAL_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace.contains(ELEMENTAL) || cardRace.contains(ALL))
-    {
-        raceCounters[V_ELEMENTAL]->insertSynCards(synergyTagMap);
-        raceCounters[V_ELEMENTAL_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isElementalGen(code))   raceCounters[V_ELEMENTAL_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace.contains(BEAST) || cardRace.contains(ALL))
-    {
-        raceCounters[V_BEAST]->insertSynCards(synergyTagMap);
-        raceCounters[V_BEAST_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isBeastGen(code))       raceCounters[V_BEAST_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace.contains(TOTEM) || cardRace.contains(ALL))
-    {
-        raceCounters[V_TOTEM]->insertSynCards(synergyTagMap);
-        raceCounters[V_TOTEM_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isTotemGen(code))       raceCounters[V_TOTEM_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace.contains(PIRATE) || cardRace.contains(ALL))
-    {
-        raceCounters[V_PIRATE]->insertSynCards(synergyTagMap);
-        raceCounters[V_PIRATE_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isPirateGen(code))      raceCounters[V_PIRATE_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace.contains(DRAGON) || cardRace.contains(ALL))
-    {
-        raceCounters[V_DRAGON]->insertSynCards(synergyTagMap);
-        raceCounters[V_DRAGON_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isDragonGen(code))      raceCounters[V_DRAGON_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace.contains(NAGA) || cardRace.contains(ALL))
-    {
-        raceCounters[V_NAGA]->insertSynCards(synergyTagMap);
-        raceCounters[V_NAGA_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isNagaGen(code))        raceCounters[V_NAGA_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace.contains(UNDEAD) || cardRace.contains(ALL))
-    {
-        raceCounters[V_UNDEAD]->insertSynCards(synergyTagMap);
-        raceCounters[V_UNDEAD_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isUndeadGen(code))      raceCounters[V_UNDEAD_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace.contains(QUILBOAR) || cardRace.contains(ALL))
-    {
-        raceCounters[V_QUILBOAR]->insertSynCards(synergyTagMap);
-        raceCounters[V_QUILBOAR_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isQuilboarGen(code))    raceCounters[V_QUILBOAR_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace.contains(DRAENEI) || cardRace.contains(ALL))
-    {
-        raceCounters[V_DRAENEI]->insertSynCards(synergyTagMap);
-        raceCounters[V_DRAENEI_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isDraeneiGen(code))    raceCounters[V_DRAENEI_ALL]->insertSynCards(synergyTagMap);
-    //New race step
-
-    if(isMurlocSyn(code))                           raceCounters[V_MURLOC]->insertCards(synergyTagMap);
-    else if(isMurlocAllSyn(code, text))             raceCounters[V_MURLOC_ALL]->insertCards(synergyTagMap);
-    if(isDemonSyn(code))                            raceCounters[V_DEMON]->insertCards(synergyTagMap);
-    else if(isDemonAllSyn(code, text))              raceCounters[V_DEMON_ALL]->insertCards(synergyTagMap);
-    if(isMechSyn(code))                             raceCounters[V_MECHANICAL]->insertCards(synergyTagMap);
-    else if(isMechAllSyn(code, mechanics, text))    raceCounters[V_MECHANICAL_ALL]->insertCards(synergyTagMap);
-    if(isElementalSyn(code))                        raceCounters[V_ELEMENTAL]->insertCards(synergyTagMap);
-    else if(isElementalAllSyn(code, text))          raceCounters[V_ELEMENTAL_ALL]->insertCards(synergyTagMap);
-    if(isBeastSyn(code))                            raceCounters[V_BEAST]->insertCards(synergyTagMap);
-    else if(isBeastAllSyn(code, text))              raceCounters[V_BEAST_ALL]->insertCards(synergyTagMap);
-    if(isTotemSyn(code))                            raceCounters[V_TOTEM]->insertCards(synergyTagMap);
-    else if(isTotemAllSyn(code, text))              raceCounters[V_TOTEM_ALL]->insertCards(synergyTagMap);
-    if(isPirateSyn(code))                           raceCounters[V_PIRATE]->insertCards(synergyTagMap);
-    else if(isPirateAllSyn(code, text))             raceCounters[V_PIRATE_ALL]->insertCards(synergyTagMap);
-    if(isDragonSyn(code))                           raceCounters[V_DRAGON]->insertCards(synergyTagMap);
-    else if(isDragonAllSyn(code, text))             raceCounters[V_DRAGON_ALL]->insertCards(synergyTagMap);
-    if(isNagaSyn(code))                             raceCounters[V_NAGA]->insertCards(synergyTagMap);
-    else if(isNagaAllSyn(code, text))               raceCounters[V_NAGA_ALL]->insertCards(synergyTagMap);
-    if(isUndeadSyn(code))                           raceCounters[V_UNDEAD]->insertCards(synergyTagMap);
-    else if(isUndeadAllSyn(code, text))             raceCounters[V_UNDEAD_ALL]->insertCards(synergyTagMap);
-    if(isQuilboarSyn(code))                         raceCounters[V_QUILBOAR]->insertCards(synergyTagMap);
-    else if(isQuilboarAllSyn(code, text))           raceCounters[V_QUILBOAR_ALL]->insertCards(synergyTagMap);
-    if(isDraeneiSyn(code))                          raceCounters[V_DRAENEI]->insertCards(synergyTagMap);
-    else if(isDraeneiAllSyn(code, text))            raceCounters[V_DRAENEI_ALL]->insertCards(synergyTagMap);
-    //New race step
-}
-
-
-void SynergyHandler::getSchoolSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap)
-{
-    QString code = deckCard.getCode();
-    QString text = Utility::cardEnTextFromCode(code).toLower();
-    CardSchool cardSchool = deckCard.getSchool();
-
-    if(cardSchool == ARCANE)
-    {
-        schoolCounters[V_ARCANE]->insertSynCards(synergyTagMap);
-        schoolCounters[V_ARCANE_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isArcaneGen(code))      schoolCounters[V_ARCANE_ALL]->insertSynCards(synergyTagMap);
-    if(cardSchool == FEL)
-    {
-        schoolCounters[V_FEL]->insertSynCards(synergyTagMap);
-        schoolCounters[V_FEL_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isFelGen(code))       schoolCounters[V_FEL_ALL]->insertSynCards(synergyTagMap);
-    if(cardSchool == FIRE)
-    {
-        schoolCounters[V_FIRE]->insertSynCards(synergyTagMap);
-        schoolCounters[V_FIRE_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isFireGen(code))        schoolCounters[V_FIRE_ALL]->insertSynCards(synergyTagMap);
-    if(cardSchool == FROST)
-    {
-        schoolCounters[V_FROST]->insertSynCards(synergyTagMap);
-        schoolCounters[V_FROST_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isFrostGen(code))   schoolCounters[V_FROST_ALL]->insertSynCards(synergyTagMap);
-    if(cardSchool == HOLY)
-    {
-        schoolCounters[V_HOLY]->insertSynCards(synergyTagMap);
-        schoolCounters[V_HOLY_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isHolyGen(code))       schoolCounters[V_HOLY_ALL]->insertSynCards(synergyTagMap);
-    if(cardSchool == SHADOW)
-    {
-        schoolCounters[V_SHADOW]->insertSynCards(synergyTagMap);
-        schoolCounters[V_SHADOW_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isShadowGen(code))       schoolCounters[V_SHADOW_ALL]->insertSynCards(synergyTagMap);
-    if(cardSchool == NATURE)
-    {
-        schoolCounters[V_NATURE]->insertSynCards(synergyTagMap);
-        schoolCounters[V_NATURE_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isNatureGen(code))      schoolCounters[V_NATURE_ALL]->insertSynCards(synergyTagMap);
-
-    if(isArcaneSyn(code))                           schoolCounters[V_ARCANE]->insertCards(synergyTagMap);
-    else if(isArcaneAllSyn(code, text))             schoolCounters[V_ARCANE_ALL]->insertCards(synergyTagMap);
-    if(isFelSyn(code))                              schoolCounters[V_FEL]->insertCards(synergyTagMap);
-    else if(isFelAllSyn(code, text))                schoolCounters[V_FEL_ALL]->insertCards(synergyTagMap);
-    if(isFireSyn(code))                             schoolCounters[V_FIRE]->insertCards(synergyTagMap);
-    else if(isFireAllSyn(code, text))               schoolCounters[V_FIRE_ALL]->insertCards(synergyTagMap);
-    if(isFrostSyn(code))                            schoolCounters[V_FROST]->insertCards(synergyTagMap);
-    else if(isFrostAllSyn(code, text))              schoolCounters[V_FROST_ALL]->insertCards(synergyTagMap);
-    if(isHolySyn(code))                             schoolCounters[V_HOLY]->insertCards(synergyTagMap);
-    else if(isHolyAllSyn(code, text))               schoolCounters[V_HOLY_ALL]->insertCards(synergyTagMap);
-    if(isShadowSyn(code))                           schoolCounters[V_SHADOW]->insertCards(synergyTagMap);
-    else if(isShadowAllSyn(code, text))             schoolCounters[V_SHADOW_ALL]->insertCards(synergyTagMap);
-    if(isNatureSyn(code))                           schoolCounters[V_NATURE]->insertCards(synergyTagMap);
-    else if(isNatureAllSyn(code, text))             schoolCounters[V_NATURE_ALL]->insertCards(synergyTagMap);
-}
-
-
-void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap,
-                                          QMap<MechanicIcons, int> &mechanicIcons)
-{
-    QString code = deckCard.getCode();
-    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-    QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-    QString text = Utility::cardEnTextFromCode(code).toLower();
-    CardType cardType = deckCard.getType();
-    int attack = Utility::getCardAttribute(code, "attack").toInt();
-    int cost = deckCard.getCost();
-    bool addRestoreIcon = false;
-
-    //GEN
-    if(isDiscoverDrawGen(code, cost, mechanics, referencedTags, text))
-    {
-        mechanicIcons[M_DISCOVER_DRAW] = mechanicCounters[V_DISCOVER_DRAW]->count() + 1;
-    }
-    if(isTaunt(code, mechanics))
-    {
-        mechanicCounters[V_TAUNT]->insertSynCards(synergyTagMap);
-        mechanicCounters[V_TAUNT_ALL]->insertSynCards(synergyTagMap);
-        mechanicIcons[M_TAUNT_ALL] = mechanicCounters[V_TAUNT_ALL]->count() + 1;
-    }
-    else if(isTauntGen(code, referencedTags))
-    {
-        mechanicCounters[V_TAUNT_ALL]->insertSynCards(synergyTagMap);
-        mechanicIcons[M_TAUNT_ALL] = mechanicCounters[V_TAUNT_ALL]->count() + 1;
-    }
-    if(isAoeGen(code, text))
-    {
-        mechanicCounters[V_AOE]->insertSynCards(synergyTagMap);
-        mechanicIcons[M_AOE] = mechanicCounters[V_AOE]->count() + 1;
-    }
-    if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))
-    {
-        mechanicCounters[V_PING]->insertSynCards(synergyTagMap);
-        mechanicIcons[M_PING] = mechanicCounters[V_PING]->count() + 1;
-    }
-    if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack))
-    {
-        mechanicIcons[M_DAMAGE] = mechanicCounters[V_DAMAGE]->count() + 1;
-    }
-    if(isDestroyGen(code, mechanics, text))
-    {
-        mechanicIcons[M_DESTROY] = mechanicCounters[V_DESTROY]->count() + 1;
-    }
-    if(isReachGen(code, mechanics, referencedTags, text, cardType, attack))
-    {
-        mechanicIcons[M_REACH] = mechanicCounters[V_REACH]->count() + 1;
-    }
-    if(isArmorGen(code, text))
-    {
-        mechanicCounters[V_ARMOR]->insertSynCards(synergyTagMap);
-        addRestoreIcon = true;
-    }
-    if(isRestoreFriendlyHeroGen(code, mechanics, referencedTags, text))
-    {
-        mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertSynCards(synergyTagMap);
-        addRestoreIcon = true;
-    }
-    if(addRestoreIcon)
-    {
-        mechanicIcons[M_SURVIVABILITY] = mechanicCounters[V_SURVIVABILITY]->count() + 1;
-    }
-    if(isDiscoverGen(code, mechanics, referencedTags))          mechanicCounters[V_DISCOVER]->insertSynCards(synergyTagMap);
-    if(isDrawGen(code, text))                                   mechanicCounters[V_DRAW]->insertSynCards(synergyTagMap);
-    if(isToYourHandGen(code, cost, mechanics, text))            mechanicCounters[V_TOYOURHAND]->insertSynCards(synergyTagMap);
-
-    if(isDeathrattleMinion(code, mechanics, cardType))          mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergyTagMap);
-    if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType)) mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertSynCards(synergyTagMap);
-
-    //Sinergias gen-gen
-    if(isJadeGolemGen(code, mechanics, referencedTags))         mechanicCounters[V_JADE_GOLEM]->insertCards(synergyTagMap);
-    //Sinergias gen-gen -- Evitamos sinergias con la misma carta
-    if(isHeroPowerGen(code, text))                              mechanicCounters[V_HERO_POWER]->insertCards(synergyTagMap, code);
-
-
-    //SYN
-    if(isDiscoverSyn(code))                                     mechanicCounters[V_DISCOVER]->insertCards(synergyTagMap);
-    if(isDrawSyn(code))                                         mechanicCounters[V_DRAW]->insertCards(synergyTagMap);
-    if(isToYourHandSyn(code))                                   mechanicCounters[V_TOYOURHAND]->insertCards(synergyTagMap);
-    if(isRestoreFriendlyHeroSyn(code))                          mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertCards(synergyTagMap);
-    if(isArmorSyn(code))                                        mechanicCounters[V_ARMOR]->insertCards(synergyTagMap);
-    if(isReachSyn(code))                                        mechanicCounters[V_REACH]->insertCards(synergyTagMap);
-    if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergyTagMap);
-    else if(isTauntAllSyn(code))                                mechanicCounters[V_TAUNT_ALL]->insertCards(synergyTagMap);
-    if(isPingSyn(code))                                         mechanicCounters[V_PING]->insertCards(synergyTagMap);
-    if(isDamageMinionsSyn(code))                                mechanicCounters[V_DAMAGE]->insertCards(synergyTagMap);
-    if(isDestroySyn(code))                                      mechanicCounters[V_DESTROY]->insertCards(synergyTagMap);
-    if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergyTagMap);
-
-    if(isDeathrattleSyn(code))                                  mechanicCounters[V_DEATHRATTLE]->insertCards(synergyTagMap);
-    else if(isDeathrattleGoodAllSyn(code, text))                mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertCards(synergyTagMap);
-
-    KeySynergies::getKeySynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
-    LayeredSynergies::getLayeredSynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
-}
-
-
-void SynergyHandler::getDirectLinkSynergies(DeckCard &deckCard, QMap<QString,int> &synergies)
-{
-    QString code = deckCard.getCode();
-
-    if(directLinks.contains(code))
-    {
-        const QList<QString> linkCodes = directLinks[code];
-
-        for(const QString &linkCode: linkCodes)
-        {
-            if(cardTypeCounters[V_MINION]->insertCode(linkCode, synergies)){}
-            else if(cardTypeCounters[V_WEAPON]->insertCode(linkCode, synergies)){}
-            else cardTypeCounters[V_SPELL]->insertCode(linkCode, synergies);
-        }
-    }
-}
-
-
-void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap)
-{
-    QString code = deckCard.getCode();
-
-    if(deckCard.getType() == MINION)
-    {
-        //Stats
-        int attack = Utility::getCardAttribute(code, "attack").toInt();
-        int health = Utility::getCardAttribute(code, "health").toInt();
-
-        costMinions.insertCards(true, deckCard.getCost(), synergyTagMap["Cost"]);
+        costMinions.insertCards(true, cost, synergyTagMap["Cost"]);
         attackMinions.insertCards(true, attack, synergyTagMap["Attack"]);
         healthMinions.insertCards(true, health, synergyTagMap["Health"]);
     }
-    else if(deckCard.getType() == SPELL)
+    else if(cardType == SPELL)
     {
-        costSpells.insertCards(true, deckCard.getCost(), synergyTagMap["Cost"]);
+        costSpells.insertCards(true, cost, synergyTagMap["Cost"]);
     }
-    else if(deckCard.getType() == WEAPON)
+    else if(cardType == WEAPON)
     {
-        //Stats
-        int attack = Utility::getCardAttribute(code, "attack").toInt();
-        int health = Utility::getCardAttribute(code, "health").toInt();
-
-        costWeapons.insertCards(true, deckCard.getCost(), synergyTagMap["Cost"]);
+        costWeapons.insertCards(true, cost, synergyTagMap["Cost"]);
         attackWeapons.insertCards(true, attack, synergyTagMap["Attack"]);
         healthWeapons.insertCards(true, health, synergyTagMap["Health"]);
     }
@@ -1633,7 +761,7 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic, QRegularExpress
         "deathrattleSyn", "deathrattleGoodAllSyn",
 
         "jadeGolemGenGen", "heroPowerGenGenX"
-    };
+    };//TODO validMecs separar
 
     const auto keys = KeySynergies::getListKeySynergies();
     for(const QString &keyS: keys)
@@ -1739,7 +867,7 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
     if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
     else                                codeList.append(Utility::getSetCodes(set, true, onlyCollectible));
 
-    qDebug()<<endl<<"-----SynergiesNames.json-----"<<endl;
+    qDebug()<<"\n-----SynergiesNames.json-----\n";
     for(const QString &code: codeList)
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
@@ -1748,7 +876,7 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
         }
     }
 
-    qDebug()<<endl<<"-----Synergies.json-----"<<endl;
+    qDebug()<<"\n-----Synergies.json-----\n";
     int num = 0;
     for(const QString &code: codeList)
     {
@@ -1874,61 +1002,15 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
 
-    if(isMurlocAllSyn(code, text))          mec<<"murlocAllSyn";
-    if(isDemonAllSyn(code, text))           mec<<"demonAllSyn";
-    if(isMechAllSyn(code, mechanics, text)) mec<<"mechAllSyn";
-    if(isElementalAllSyn(code, text))       mec<<"elementalAllSyn";
-    if(isBeastAllSyn(code, text))           mec<<"beastAllSyn";
-    if(isTotemAllSyn(code, text))           mec<<"totemAllSyn";
-    if(isPirateAllSyn(code, text))          mec<<"pirateAllSyn";
-    if(isDragonAllSyn(code, text))          mec<<"dragonAllSyn";
-    if(isNagaAllSyn(code, text))            mec<<"nagaAllSyn";
-    if(isUndeadAllSyn(code, text))          mec<<"undeadAllSyn";
-    if(isQuilboarAllSyn(code, text))        mec<<"quilboarAllSyn";
-    if(isDraeneiAllSyn(code, text))         mec<<"draeneiAllSyn";
-    //New race step
-
-    if(isArcaneAllSyn(code, text))          mec<<"arcaneAllSyn";
-    if(isFelAllSyn(code, text))             mec<<"felAllSyn";
-    if(isFireAllSyn(code, text))            mec<<"fireAllSyn";
-    if(isFrostAllSyn(code, text))           mec<<"frostAllSyn";
-    if(isHolyAllSyn(code, text))            mec<<"holyAllSyn";
-    if(isShadowAllSyn(code, text))          mec<<"shadowAllSyn";
-    if(isNatureAllSyn(code, text))          mec<<"natureAllSyn";
-
-    if(isWeaponGen(code, text))             mec<<"weaponGen";
-    if(isSpellAllSyn(code, text))           mec<<"spellAllSyn";
-    if(isWeaponAllSyn(code, text))          mec<<"weaponAllSyn";
-    if(isLocationAllSyn(code, text))        mec<<"locationAllSyn";
 
     if(isDrop2(code, cost, attack, health)) mec<<"drop2";
     if(isDrop3(code, cost, attack, health)) mec<<"drop3";
     if(isDrop4(code, cost, attack, health)) mec<<"drop4";
 
-
-    //Gen
-    if(isDiscoverGen(code, mechanics, referencedTags))                      mec<<"discover";
-    if(isDrawGen(code, text))                                               mec<<"draw";
-    if(isToYourHandGen(code, cost, mechanics, text))                        mec<<"toYourHand";
-    if(isAoeGen(code, text))                                                mec<<"aoe";
-    if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mec<<"ping";
-    if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)) mec<<"damageMinions";
-    if(isDestroyGen(code, mechanics, text))                                 mec<<"destroy";
-    if(isReachGen(code, mechanics, referencedTags, text, cardType, attack)) mec<<"reach";
-    if(isRestoreFriendlyHeroGen(code, mechanics, referencedTags, text))     mec<<"restoreFriendlyHeroGen o lifesteal o lifestealGen";
-    if(isArmorGen(code, text))                                              mec<<"armor";
-    if(isTaunt(code, mechanics))                                            mec<<"taunt";
-    else if(isTauntGen(code, referencedTags))                               mec<<"tauntGen";
-
-    if(isDeathrattleMinion(code, mechanics, cardType))                      mec<<"deathrattle o deathrattleOpponent";
-    if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType))     mec<<"deathrattle o deathrattleGen";
-    if(isJadeGolemGen(code, mechanics, referencedTags))                     mec<<"jadeGolemGenGen";
-    if(isHeroPowerGen(code, text))                                          mec<<"heroPowerGenGenX";
-
-
-    //Syn
-    if(isDeathrattleGoodAllSyn(code, text))                                 mec<<"deathrattleGoodAllSyn";
-
+    mec << CardTypeCounter::debugCardTypeSynergies(code, text);
+    mec << RaceCounter::debugRaceSynergies(code, mechanics, text);
+    mec << SchoolCounter::debugSchoolSynergies(code, text);
+    mec << MechanicCounter::debugMechanicSynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
     mec << KeySynergies::debugKeySynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
 
 
@@ -2047,471 +1129,7 @@ void SynergyHandler::debugDrops()
 
 
 //Increase counters
-bool SynergyHandler::isSpellGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("spellGen");
-    return false;
-}
-bool SynergyHandler::isMinionGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("minionGen");
-    return false;
-}
-bool SynergyHandler::isWeaponGen(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("weaponGen");
-    }
-    else if(text.contains("equip "))
-    {
-        return true;
-    }
-    return false;
-}
-bool SynergyHandler::isLocationGen(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("locationGen");
-    }
-    return false;
-}
-bool SynergyHandler::isMurlocGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("murlocGen");
-    return false;
-}
-bool SynergyHandler::isDemonGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("demonGen");
-    return false;
-}
-bool SynergyHandler::isMechGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("mechGen");
-    return false;
-}
-bool SynergyHandler::isElementalGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("elementalGen");
-    return false;
-}
-bool SynergyHandler::isBeastGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("beastGen");
-    return false;
-}
-bool SynergyHandler::isTotemGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("totemGen");
-    return false;
-}
-bool SynergyHandler::isPirateGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("pirateGen");
-    return false;
-}
-bool SynergyHandler::isDragonGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("dragonGen");
-    return false;
-}
-bool SynergyHandler::isNagaGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("nagaGen");
-    return false;
-}
-bool SynergyHandler::isUndeadGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("undeadGen");
-    return false;
-}
-bool SynergyHandler::isQuilboarGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("quilboarGen");
-    return false;
-}
-bool SynergyHandler::isDraeneiGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("draeneiGen");
-    return false;
-}
-//New race step
-bool SynergyHandler::isArcaneGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("arcaneGen");
-    return false;
-}
-bool SynergyHandler::isFelGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("felGen");
-    return false;
-}
-bool SynergyHandler::isFireGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("fireGen");
-    return false;
-}
-bool SynergyHandler::isFrostGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("frostGen");
-    return false;
-}
-bool SynergyHandler::isHolyGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("holyGen");
-    return false;
-}
-bool SynergyHandler::isShadowGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("shadowGen");
-    return false;
-}
-bool SynergyHandler::isNatureGen(const QString &code)
-{
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("natureGen");
-    return false;
-}
-bool SynergyHandler::isDiscoverDrawGen(const QString &code, int cost, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                                       const QString &text)
-{
-    //TEST
-    //&& (text.contains("draw") || text.contains("discover") || (text.contains("to") && text.contains("your") && text.contains("hand")))
-    return(isDiscoverGen(code, mechanics, referencedTags) ||
-            isDrawGen(code, text) ||
-            isToYourHandGen(code, cost, mechanics, text));
-}
-bool SynergyHandler::isDiscoverGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
-{
-    return numDiscoverGen(code, mechanics, referencedTags)>0;
-}
-int SynergyHandler::numDiscoverGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
-{
-    //TEST
-    //&& text.contains("discover")
-    if(synergyCodes.contains(code))
-    {
-        for(QString mechanic: (const QStringList)synergyCodes[code])
-        {
-            if(mechanic.startsWith("discover"))
-            {
-                mechanic.remove(0,8);
-                if(!mechanic.isEmpty())     return mechanic.toInt();
-                return 1;
-            }
-        }
-        return 0;
-    }
-    else if(mechanics.contains(QJsonValue("DISCOVER")) || referencedTags.contains(QJsonValue("DISCOVER")))
-    {
-        return 1;
-    }
-    return 0;
-}
-bool SynergyHandler::isDrawGen(const QString &code, const QString &text)
-{
-    return numDrawGen(code, text)>0;
-}
-int SynergyHandler::numDrawGen(const QString &code, const QString &text)
-{
-    //TEST
-    //&& text.contains("draw")
-    if(synergyCodes.contains(code))
-    {
-        for(QString mechanic: (const QStringList)synergyCodes[code])
-        {
-            if(mechanic.startsWith("draw"))
-            {
-                mechanic.remove(0,4);
-                if(!mechanic.isEmpty())     return mechanic.toInt();
-                return 1;
-            }
-        }
-        return 0;
-    }
-    else if((text.contains("draw") && !text.contains("drawn")))
-    {
-        return 1;
-    }
-    return 0;
-}
-bool SynergyHandler::isToYourHandGen(const QString &code, int cost, const QJsonArray &mechanics, const QString &text)
-{
-    return numToYourHandGen(code, cost, mechanics, text)>0;
-}
-int SynergyHandler::numToYourHandGen(const QString &code, int cost, const QJsonArray &mechanics, const QString &text)
-{
-    //TEST
-    //&& (text.contains("to") && text.contains("your") && text.contains("hand"))
-    if(synergyCodes.contains(code))
-    {
-        for(QString mechanic: (const QStringList)synergyCodes[code])
-        {
-            if(mechanic.startsWith("toYourHand"))
-            {
-                mechanic.remove(0,10);
-                if(!mechanic.isEmpty())     return mechanic.toInt();
-                return 1;
-            }
-        }
-        if(synergyCodes[code].contains("echo")) return 1;
-        return 0;
-    }
-    else if(mechanics.contains(QJsonValue("ECHO"))) return 1;
-    else if(cost > 1 && mechanics.contains(QJsonValue("TWINSPELL")))    return 1;
-    else if(text.contains("to") && text.contains("your") && text.contains("hand") && !text.contains("return"))
-    {
-        return 1;
-    }
-    return 0;
-}
-bool SynergyHandler::isTaunt(const QString &code, const QJsonArray &mechanics)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("taunt");
-    }
-    else if(mechanics.contains(QJsonValue("TAUNT")))
-    {
-        return true;
-    }
-    return false;
-}
-bool SynergyHandler::isTauntGen(const QString &code, const QJsonArray &referencedTags)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("tauntGen") || synergyCodes[code].contains("tauntGiver");
-    }
-    else if(referencedTags.contains(QJsonValue("TAUNT")))
-    {
-        return true;
-    }
-    return false;
-}
-bool SynergyHandler::isAoeGen(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("aoe");
-    }
-    else
-    {
-        return  (text.contains("all") || text.contains("adjacent")) &&
-                    (text.contains("damage") ||
-                        (text.contains("destroy") && text.contains("minions"))
-                     );
-    }
-}
-//El ping debe poder seleccionar a un enemigo
-bool SynergyHandler::isPingGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                             const QString &text, const CardType &cardType, int attack)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("ping");
-    }
-    //Anything that deals damage
-    else if(text.contains("deal") && text.contains("1 damage") &&
-            !text.contains("hero"))
-    {
-        if(mechanics.contains("DEATHRATTLE") || text.contains("random"))    return false;
-        else return true;
-    }
-    else if(attack != 1)  return false;
-    //Charge minions
-    else if(cardType == MINION)
-    {
-        if(mechanics.contains(QJsonValue("CHARGE")) || referencedTags.contains(QJsonValue("CHARGE")))
-        {
-            return !text.contains("gain <b>charge</b>");
-        }
-        else if(mechanics.contains(QJsonValue("RUSH"))) return true;
-    }
-    //Weapons
-    else if(cardType == WEAPON) return true;
-    return false;
-}
-bool SynergyHandler::isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                              const QString &text, const CardType &cardType, int attack)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("reach");
-    }
-    //Anything that deals damage (no pings)
-    else if(text.contains("damage") && text.contains("deal") &&
-            !text.contains("1 damage") && !text.contains("minion") && !text.contains("random") &&
-            !(text.contains("to") && text.contains("your") && text.contains("hero")))
-    {
-        return true;
-    }
-    //Hero attack
-    else if(text.contains("+") && text.contains("give") && text.contains("attack") &&
-            (text.contains("hero") || text.contains("character")))
-    {
-        return true;
-    }
-    else if(attack < 2)  return false;
-    //Charge and stealth minions
-    else if(cardType == MINION)
-    {
-        if(mechanics.contains(QJsonValue("CHARGE")) || referencedTags.contains(QJsonValue("CHARGE")) ||
-            mechanics.contains(QJsonValue("STEALTH")) || referencedTags.contains(QJsonValue("STEALTH")))
-        {
-            return !text.contains("gain <b>charge</b>") && !text.contains("can't attack heroes");
-        }
-    }
-    //Weapons
-    else if(cardType == WEAPON) return true;
-    return false;
-}
-bool SynergyHandler::isDamageMinionsGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                                      const QString &text, const CardType &cardType, int attack)
-{
-    //TEST
-//    (text.contains("damage") && text.contains("deal") &&
-//                !text.contains("1 damage") && !text.contains("all") && !text.contains("hero")) &&
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("damageMinions") || synergyCodes[code].contains("rushGiver");
-    }
-    else if(KeySynergies::containsAll(text, "give rush"))
-    {
-        return true;
-    }
-    //Anything that deals damage (no pings)
-    else if(text.contains("damage") && text.contains("deal") &&
-            !text.contains("1 damage") && !text.contains("all") && !text.contains("hero"))
-    {
-        if(mechanics.contains("DEATHRATTLE") && text.contains("random"))    return false;
-        else return true;
-    }
-    //Hero attack
-    else if(text.contains("+") && text.contains("give") && text.contains("attack") &&
-            (text.contains("hero") || text.contains("character")))
-    {
-        return true;
-    }
-    else if(attack < 2)  return false;
-    //Charge minions
-    else if(cardType == MINION)
-    {
-        if(mechanics.contains(QJsonValue("CHARGE")) || referencedTags.contains(QJsonValue("CHARGE")))
-        {
-            return !text.contains("gain <b>charge</b>");
-        }
-        else if(mechanics.contains(QJsonValue("RUSH"))) return true;
-    }
-    //Weapons
-    else if(cardType == WEAPON) return true;
-    return false;
-}
-bool SynergyHandler::isDestroyGen(const QString &code, const QJsonArray &mechanics, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("destroy");
-    }
-    else if(text.contains("destroy") && text.contains("minion") &&
-            !text.contains("all"))
-    {
-        if(mechanics.contains("DEATHRATTLE") && text.contains("random"))    return false;
-        else return true;
-    }
-    return false;
-}
-bool SynergyHandler::isJadeGolemGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("jadeGolemGenGen");
-    }
-    else if(mechanics.contains(QJsonValue("JADE_GOLEM")) || referencedTags.contains(QJsonValue("JADE_GOLEM")))
-    {
-        return true;
-    }
-    return false;
-}
-bool SynergyHandler::isHeroPowerGen(const QString &code, const QString &text)
-{
-    //TEST
-    //text.contains("hero power") || (text.contains("heal") && text.contains("deal damage") && cardClass == PRIEST)
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("heroPowerGenGenX");
-    }
-    else if(text.contains("hero power") || (text.contains("heal") && text.contains("deal damage")))
-    {
-        return true;
-    }
-    return false;
-}
-bool SynergyHandler::isDeathrattleMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("deathrattle") || synergyCodes[code].contains("deathrattleOpponent");
-    }
-    else if(cardType != MINION)  return false;
-    else if(mechanics.contains(QJsonValue("DEATHRATTLE")))
-    {
-        return true;
-    }
-    return false;
-}
-bool SynergyHandler::isDeathrattleGoodAll(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                                          const CardType &cardType)
-{
-    //TEST
-    //&& (mechanics.contains(QJsonValue("DEATHRATTLE")) || referencedTags.contains(QJsonValue("DEATHRATTLE")))
-    if(synergyCodes.contains(code))
-    {
-        return (synergyCodes[code].contains("deathrattle") || synergyCodes[code].contains("deathrattleGen")) &&
-                !synergyCodes[code].contains("silenceOwnSyn") &&
-                !synergyCodes[code].contains("deathrattleOpponent");
-    }
-    else if(cardType != MINION)  return false;
-    else if(mechanics.contains(QJsonValue("DEATHRATTLE")) || referencedTags.contains(QJsonValue("DEATHRATTLE")))
-    {
-        return true;
-    }
-    return false;
-}
-bool SynergyHandler::isRestoreFriendlyHeroGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text)
-{
-    //TEST
-    //&& text.contains("restore")
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("restoreFriendlyHero") || synergyCodes[code].contains("lifesteal")
-                || synergyCodes[code].contains("lifestealGen");
-    }
-    else if(mechanics.contains(QJsonValue("LIFESTEAL")) || referencedTags.contains(QJsonValue("LIFESTEAL")))
-    {
-        return true;
-    }
-    else if(text.contains("restore"))
-    {
-        return true;
-    }
-    return false;
-}
-bool SynergyHandler::isArmorGen(const QString &code, const QString &text)
-{
-    //TEST
-    //&& text.contains("armor")
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("armor");
-    }
-    else if(text.contains("armor"))
-    {
-        return true;
-    }
-    return false;
-}
+
 bool SynergyHandler::isDrop2(const QString &code, int cost, int attack, int health)
 {
     if(synergyCodes.contains(code))
@@ -2556,574 +1174,6 @@ bool SynergyHandler::isDrop4(const QString &code, int cost, int attack, int heal
                 ))
     {
         return true;
-    }
-    return false;
-}
-
-
-//Synergy items
-bool SynergyHandler::isSpellSyn(const QString &code)
-{
-    //NO TEST
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("spellSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isSpellAllSyn(const QString &code, const QString &text)
-{
-    //TEST
-    //&& text.contains("spell")
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("spellAllSyn");
-    }
-    else
-    {
-        return  text.contains("spellburst") ||
-                (text.contains("spell") && (text.contains("you cast") || text.contains("cost")));
-    }
-}
-bool SynergyHandler::isMinionSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("minionSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isMinionAllSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("minionAllSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isWeaponSyn(const QString &code)
-{
-    //NO TEST
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("weaponSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isWeaponAllSyn(const QString &code, const QString &text)
-{
-    //TEST
-    //&& text.contains("weapon")
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("weaponAllSyn");
-    }
-    else
-    {
-        return text.contains("weapon") && !text.contains("opponent's weapon");
-    }
-}
-bool SynergyHandler::isLocationSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("locationSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isLocationAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("locationAllSyn");
-    }
-    else
-    {
-        return text.contains("location");
-    }
-}
-bool SynergyHandler::isMurlocSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("murlocSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isMurlocAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("murlocAllSyn");
-    }
-    else
-    {
-        return text.contains("murloc");
-    }
-}
-bool SynergyHandler::isDemonSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("demonSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isDemonAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("demonAllSyn");
-    }
-    else
-    {
-        return text.contains("demon");
-    }
-}
-bool SynergyHandler::isMechSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("mechSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isMechAllSyn(const QString &code, const QJsonArray &mechanics, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("mechAllSyn");
-    }
-    else if(mechanics.contains(QJsonValue("MAGNETIC"))) return true;
-    else
-    {
-        return text.contains("mech");
-    }
-}
-bool SynergyHandler::isElementalSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("elementalSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isElementalAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("elementalAllSyn");
-    }
-    else
-    {
-        return text.contains("elemental");
-    }
-}
-bool SynergyHandler::isBeastSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("beastSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isBeastAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("beastAllSyn");
-    }
-    else
-    {
-        return text.contains("beast");
-    }
-}
-bool SynergyHandler::isTotemSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("totemSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isTotemAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("totemAllSyn");
-    }
-    else
-    {
-        return text.contains("totem");
-    }
-}
-bool SynergyHandler::isPirateSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("pirateSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isPirateAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("pirateAllSyn");
-    }
-    else
-    {
-        return text.contains("pirate");
-    }
-}
-bool SynergyHandler::isDragonSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("dragonSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isDragonAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("dragonAllSyn");
-    }
-    else
-    {
-        return text.contains("dragon");
-    }
-}
-bool SynergyHandler::isNagaSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("nagaSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isNagaAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("nagaAllSyn");
-    }
-    else
-    {
-        return text.contains("naga");
-    }
-}
-bool SynergyHandler::isUndeadSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("undeadSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isUndeadAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("undeadAllSyn");
-    }
-    else
-    {
-        return text.contains("undead");
-    }
-}
-bool SynergyHandler::isQuilboarSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("quilboarSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isQuilboarAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("quilboarAllSyn");
-    }
-    else
-    {
-        return text.contains("quilboar");
-    }
-}
-bool SynergyHandler::isDraeneiSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("draeneiSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isDraeneiAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("draeneiAllSyn");
-    }
-    else
-    {
-        return text.contains("draenei");
-    }
-}
-//New race step
-bool SynergyHandler::isArcaneSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("arcaneSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isArcaneAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("arcaneAllSyn");
-    }
-    else
-    {
-        return KeySynergies::containsAll(text, "arcane spell");
-    }
-}
-bool SynergyHandler::isFelSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("felSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isFelAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("felAllSyn");
-    }
-    else
-    {
-        return KeySynergies::containsAll(text, "fel spell");
-    }
-}
-bool SynergyHandler::isFireSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("fireSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isFireAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("fireAllSyn");
-    }
-    else
-    {
-        return KeySynergies::containsAll(text, "fire spell");
-    }
-}
-bool SynergyHandler::isFrostSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("frostSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isFrostAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("frostAllSyn");
-    }
-    else
-    {
-        return KeySynergies::containsAll(text, "frost spell");
-    }
-}
-bool SynergyHandler::isHolySyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("holySyn");
-    }
-    return false;
-}
-bool SynergyHandler::isHolyAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("holyAllSyn");
-    }
-    else
-    {
-        return KeySynergies::containsAll(text, "holy spell");
-    }
-}
-bool SynergyHandler::isShadowSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("shadowSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isShadowAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("shadowAllSyn");
-    }
-    else
-    {
-        return KeySynergies::containsAll(text, "shadow spell");
-    }
-}
-bool SynergyHandler::isNatureSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("natureSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isNatureAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("natureAllSyn");
-    }
-    else
-    {
-        return KeySynergies::containsAll(text, "nature spell");
-    }
-}
-bool SynergyHandler::isDiscoverSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("discoverSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isDrawSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("drawSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isToYourHandSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("toYourHandSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isPingSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("pingSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isDamageMinionsSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("damageMinionsSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isDestroySyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("destroySyn");
-    }
-    return false;
-}
-bool SynergyHandler::isReachSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("reachSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isAoeSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("aoeSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isTauntSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("tauntSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isTauntAllSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("tauntAllSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isDeathrattleSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("deathrattleSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isDeathrattleGoodAllSyn(const QString &code, const QString &text)
-{
-    //TEST
-//    (containsAll(text, "copy") || containsAll(text, "copies")) &&
-//    (containsAll(text, "/") || containsAll(text, "attack") || containsAll(text, "health")) &&
-//    !containsAll(text, "in your deck")
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("deathrattleGoodAllSyn");
-    }
-    else if((KeySynergies::containsAll(text, "copy") || KeySynergies::containsAll(text, "copies")) &&
-            (KeySynergies::containsAll(text, "/") || KeySynergies::containsAll(text, "attack") || KeySynergies::containsAll(text, "health")) &&
-            !KeySynergies::containsAll(text, "in your deck"))
-    {
-        return true;
-    }
-    return false;
-}
-bool SynergyHandler::isRestoreFriendlyHeroSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("restoreFriendlyHeroSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isArmorSyn(const QString &code)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("armorSyn");
     }
     return false;
 }

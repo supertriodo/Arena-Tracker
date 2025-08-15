@@ -1,5 +1,6 @@
 #include "drafthandler.h"
 #include "themehandler.h"
+#include "Synergies/cardtypecounter.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
@@ -990,7 +991,7 @@ void DraftHandler::updateTwitchChatVotes()
 
 void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
 {
-    if(deckCardList.count() == 1 || synergyHandler->draftedCardsCount() > 0 || !patreonVersion)  return;
+    if(deckCardList.count() == 1 || CardTypeCounter::draftedCardsCount() > 0 || !patreonVersion)  return;
 
     if(!lavaButton->isEnabled())
     {
@@ -1030,7 +1031,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
         }
     }
 
-    int numCards = synergyHandler->draftedCardsCount();
+    int numCards = CardTypeCounter::draftedCardsCount();
     lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, tdraw, ttoYourHand, tdiscover);
 
     updateDeckScore();
@@ -1060,7 +1061,7 @@ void DraftHandler::endDraft(bool createNewArena)
 
     //Create new arena
     //Set updateTime in log
-    int numCards = synergyHandler->draftedCardsCount();
+    int numCards = CardTypeCounter::draftedCardsCount();
     QString heroLog = "";
     if(numCards==30)    heroLog = Utility::classEnum2classLogNumber(arenaHero);
     else                emit pDebug("End draft with != 30 cards: numCards: " + QString::number(numCards));
@@ -1553,7 +1554,7 @@ void DraftHandler::getBestCards(DraftCard bestCards[3])
     }
 
     connectAllComboBox();
-    emit pDebug("(" + QString::number(synergyHandler->draftedCardsCount()) + ") " +
+    emit pDebug("(" + QString::number(CardTypeCounter::draftedCardsCount()) + ") " +
                 bestCards[0].getCode() + "/" + bestCards[1].getCode() +
                 "/" + bestCards[2].getCode() + " New codes.");
 }
@@ -1662,7 +1663,7 @@ void DraftHandler::pickCard(QString code)
                                        pingMap, damageMap, destroyMap, reachMap,
                                        draw, toYourHand, discover);
 
-        int numCards = synergyHandler->draftedCardsCount();
+        int numCards = CardTypeCounter::draftedCardsCount();
         lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, draw, toYourHand, discover);
         updateDeckScore(getHAScore(code),
                         (fireWRMap == nullptr) ? 0 : fireWRMap[this->arenaHero][code],
@@ -1802,7 +1803,7 @@ void DraftHandler::refreshHeroes()
 
 bool DraftHandler::isEmptyDeck()
 {
-    return (synergyHandler->draftedCardsCount() == 0);
+    return (CardTypeCounter::draftedCardsCount() == 0);
 }
 
 
@@ -2081,7 +2082,7 @@ void DraftHandler::showNewCards(DraftCard bestCards[])
         if(TwitchHandler::isActive())
         {
             QString pickTag = TwitchHandler::getPickTag();
-            twitchHandler->sendMessage((patreonVersion?QString("["+QString::number(synergyHandler->draftedCardsCount()+1)+
+            twitchHandler->sendMessage((patreonVersion?QString("["+QString::number(CardTypeCounter::draftedCardsCount()+1)+
                                        "/30] -- "):QString("")) +
                                        "(" + pickTag + "1) " + bestCards[0].getName() +
                                        " / (" + pickTag + "2) " + bestCards[1].getName() +
@@ -2198,7 +2199,7 @@ void DraftHandler::updateDeckScore(float cardRatingHA, float cardRatingFire, flo
 {
     if(!patreonVersion) return;
 
-    int numCards = synergyHandler->draftedCardsCount();
+    int numCards = CardTypeCounter::draftedCardsCount();
     deckRatingHA += static_cast<int>(cardRatingHA);
     deckRatingFire += cardRatingFire;
     deckRatingHSR += cardRatingHSR;
@@ -3035,7 +3036,7 @@ void DraftHandler::showNewHeroes()
 
 void DraftHandler::initDraftMechanicsWindowCounters()
 {
-    int numCards = synergyHandler->draftedCardsCount();
+    int numCards = CardTypeCounter::draftedCardsCount();
 
     if(numCards == 0 || !patreonVersion || draftMechanicsWindow == nullptr)    return;
 

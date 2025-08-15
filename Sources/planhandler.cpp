@@ -1,5 +1,6 @@
 #include "planhandler.h"
 #include "themehandler.h"
+#include "Synergies/mechaniccounter.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
@@ -1605,9 +1606,9 @@ CardGraphicsItem * PlanHandler::cardDraw(bool friendly, int id, QString code, QS
     QStringList mechanics;
     if(!code.isEmpty())
     {
-        if(synergyHandler->isAoeGen(code, ""))                                                  mechanics += "aoeMechanic.png";
-        if(synergyHandler->isDestroyGen(code, QJsonArray(), ""))                                mechanics += "destroyMechanic.png";
-        if(synergyHandler->isDamageMinionsGen(code, QJsonArray(), QJsonArray(), "", MINION, 0)) mechanics += "damageMechanic.png";
+        if(MechanicCounter::isAoeGen(code, ""))                                                  mechanics += "aoeMechanic.png";//TODO check use synergyHandler
+        if(MechanicCounter::isDestroyGen(code, QJsonArray(), ""))                                mechanics += "destroyMechanic.png";
+        if(MechanicCounter::isDamageMinionsGen(code, QJsonArray(), QJsonArray(), "", MINION, 0)) mechanics += "damageMechanic.png";
     }
 
     CardGraphicsItem *card = new CardGraphicsItem(id, code, createdByCode, turn, friendly, graphicsItemSender, mechanics);
