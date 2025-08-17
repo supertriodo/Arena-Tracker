@@ -61,9 +61,10 @@ private:
                         const QStringList &arenaCodes, bool all);
     void clearSynergyLists();
     bool shouldBeInSynergies(const QString &code);
-    void connectCounters(DraftDropCounter **dropCounters, QMap<QString, DraftItemCounter *> *cardTypeCounters, QMap<QString, DraftItemCounter *> *mechanicCounters);
+    void connectCounters(QMap<QString, DraftDropCounter *> *dropCounters,
+                         QMap<QString, DraftItemCounter *> *cardTypeCounters,
+                         QMap<QString, DraftItemCounter *> *mechanicCounters);
     void createDraftItemCounters();
-    void deleteDraftItemCounters();
 
     void updateManaCounter(const QString &code, int cost);
 

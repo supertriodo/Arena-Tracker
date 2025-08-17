@@ -10,6 +10,7 @@
 
 enum VType {V_MINION, V_SPELL, V_WEAPON, V_NUM_TYPES};
 enum VMechanics {V_AOE, V_TAUNT_ALL, V_SURVIVABILITY, V_DISCOVER_DRAW, V_PING, V_DAMAGE, V_DESTROY, V_REACH, V_NUM_MECHANICS};
+enum VDrop {V_DROP2, V_DROP3, V_DROP4, V_NUM_DROPS};
 
 
 class DraftMechanicsWindow : public QMainWindow

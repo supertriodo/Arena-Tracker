@@ -20,7 +20,7 @@ private:
     int numCards;
     int targetDrops;
 
-    static DraftDropCounter **dropCounters;
+    static QMap<QString, DraftDropCounter*> keySynergiesMap;
     static QMap<QString, QList<QString>> *synergyCodes;
 
 //Metodos
@@ -28,6 +28,8 @@ private:
     void drawBorder(bool greenBorder);
     bool isGreenTargetDrop();
     void init(int targetDrops);
+
+    static QMap<QString, QString> getMapKeySynergies();
 
 public:
     void reset();
@@ -37,8 +39,9 @@ public:
     void increaseNumCards();
     MechanicBorderColor getMechanicBorderColor();
 
-    static DraftDropCounter ** createDropCounters(QObject *parent, QGridLayout *mechanicsLayout);
-    static void deleteDropCounters();
+    static QMap<QString, DraftDropCounter *> *createDropCounters(QObject *parent, QGridLayout *mechanicsLayout);
+    static QStringList getListKeySynergies();
+    static QStringList getListKeyLabels();
     static void setTheme();
     static void resetAll();
     static void setHidden(bool hide);

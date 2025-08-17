@@ -22,11 +22,12 @@ SynergyHandler::SynergyHandler(QObject *parent, Ui::Extended *ui) : QObject(pare
 
 SynergyHandler::~SynergyHandler()
 {
-    deleteDraftItemCounters();
 }
 
 
-void SynergyHandler::connectCounters(DraftDropCounter **dropCounters, QMap<QString, DraftItemCounter*> * cardTypeCounters, QMap<QString, DraftItemCounter*> * mechanicCounters)
+void SynergyHandler::connectCounters(QMap<QString, DraftDropCounter*> * dropCounters,
+                                     QMap<QString, DraftItemCounter*> * cardTypeCounters,
+                                     QMap<QString, DraftItemCounter*> * mechanicCounters)
 {
     const auto cardTypesKeys = CardTypeCounter::getListKeyLabels();
     for(const auto &key: cardTypesKeys)
@@ -37,19 +38,14 @@ void SynergyHandler::connectCounters(DraftDropCounter **dropCounters, QMap<QStri
                 this, SIGNAL(itemLeave()));
     }
 
-    connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-    connect(dropCounters[V_DROP3], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-    connect(dropCounters[V_DROP4], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-
-    connect(dropCounters[V_DROP2], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
-    connect(dropCounters[V_DROP3], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
-    connect(dropCounters[V_DROP4], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
+    const auto dropKeys = DraftDropCounter::getListKeyLabels();
+    for(const auto &key: dropKeys)
+    {
+        connect((*dropCounters)[key], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+                this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+        connect((*dropCounters)[key], SIGNAL(iconLeave()),
+                this, SIGNAL(itemLeave()));
+    }
 
     const auto mechanicKeys = MechanicCounter::getListKeyLabels();
     for(const auto &key: mechanicKeys)
@@ -71,7 +67,7 @@ void SynergyHandler::createDraftItemCounters()
     manaCounter = new DraftItemCounter(this, "Mana AVG", "Mana AVG", mechanicsLayout, 0, 3,
                                        QPixmap(ThemeHandler::manaCounterFile()), 32, false, false);
 
-    DraftDropCounter **dropCounters = DraftDropCounter::createDropCounters(this, mechanicsLayout);
+    QMap<QString, DraftDropCounter*> * dropCounters = DraftDropCounter::createDropCounters(this, mechanicsLayout);
     QMap<QString, DraftItemCounter*> * mechanicCounters = MechanicCounter::createMechanicCounters(this, mechanicsLayout);
     RaceCounter::createRaceCounters(this);
     SchoolCounter::createSchoolCounters(this);
@@ -92,13 +88,6 @@ void SynergyHandler::createDraftItemCounters()
     horLayoutMechanics->addLayout(mechanicsLayout);
     horLayoutMechanics->addStretch();
     ui->draftVerticalLayout->addLayout(horLayoutMechanics);
-}
-
-
-void SynergyHandler::deleteDraftItemCounters()
-{
-    delete manaCounter;
-    DraftDropCounter::deleteDropCounters();
 }
 
 

@@ -1,8 +1,8 @@
 #include "draftdropcounter.h"
 #include "../themehandler.h"
-#include <QtWidgets>
+#include "qpainter.h"
 
-DraftDropCounter ** DraftDropCounter::dropCounters;
+QMap<QString, DraftDropCounter*> DraftDropCounter::keySynergiesMap;
 QMap<QString, QList<QString>> * DraftDropCounter::synergyCodes;
 
 DraftDropCounter::DraftDropCounter(QObject *parent, QString synergyTag, QString synergyTagExtra,
@@ -105,69 +105,73 @@ void DraftDropCounter::increaseNumCards()
 }
 
 
-DraftDropCounter ** DraftDropCounter::createDropCounters(QObject *parent, QGridLayout *mechanicsLayout)
+QMap<QString, DraftDropCounter *> *DraftDropCounter::createDropCounters(QObject *parent, QGridLayout *mechanicsLayout)
 {
-    dropCounters = new DraftDropCounter *[V_NUM_DROPS];
-    dropCounters[V_DROP2] = new DraftDropCounter(parent, "2 Drop", "2 Cost", mechanicsLayout, 1, 0, TARGET_DROP_2,
-                                                 QPixmap(ThemeHandler::drop2CounterFile()), 32, true, false);
-    dropCounters[V_DROP3] = new DraftDropCounter(parent, "3 Drop", "3 Cost", mechanicsLayout, 1, 1, TARGET_DROP_3,
-                                                 QPixmap(ThemeHandler::drop3CounterFile()), 32, true, false);
-    dropCounters[V_DROP4] = new DraftDropCounter(parent, "4 Drop", "4 Cost", mechanicsLayout, 1, 2, TARGET_DROP_4,
-                                                 QPixmap(ThemeHandler::drop4CounterFile()), 32, true, false);
-
-    return dropCounters;
-}
-
-
-void DraftDropCounter::deleteDropCounters()
-{
-    for(int i=0; i<V_NUM_DROPS; i++)
+    QMap<QString, QString> map = getMapKeySynergies();
+    const auto keys = map.keys();
+    for(const QString &key: keys)
     {
-        delete dropCounters[i];
+        const QString &synergyTag = map[key];
+        DraftDropCounter * item;
+
+        if(key == "drop2")
+        {
+            item = new DraftDropCounter(parent, synergyTag, "2 Cost", mechanicsLayout, 1, 0, TARGET_DROP_2,
+                                        QPixmap(ThemeHandler::drop2CounterFile()), 32, true, false);
+        }
+        else if(key == "drop3")
+        {
+            item = new DraftDropCounter(parent, synergyTag, "3 Cost", mechanicsLayout, 1, 1, TARGET_DROP_3,
+                                        QPixmap(ThemeHandler::drop3CounterFile()), 32, true, false);
+        }
+        else/* if(key == "drop4")*/
+        {
+            item = new DraftDropCounter(parent, synergyTag, "4 Cost", mechanicsLayout, 1, 2, TARGET_DROP_4,
+                                        QPixmap(ThemeHandler::drop4CounterFile()), 32, true, false);
+        }
+        keySynergiesMap.insert(key, item);
+        //Qt los borrara cuando parent se destruya
     }
-    delete []dropCounters;
+
+    return &DraftDropCounter::keySynergiesMap;
 }
 
 
 void DraftDropCounter::setTheme()
 {
-    dropCounters[V_DROP2]->setTheme(QPixmap(ThemeHandler::drop2CounterFile()), 32, false);
-    dropCounters[V_DROP3]->setTheme(QPixmap(ThemeHandler::drop3CounterFile()), 32, false);
-    dropCounters[V_DROP4]->setTheme(QPixmap(ThemeHandler::drop4CounterFile()), 32, false);
+    keySynergiesMap["drop2"]->setTheme(QPixmap(ThemeHandler::drop2CounterFile()), 32, false);
+    keySynergiesMap["drop3"]->setTheme(QPixmap(ThemeHandler::drop3CounterFile()), 32, false);
+    keySynergiesMap["drop4"]->setTheme(QPixmap(ThemeHandler::drop4CounterFile()), 32, false);
 }
 
 
 void DraftDropCounter::resetAll()
 {
-    for(int i=0; i<V_NUM_DROPS; i++)
+    const auto keys = keySynergiesMap.keys();
+    for(const QString &key: keys)
     {
-        dropCounters[i]->reset();
+        keySynergiesMap[key]->reset();
     }
 }
 
 
 void DraftDropCounter::setHidden(bool hide)
 {
-    if(hide)
+    const auto cardTypesKeys = DraftDropCounter::getListKeyLabels();
+    for(const auto &key: cardTypesKeys)
     {
-        dropCounters[V_DROP2]->hide();
-        dropCounters[V_DROP3]->hide();
-        dropCounters[V_DROP4]->hide();
-    }
-    else
-    {
-        dropCounters[V_DROP2]->show();
-        dropCounters[V_DROP3]->show();
-        dropCounters[V_DROP4]->show();
+        if(hide)    keySynergiesMap[key]->hide();
+        else        keySynergiesMap[key]->show();
     }
 }
 
 
 void DraftDropCounter::setTransparency(Transparency transparency, bool mouseInApp)
 {
-    for(int i=0; i<V_NUM_DROPS; i++)
+    const auto cardTypesKeys = DraftDropCounter::getListKeyLabels();
+    for(const auto &key: cardTypesKeys)
     {
-        dropCounters[i]->setTransparency(transparency, mouseInApp);
+        keySynergiesMap[key]->setTransparency(transparency, mouseInApp);
     }
 }
 
@@ -192,9 +196,9 @@ QStringList DraftDropCounter::debugDropSynergies(const QString &code, int attack
 
 void DraftDropCounter::getDropCounters(QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map)
 {
-    drop2Map = dropCounters[V_DROP2]->getCodeTagMap();
-    drop3Map = dropCounters[V_DROP3]->getCodeTagMap();
-    drop4Map = dropCounters[V_DROP4]->getCodeTagMap();
+    drop2Map = keySynergiesMap["drop2"]->getCodeTagMap();
+    drop3Map = keySynergiesMap["drop3"]->getCodeTagMap();
+    drop4Map = keySynergiesMap["drop4"]->getCodeTagMap();
 }
 
 
@@ -203,18 +207,18 @@ void DraftDropCounter::getDropMechanicIcons(const QString &code, QMap<MechanicIc
 {
     if(isDrop2(code, cost, attack, health))
     {
-        mechanicIcons[M_DROP2] = dropCounters[V_DROP2]->count() + 1;
-        dropBorderColor = dropCounters[V_DROP2]->getMechanicBorderColor();
+        mechanicIcons[M_DROP2] = keySynergiesMap["drop2"]->count() + 1;
+        dropBorderColor = keySynergiesMap["drop2"]->getMechanicBorderColor();
     }
     else if(isDrop3(code, cost, attack, health))
     {
-        mechanicIcons[M_DROP3] = dropCounters[V_DROP3]->count() + 1;
-        dropBorderColor = dropCounters[V_DROP3]->getMechanicBorderColor();
+        mechanicIcons[M_DROP3] = keySynergiesMap["drop3"]->count() + 1;
+        dropBorderColor = keySynergiesMap["drop3"]->getMechanicBorderColor();
     }
     else if(isDrop4(code, cost, attack, health))
     {
-        mechanicIcons[M_DROP4] = dropCounters[V_DROP4]->count() + 1;
-        dropBorderColor = dropCounters[V_DROP4]->getMechanicBorderColor();
+        mechanicIcons[M_DROP4] = keySynergiesMap["drop4"]->count() + 1;
+        dropBorderColor = keySynergiesMap["drop4"]->getMechanicBorderColor();
     }
     else
     {
@@ -228,46 +232,46 @@ void DraftDropCounter::updateDropCounters(const QString &code, QMap<QString, QSt
 {
     if(isDrop2(code, cost, attack, health))
     {
-        dropCounters[V_DROP2]->increase(code);
+        keySynergiesMap["drop2"]->increase(code);
         drop2Map.insertMulti(code, "");
         if(cost == 3)
         {
-            dropCounters[V_DROP3]->increaseExtra(code, "2 Drop");
+            keySynergiesMap["drop3"]->increaseExtra(code, "2 Drop");
             drop3Map.insertMulti(code, "2 Drop");
         }
         else if(cost == 4)
         {
-            dropCounters[V_DROP4]->increaseExtra(code, "2 Drop");
+            keySynergiesMap["drop4"]->increaseExtra(code, "2 Drop");
             drop4Map.insertMulti(code, "2 Drop");
         }
     }
     else if(isDrop3(code, cost, attack, health))
     {
-        dropCounters[V_DROP3]->increase(code);
+        keySynergiesMap["drop3"]->increase(code);
         drop3Map.insertMulti(code, "");
         if(cost == 2)
         {
-            dropCounters[V_DROP2]->increaseExtra(code, "3 Drop");
+            keySynergiesMap["drop2"]->increaseExtra(code, "3 Drop");
             drop2Map.insertMulti(code, "3 Drop");
         }
         else if(cost == 4)
         {
-            dropCounters[V_DROP4]->increaseExtra(code, "3 Drop");
+            keySynergiesMap["drop4"]->increaseExtra(code, "3 Drop");
             drop4Map.insertMulti(code, "3 Drop");
         }
     }
     else if(isDrop4(code, cost, attack, health))
     {
-        dropCounters[V_DROP4]->increase(code);
+        keySynergiesMap["drop4"]->increase(code);
         drop4Map.insertMulti(code, "");
         if(cost == 2)
         {
-            dropCounters[V_DROP2]->increaseExtra(code, "4 Drop");
+            keySynergiesMap["drop2"]->increaseExtra(code, "4 Drop");
             drop2Map.insertMulti(code, "4 Drop");
         }
         else if(cost == 3)
         {
-            dropCounters[V_DROP3]->increaseExtra(code, "4 Drop");
+            keySynergiesMap["drop3"]->increaseExtra(code, "4 Drop");
             drop3Map.insertMulti(code, "4 Drop");
         }
     }
@@ -275,26 +279,51 @@ void DraftDropCounter::updateDropCounters(const QString &code, QMap<QString, QSt
     {
         if(cost == 2)
         {
-            dropCounters[V_DROP2]->increaseExtra(code);
+            keySynergiesMap["drop2"]->increaseExtra(code);
             drop2Map.insertMulti(code, ".");
         }
         else if(cost == 3)
         {
-            dropCounters[V_DROP3]->increaseExtra(code);
+            keySynergiesMap["drop3"]->increaseExtra(code);
             drop3Map.insertMulti(code, ".");
         }
         else if(cost == 4)
         {
-            dropCounters[V_DROP4]->increaseExtra(code);
+            keySynergiesMap["drop4"]->increaseExtra(code);
             drop4Map.insertMulti(code, ".");
         }
     }
 
     //Hay una carta mas en el mazo
-    for(int i=0; i<V_NUM_DROPS; i++)
+    const auto cardTypesKeys = DraftDropCounter::getListKeySynergies();
+    for(const auto &key: cardTypesKeys)
     {
-        dropCounters[i]->increaseNumCards();
+        keySynergiesMap[key]->increaseNumCards();
     }
+}
+
+
+QStringList DraftDropCounter::getListKeyLabels()
+{
+    getListKeySynergies();
+}
+
+
+QStringList DraftDropCounter::getListKeySynergies()
+{
+    return getMapKeySynergies().keys();
+}
+
+
+QMap<QString, QString> DraftDropCounter::getMapKeySynergies()
+{
+    QMap<QString, QString> keys;
+
+    keys["drop2"] = "2 Drop";
+    keys["drop3"] = "3 Drop";
+    keys["drop4"] = "4 Drop";
+
+    return keys;
 }
 
 
