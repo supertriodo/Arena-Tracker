@@ -1,8 +1,7 @@
 #include "schoolcounter.h"
-#include "keysynergies.h"
 
-DraftItemCounter ** SchoolCounter::schoolCounters;
-QMap<QString, QList<QString>> * SchoolCounter::synergyCodes;
+QMap<QString, DraftItemCounter*> SchoolCounter::keySynergiesMap;
+QMap<QString, QList<QString>> * SchoolCounter::synergyCodes = nullptr;
 
 SchoolCounter::SchoolCounter()
 {
@@ -10,44 +9,26 @@ SchoolCounter::SchoolCounter()
 }
 
 
-DraftItemCounter ** SchoolCounter::createSchoolCounters(QObject *parent)
+void SchoolCounter::createSchoolCounters(QObject *parent)
 {
-    schoolCounters = new DraftItemCounter *[V_NUM_SCHOOLS];
-    schoolCounters[V_ARCANE] = new DraftItemCounter(parent, "Arcane");
-    schoolCounters[V_FEL] = new DraftItemCounter(parent, "Fel");
-    schoolCounters[V_FIRE] = new DraftItemCounter(parent, "Fire");
-    schoolCounters[V_FROST] = new DraftItemCounter(parent, "Frost");
-    schoolCounters[V_HOLY] = new DraftItemCounter(parent, "Holy");
-    schoolCounters[V_SHADOW] = new DraftItemCounter(parent, "Shadow");
-    schoolCounters[V_NATURE] = new DraftItemCounter(parent, "Nature");
-
-    schoolCounters[V_ARCANE_ALL] = new DraftItemCounter(parent, "Arcane");
-    schoolCounters[V_FEL_ALL] = new DraftItemCounter(parent, "Fel");
-    schoolCounters[V_FIRE_ALL] = new DraftItemCounter(parent, "Fire");
-    schoolCounters[V_FROST_ALL] = new DraftItemCounter(parent, "Frost");
-    schoolCounters[V_HOLY_ALL] = new DraftItemCounter(parent, "Holy");
-    schoolCounters[V_SHADOW_ALL] = new DraftItemCounter(parent, "Shadow");
-    schoolCounters[V_NATURE_ALL] = new DraftItemCounter(parent, "Nature");
-
-    return schoolCounters;
-}
-
-
-void SchoolCounter::deleteSchoolCounters()
-{
-    for(int i=0; i<V_NUM_SCHOOLS; i++)
+    QMap<QString, QString> map = getMapKeySynergies();
+    const auto keys = map.keys();
+    for(const QString &key: keys)
     {
-        delete schoolCounters[i];
+        const QString &synergyTag = map[key];
+        keySynergiesMap.insert(key, new DraftItemCounter(parent, synergyTag));
+        keySynergiesMap.insert(key+"All", new DraftItemCounter(parent, synergyTag));
+        //Qt los borrara cuando parent se destruya
     }
-    delete []schoolCounters;
 }
 
 
 void SchoolCounter::resetAll()
 {
-    for(int i=0; i<V_NUM_SCHOOLS; i++)
+    const auto keys = keySynergiesMap.keys();
+    for(const QString &key: keys)
     {
-        schoolCounters[i]->reset();
+        keySynergiesMap[key]->reset();
     }
 }
 
@@ -62,312 +43,237 @@ QStringList SchoolCounter::debugSchoolSynergies(const QString &code, const QStri
 {
     QStringList mec;
 
-    if(isArcaneAllSyn(code, text))          mec<<"arcaneAllSyn";
-    if(isFelAllSyn(code, text))             mec<<"felAllSyn";
-    if(isFireAllSyn(code, text))            mec<<"fireAllSyn";
-    if(isFrostAllSyn(code, text))           mec<<"frostAllSyn";
-    if(isHolyAllSyn(code, text))            mec<<"holyAllSyn";
-    if(isShadowAllSyn(code, text))          mec<<"shadowAllSyn";
-    if(isNatureAllSyn(code, text))          mec<<"natureAllSyn";
-
+    const auto keys = getListKeySynergies();
+    for(const QString &key: keys)
+    {
+        const QString &keyAll = key+"All";
+        //Syn
+        if(isKeyAllSyn(keyAll+"Syn", code, text))
+        {
+            mec << keyAll+"Syn";
+        }
+    }
     return mec;
+}
+
+
+void SchoolCounter::updateSchoolCounters(const QString &code, const QString &text, CardSchool cardSchool)
+{
+    const auto keys = getListKeySynergies();
+    for(const QString &key: keys)
+    {
+        const QString &keyAll = key+"All";
+        //Gen
+        if(isKey(key, cardSchool))
+        {
+            keySynergiesMap[key]->increase(code);
+            keySynergiesMap[keyAll]->increase(code);
+        }
+        else if(isKeyGen(key+"Gen", code))
+        {
+            keySynergiesMap[keyAll]->increase(code);
+        }
+        //Syn
+        if(isKeySyn(key+"Syn", code))
+        {
+            keySynergiesMap[key]->increaseSyn(code);
+        }
+        else if(isKeyAllSyn(keyAll+"Syn", code, text))
+        {
+            keySynergiesMap[keyAll]->increaseSyn(code);
+        }
+    }
 }
 
 
 void SchoolCounter::getSchoolSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap,
                                        const QString &text, const CardSchool &cardSchool)
 {
-    if(cardSchool == ARCANE)
+    const auto keys = getListKeySynergies();
+    for(const QString &key: keys)
     {
-        schoolCounters[V_ARCANE]->insertSynCards(synergyTagMap);
-        schoolCounters[V_ARCANE_ALL]->insertSynCards(synergyTagMap);
+        const QString &keyAll = key+"All";
+        //Gen
+        if(isKey(key, cardSchool))
+        {
+            keySynergiesMap[key]->insertSynCards(synergyTagMap);
+            keySynergiesMap[keyAll]->insertSynCards(synergyTagMap);
+        }
+        else if(isKeyGen(key+"Gen", code))
+        {
+            keySynergiesMap[keyAll]->insertSynCards(synergyTagMap);
+        }
+        //Syn
+        if(isKeySyn(key+"Syn", code))
+        {
+            keySynergiesMap[key]->insertCards(synergyTagMap);
+        }
+        else if(isKeyAllSyn(keyAll+"Syn", code, text))
+        {
+            keySynergiesMap[keyAll]->insertCards(synergyTagMap);
+        }
     }
-    else if(isArcaneGen(code))      schoolCounters[V_ARCANE_ALL]->insertSynCards(synergyTagMap);
-    if(cardSchool == FEL)
-    {
-        schoolCounters[V_FEL]->insertSynCards(synergyTagMap);
-        schoolCounters[V_FEL_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isFelGen(code))       schoolCounters[V_FEL_ALL]->insertSynCards(synergyTagMap);
-    if(cardSchool == FIRE)
-    {
-        schoolCounters[V_FIRE]->insertSynCards(synergyTagMap);
-        schoolCounters[V_FIRE_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isFireGen(code))        schoolCounters[V_FIRE_ALL]->insertSynCards(synergyTagMap);
-    if(cardSchool == FROST)
-    {
-        schoolCounters[V_FROST]->insertSynCards(synergyTagMap);
-        schoolCounters[V_FROST_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isFrostGen(code))   schoolCounters[V_FROST_ALL]->insertSynCards(synergyTagMap);
-    if(cardSchool == HOLY)
-    {
-        schoolCounters[V_HOLY]->insertSynCards(synergyTagMap);
-        schoolCounters[V_HOLY_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isHolyGen(code))       schoolCounters[V_HOLY_ALL]->insertSynCards(synergyTagMap);
-    if(cardSchool == SHADOW)
-    {
-        schoolCounters[V_SHADOW]->insertSynCards(synergyTagMap);
-        schoolCounters[V_SHADOW_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isShadowGen(code))       schoolCounters[V_SHADOW_ALL]->insertSynCards(synergyTagMap);
-    if(cardSchool == NATURE)
-    {
-        schoolCounters[V_NATURE]->insertSynCards(synergyTagMap);
-        schoolCounters[V_NATURE_ALL]->insertSynCards(synergyTagMap);
-    }
-    else if(isNatureGen(code))      schoolCounters[V_NATURE_ALL]->insertSynCards(synergyTagMap);
-
-    if(isArcaneSyn(code))                           schoolCounters[V_ARCANE]->insertCards(synergyTagMap);
-    else if(isArcaneAllSyn(code, text))             schoolCounters[V_ARCANE_ALL]->insertCards(synergyTagMap);
-    if(isFelSyn(code))                              schoolCounters[V_FEL]->insertCards(synergyTagMap);
-    else if(isFelAllSyn(code, text))                schoolCounters[V_FEL_ALL]->insertCards(synergyTagMap);
-    if(isFireSyn(code))                             schoolCounters[V_FIRE]->insertCards(synergyTagMap);
-    else if(isFireAllSyn(code, text))               schoolCounters[V_FIRE_ALL]->insertCards(synergyTagMap);
-    if(isFrostSyn(code))                            schoolCounters[V_FROST]->insertCards(synergyTagMap);
-    else if(isFrostAllSyn(code, text))              schoolCounters[V_FROST_ALL]->insertCards(synergyTagMap);
-    if(isHolySyn(code))                             schoolCounters[V_HOLY]->insertCards(synergyTagMap);
-    else if(isHolyAllSyn(code, text))               schoolCounters[V_HOLY_ALL]->insertCards(synergyTagMap);
-    if(isShadowSyn(code))                           schoolCounters[V_SHADOW]->insertCards(synergyTagMap);
-    else if(isShadowAllSyn(code, text))             schoolCounters[V_SHADOW_ALL]->insertCards(synergyTagMap);
-    if(isNatureSyn(code))                           schoolCounters[V_NATURE]->insertCards(synergyTagMap);
-    else if(isNatureAllSyn(code, text))             schoolCounters[V_NATURE_ALL]->insertCards(synergyTagMap);
 }
 
 
-void SchoolCounter::updateSchoolCounters(const QString &code, const QString &text, CardSchool cardSchool)
+//Usada por LayeredSynergies para devolver sinergias parciales que luego haran union
+void SchoolCounter::getPartKeySynergies(const QString &partSynergy, QMap<QString, QMap<QString, int> > &synergyTagMap)
 {
-    if(cardSchool == ARCANE)
+    if(partSynergy.endsWith("AllSyn"))
     {
-        schoolCounters[V_ARCANE]->increase(code);
-        schoolCounters[V_ARCANE_ALL]->increase(code);
-    }
-    else if(isArcaneGen(code))      schoolCounters[V_ARCANE_ALL]->increase(code);
-    if(cardSchool == FEL)
-    {
-        schoolCounters[V_FEL]->increase(code);
-        schoolCounters[V_FEL_ALL]->increase(code);
-    }
-    else if(isFelGen(code))         schoolCounters[V_FEL_ALL]->increase(code);
-    if(cardSchool == FIRE)
-    {
-        schoolCounters[V_FIRE]->increase(code);
-        schoolCounters[V_FIRE_ALL]->increase(code);
-    }
-    else if(isFireGen(code))        schoolCounters[V_FIRE_ALL]->increase(code);
-    if(cardSchool == FROST)
-    {
-        schoolCounters[V_FROST]->increase(code);
-        schoolCounters[V_FROST_ALL]->increase(code);
-    }
-    else if(isFrostGen(code))       schoolCounters[V_FROST_ALL]->increase(code);
-    if(cardSchool == HOLY)
-    {
-        schoolCounters[V_HOLY]->increase(code);
-        schoolCounters[V_HOLY_ALL]->increase(code);
-    }
-    else if(isHolyGen(code))        schoolCounters[V_HOLY_ALL]->increase(code);
-    if(cardSchool == SHADOW)
-    {
-        schoolCounters[V_SHADOW]->increase(code);
-        schoolCounters[V_SHADOW_ALL]->increase(code);
-    }
-    else if(isShadowGen(code))      schoolCounters[V_SHADOW_ALL]->increase(code);
-    if(cardSchool == NATURE)
-    {
-        schoolCounters[V_NATURE]->increase(code);
-        schoolCounters[V_NATURE_ALL]->increase(code);
-    }
-    else if(isNatureGen(code))      schoolCounters[V_NATURE_ALL]->increase(code);
+        QString key = partSynergy;
+        key.chop(6);
+        const QString &keyAll = key+"All";
 
-    if(isArcaneSyn(code))                           schoolCounters[V_ARCANE]->increaseSyn(code);
-    else if(isArcaneAllSyn(code, text))             schoolCounters[V_ARCANE_ALL]->increaseSyn(code);
-    if(isFelSyn(code))                              schoolCounters[V_FEL]->increaseSyn(code);
-    else if(isFelAllSyn(code, text))                schoolCounters[V_FEL_ALL]->increaseSyn(code);
-    if(isFireSyn(code))                             schoolCounters[V_FIRE]->increaseSyn(code);
-    else if(isFireAllSyn(code, text))               schoolCounters[V_FIRE_ALL]->increaseSyn(code);
-    if(isFrostSyn(code))                            schoolCounters[V_FROST]->increaseSyn(code);
-    else if(isFrostAllSyn(code, text))              schoolCounters[V_FROST_ALL]->increaseSyn(code);
-    if(isHolySyn(code))                             schoolCounters[V_HOLY]->increaseSyn(code);
-    else if(isHolyAllSyn(code, text))               schoolCounters[V_HOLY_ALL]->increaseSyn(code);
-    if(isShadowSyn(code))                           schoolCounters[V_SHADOW]->increaseSyn(code);
-    else if(isShadowAllSyn(code, text))             schoolCounters[V_SHADOW_ALL]->increaseSyn(code);
-    if(isNatureSyn(code))                           schoolCounters[V_NATURE]->increaseSyn(code);
-    else if(isNatureAllSyn(code, text))             schoolCounters[V_NATURE_ALL]->increaseSyn(code);
-}
-
-
-//Gen
-bool SchoolCounter::isArcaneGen(const QString &code)
-{
-    if(synergyCodes->contains(code)) return (*synergyCodes)[code].contains("arcaneGen");
-    return false;
-}
-bool SchoolCounter::isFelGen(const QString &code)
-{
-    if(synergyCodes->contains(code)) return (*synergyCodes)[code].contains("felGen");
-    return false;
-}
-bool SchoolCounter::isFireGen(const QString &code)
-{
-    if(synergyCodes->contains(code)) return (*synergyCodes)[code].contains("fireGen");
-    return false;
-}
-bool SchoolCounter::isFrostGen(const QString &code)
-{
-    if(synergyCodes->contains(code)) return (*synergyCodes)[code].contains("frostGen");
-    return false;
-}
-bool SchoolCounter::isHolyGen(const QString &code)
-{
-    if(synergyCodes->contains(code)) return (*synergyCodes)[code].contains("holyGen");
-    return false;
-}
-bool SchoolCounter::isShadowGen(const QString &code)
-{
-    if(synergyCodes->contains(code)) return (*synergyCodes)[code].contains("shadowGen");
-    return false;
-}
-bool SchoolCounter::isNatureGen(const QString &code)
-{
-    if(synergyCodes->contains(code)) return (*synergyCodes)[code].contains("natureGen");
-    return false;
-}
-
-
-//Syn
-bool SchoolCounter::isArcaneSyn(const QString &code)
-{
-    if(synergyCodes->contains(code))
-    {
-        return (*synergyCodes)[code].contains("arcaneSyn");
+        if(keySynergiesMap.contains(keyAll))keySynergiesMap[keyAll]->insertCards(synergyTagMap);
     }
-    return false;
-}
-bool SchoolCounter::isArcaneAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes->contains(code))
+    else if(partSynergy.endsWith("Syn"))
     {
-        return (*synergyCodes)[code].contains("arcaneAllSyn");
+        QString key = partSynergy;
+        key.chop(3);
+
+        if(keySynergiesMap.contains(key))   keySynergiesMap[key]->insertCards(synergyTagMap);
+    }
+    else if(partSynergy.endsWith("Gen"))
+    {
+        QString key = partSynergy;
+        key.chop(3);
+        const QString &keyAll = key+"All";
+
+        if(keySynergiesMap.contains(keyAll))keySynergiesMap[keyAll]->insertSynCards(synergyTagMap);
     }
     else
     {
-        return KeySynergies::containsAll(text, "arcane spell");
+        QString key = partSynergy;
+        const QString &keyAll = key+"All";
+
+        if(keySynergiesMap.contains(key))   keySynergiesMap[key]->insertSynCards(synergyTagMap);
+        if(keySynergiesMap.contains(keyAll))keySynergiesMap[keyAll]->insertSynCards(synergyTagMap);
     }
 }
-bool SchoolCounter::isFelSyn(const QString &code)
+
+
+//Usada por LayeredSynergies para verificar que el code hace sinergia con cada una de las partSynergy
+bool SchoolCounter::isPartKey(const QString &partSynergy, const QString &code, QString &partSynergyTag, const QString &text, CardSchool cardSchool)
 {
-    if(synergyCodes->contains(code))
+    if(partSynergy.endsWith("AllSyn"))
     {
-        return (*synergyCodes)[code].contains("felSyn");
+        QString key = partSynergy;
+        key.chop(6);
+        partSynergyTag = getSynergyTag(key);
+        if(partSynergyTag.isEmpty())    return false;
+
+        return isKey(key, cardSchool) ||
+               isKeyGen(key+"Gen", code);
     }
-    return false;
-}
-bool SchoolCounter::isFelAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes->contains(code))
+    else if(partSynergy.endsWith("Syn"))
     {
-        return (*synergyCodes)[code].contains("felAllSyn");
+        QString key = partSynergy;
+        key.chop(3);
+        partSynergyTag = getSynergyTag(key);
+        if(partSynergyTag.isEmpty())    return false;
+
+        return isKey(key, cardSchool);
+    }
+    else if(partSynergy.endsWith("Gen"))
+    {
+        QString key = partSynergy;
+        key.chop(3);
+        partSynergyTag = getSynergyTag(key);
+        if(partSynergyTag.isEmpty())    return false;
+        const QString &keyAll = key+"All";
+
+        return isKeyAllSyn(keyAll+"Syn", code, text);
     }
     else
     {
-        return KeySynergies::containsAll(text, "fel spell");
+        QString key = partSynergy;
+        partSynergyTag = getSynergyTag(key);
+        if(partSynergyTag.isEmpty())    return false;
+        const QString &keyAll = key+"All";
+
+        return isKeySyn(key+"Syn", code) ||
+               isKeyAllSyn(keyAll+"Syn", code, text);
     }
 }
-bool SchoolCounter::isFireSyn(const QString &code)
+
+
+QString SchoolCounter::getSynergyTag(const QString &key)
 {
-    if(synergyCodes->contains(code))
-    {
-        return (*synergyCodes)[code].contains("fireSyn");
-    }
+    if(!keySynergiesMap.contains(key))  return "";
+    return keySynergiesMap[key]->getSynergyTag();
+}
+
+
+QStringList SchoolCounter::getListKeySynergies()
+{
+    return getMapKeySynergies().keys();
+}
+
+
+QMap<QString, QString> SchoolCounter::getMapKeySynergies()
+{
+    QMap<QString, QString> keys;
+
+    keys["arcane"] = "Arcane";
+    keys["fel"] = "Fel";
+    keys["fire"] = "Fire";
+    keys["frost"] = "Frost";
+    keys["holy"] = "Holy";
+    keys["shadow"] = "Shadow";
+    keys["nature"] = "Nature";
+
+    return keys;
+}
+
+
+bool SchoolCounter::isKey(const QString &key, const CardSchool &cardSchool)
+{
+    if(key == "arcane")         return (cardSchool == ARCANE);
+    else if(key == "fel")       return (cardSchool == FEL);
+    else if(key == "fire")      return (cardSchool == FIRE);
+    else if(key == "frost")     return (cardSchool == FROST);
+    else if(key == "holy")      return (cardSchool == HOLY);
+    else if(key == "shadow")    return (cardSchool == SHADOW);
+    else if(key == "nature")    return (cardSchool == NATURE);
+
     return false;
 }
-bool SchoolCounter::isFireAllSyn(const QString &code, const QString &text)
+
+
+bool SchoolCounter::isKeyGen(const QString &key, const QString &code)
 {
     if(synergyCodes->contains(code))
     {
-        return (*synergyCodes)[code].contains("fireAllSyn");
+        return (*synergyCodes)[code].contains(key);
+    }
+
+    return false;
+}
+
+
+bool SchoolCounter::isKeySyn(const QString &key, const QString &code)
+{
+    if(synergyCodes->contains(code))
+    {
+        return (*synergyCodes)[code].contains(key);
+    }
+
+    return false;
+}
+
+
+bool SchoolCounter::isKeyAllSyn(QString key, const QString &code, const QString &text)
+{
+    if(synergyCodes->contains(code))
+    {
+        return (*synergyCodes)[code].contains(key);
     }
     else
     {
-        return KeySynergies::containsAll(text, "fire spell");
+        key.chop(6);
+        return text.contains(key+" spell");
     }
-}
-bool SchoolCounter::isFrostSyn(const QString &code)
-{
-    if(synergyCodes->contains(code))
-    {
-        return (*synergyCodes)[code].contains("frostSyn");
-    }
+
     return false;
-}
-bool SchoolCounter::isFrostAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes->contains(code))
-    {
-        return (*synergyCodes)[code].contains("frostAllSyn");
-    }
-    else
-    {
-        return KeySynergies::containsAll(text, "frost spell");
-    }
-}
-bool SchoolCounter::isHolySyn(const QString &code)
-{
-    if(synergyCodes->contains(code))
-    {
-        return (*synergyCodes)[code].contains("holySyn");
-    }
-    return false;
-}
-bool SchoolCounter::isHolyAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes->contains(code))
-    {
-        return (*synergyCodes)[code].contains("holyAllSyn");
-    }
-    else
-    {
-        return KeySynergies::containsAll(text, "holy spell");
-    }
-}
-bool SchoolCounter::isShadowSyn(const QString &code)
-{
-    if(synergyCodes->contains(code))
-    {
-        return (*synergyCodes)[code].contains("shadowSyn");
-    }
-    return false;
-}
-bool SchoolCounter::isShadowAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes->contains(code))
-    {
-        return (*synergyCodes)[code].contains("shadowAllSyn");
-    }
-    else
-    {
-        return KeySynergies::containsAll(text, "shadow spell");
-    }
-}
-bool SchoolCounter::isNatureSyn(const QString &code)
-{
-    if(synergyCodes->contains(code))
-    {
-        return (*synergyCodes)[code].contains("natureSyn");
-    }
-    return false;
-}
-bool SchoolCounter::isNatureAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes->contains(code))
-    {
-        return (*synergyCodes)[code].contains("natureAllSyn");
-    }
-    else
-    {
-        return KeySynergies::containsAll(text, "nature spell");
-    }
 }

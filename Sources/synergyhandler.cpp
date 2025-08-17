@@ -1,12 +1,15 @@
 ﻿#include "synergyhandler.h"
+#include "qjsondocument.h"
+#include "qthread.h"
 #include "themehandler.h"
+#include "QDesktopServices"
 #include "Synergies/keysynergies.h"
 #include "Synergies/layeredsynergies.h"
 #include "Synergies/cardtypecounter.h"
 #include "Synergies/racecounter.h"
 #include "Synergies/schoolcounter.h"
 #include "Synergies/mechaniccounter.h"
-#include <QtWidgets>
+#include "Synergies/statsynergies.h"
 
 SynergyHandler::SynergyHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
@@ -22,22 +25,16 @@ SynergyHandler::~SynergyHandler()
 }
 
 
-void SynergyHandler::connectCounters(DraftDropCounter **dropCounters, DraftItemCounter **cardTypeCounters, DraftItemCounter **mechanicCounters)
+void SynergyHandler::connectCounters(DraftDropCounter **dropCounters, QMap<QString, DraftItemCounter*> * cardTypeCounters, QMap<QString, DraftItemCounter*> * mechanicCounters)
 {
-    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-    connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-
-    connect(cardTypeCounters[V_MINION], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
-    connect(cardTypeCounters[V_SPELL], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
-    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
-
+    const auto cardTypesKeys = CardTypeCounter::getListKeyLabels();
+    for(const auto &key: cardTypesKeys)
+    {
+        connect((*cardTypeCounters)[key], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+                this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+        connect((*cardTypeCounters)[key], SIGNAL(iconLeave()),
+                this, SIGNAL(itemLeave()));
+    }
 
     connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
             this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
@@ -53,40 +50,14 @@ void SynergyHandler::connectCounters(DraftDropCounter **dropCounters, DraftItemC
     connect(dropCounters[V_DROP4], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
 
-
-    connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-    connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-    connect(mechanicCounters[V_SURVIVABILITY], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-    connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-    connect(mechanicCounters[V_PING], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-    connect(mechanicCounters[V_DAMAGE], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-    connect(mechanicCounters[V_DESTROY], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-    connect(mechanicCounters[V_REACH], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
-
-    connect(mechanicCounters[V_AOE], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
-    connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
-    connect(mechanicCounters[V_SURVIVABILITY], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
-    connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
-    connect(mechanicCounters[V_PING], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
-    connect(mechanicCounters[V_DAMAGE], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
-    connect(mechanicCounters[V_DESTROY], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
-    connect(mechanicCounters[V_REACH], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
+    const auto mechanicKeys = MechanicCounter::getListKeyLabels();
+    for(const auto &key: mechanicKeys)
+    {
+        connect((*mechanicCounters)[key], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+                this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+        connect((*mechanicCounters)[key], SIGNAL(iconLeave()),
+                this, SIGNAL(itemLeave()));
+    }
 }
 
 
@@ -94,13 +65,13 @@ void SynergyHandler::createDraftItemCounters()
 {
     QGridLayout *mechanicsLayout = new QGridLayout();
 
-    DraftItemCounter **cardTypeCounters = CardTypeCounter::createCardTypeCounters(this, mechanicsLayout);
+    QMap<QString, DraftItemCounter*> * cardTypeCounters = CardTypeCounter::createCardTypeCounters(this, mechanicsLayout);
 
     manaCounter = new DraftItemCounter(this, "Mana AVG", "Mana AVG", mechanicsLayout, 0, 3,
                                        QPixmap(ThemeHandler::manaCounterFile()), 32, false, false);
 
     DraftDropCounter **dropCounters = DraftDropCounter::createDropCounters(this, mechanicsLayout);
-    DraftItemCounter **mechanicCounters = MechanicCounter::createMechanicCounters(this, mechanicsLayout);
+    QMap<QString, DraftItemCounter*> * mechanicCounters = MechanicCounter::createMechanicCounters(this, mechanicsLayout);
     RaceCounter::createRaceCounters(this);
     SchoolCounter::createSchoolCounters(this);
     KeySynergies::createKeySynergies();
@@ -126,10 +97,6 @@ void SynergyHandler::createDraftItemCounters()
 void SynergyHandler::deleteDraftItemCounters()
 {
     delete manaCounter;
-    CardTypeCounter::deleteCardTypeCounters();
-    RaceCounter::deleteRaceCounters();
-    SchoolCounter::deleteSchoolCounters();
-    MechanicCounter::deleteMechanicCounters();
     DraftDropCounter::deleteDropCounters();
 }
 

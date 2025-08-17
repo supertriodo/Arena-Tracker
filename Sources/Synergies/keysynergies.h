@@ -24,13 +24,14 @@ private:
 //Metodos
 private:
     void reset();
-    static QMap<QString, QString> getMapKeySynergies();
-    static bool isWeakKey(const QString &key);
-
     void increase(const QString &code);
     void increaseSyn(const QString &code);
     void insertCards(QMap<QString, QMap<QString, int> > &synergyTagMap);
     void insertSynCards(QMap<QString, QMap<QString, int> > &synergyTagMap);
+
+    static QMap<QString, QString> getMapKeySynergies();
+    static QString getSynergyTag(const QString &key);
+    static bool isWeakKeySyn(const QString &key);
 
     static bool isKey(const QString &key, const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                       const QString &text, CardType cardType, int attack, int cost);
@@ -40,10 +41,9 @@ private:
                          const QString &text, CardType cardType, int attack, int cost);
     static bool isKeyAllSyn(const QString &key, const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                             const QString &text, CardType cardType, int attack, int cost);
-    static QString getSynergyTag(const QString &key);
 
 public:
-    static QList<QString> getListKeySynergies();
+    static QStringList getListKeySynergies();
     static void createKeySynergies();
     static void setSynergyCodes(QMap<QString, QList<QString> > *synergyCodes);
     static void resetAll();

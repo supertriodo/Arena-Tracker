@@ -12,6 +12,7 @@ class DraftItemCounter : public QObject
 {
     Q_OBJECT
 public:
+    DraftItemCounter();
     DraftItemCounter(QObject *parent, QString synergyTag, QString synergyTagExtra,
                      QGridLayout *gridLayout, int gridRow, int gridCol, QPixmap pixmap,
                      int iconWidth, bool iconHover=true, bool inDraftMechanicsWindow=true);
@@ -37,6 +38,7 @@ private:
 
 public:
     void reset();
+    QString getSynergyTag();
     void setTransparency(Transparency transparency, bool mouseInApp);
     void increaseExtra(const QString &code, const QString &synergyTagExc="");
     void increase(int numIncrease, int draftedCardsCount);
@@ -57,7 +59,6 @@ signals:
     void iconEnter(QList<SynergyCard> &synergyCardList, QRect &labelRect);
     void iconLeave();
 
-public slots:
 private slots:
     void sendIconEnter();
 };

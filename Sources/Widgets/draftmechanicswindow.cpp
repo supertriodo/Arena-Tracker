@@ -1,6 +1,7 @@
 #include "draftmechanicswindow.h"
 #include "../themehandler.h"
-#include <QtWidgets>
+#include "qapplication.h"
+#include "qgraphicseffect.h"
 
 
 DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex,
@@ -53,7 +54,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     //Card Types
     QGridLayout *cardTypeLayout = new QGridLayout();
 
-    cardTypeCounters = new DraftItemCounter *[M_NUM_TYPES];
+    cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
     cardTypeCounters[V_MINION] = new DraftItemCounter(this, "Minion", "Minion Gen", cardTypeLayout, 0, 0,
                                                       QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2);
     cardTypeCounters[V_SPELL] = new DraftItemCounter(this, "Spell", "Spell Gen", cardTypeLayout, 0, 1,
@@ -527,7 +528,7 @@ void DraftMechanicsWindow::sendItemEnter(QList<SynergyCard> &synergyCardList, QR
 int DraftMechanicsWindow::draftedCardsCount()
 {
     int num = 0;
-    for(int i=0; i<M_NUM_TYPES; i++)
+    for(int i=0; i<V_NUM_TYPES; i++)
     {
         num += cardTypeCounters[i]->count();
     }

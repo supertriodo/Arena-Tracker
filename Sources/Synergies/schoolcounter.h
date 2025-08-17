@@ -14,45 +14,30 @@ public:
 
 //Variables
 private:
-    static DraftItemCounter **schoolCounters;
+    static QMap<QString, DraftItemCounter*> keySynergiesMap;
     static QMap<QString, QList<QString>> *synergyCodes;
 
 //Metodos
+private:
+    static QMap<QString, QString> getMapKeySynergies();
+    static QString getSynergyTag(const QString &key);
+
+    static bool isKey(const QString &key, const CardSchool &cardSchool);
+    static bool isKeyGen(const QString &key, const QString &code);
+    static bool isKeySyn(const QString &key, const QString &code);
+    static bool isKeyAllSyn(QString key, const QString &code, const QString &text);
+
 public:
-    static DraftItemCounter **createSchoolCounters(QObject *parent);
-    static void deleteSchoolCounters();
+    static void createSchoolCounters(QObject *parent);
+    static QStringList getListKeySynergies();
     static void resetAll();
     static void setSynergyCodes(QMap<QString, QList<QString> > *synergyCodes);
     static QStringList debugSchoolSynergies(const QString &code, const QString &text);
+    static void updateSchoolCounters(const QString &code, const QString &text, CardSchool cardSchool);
     static void getSchoolSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap,
                                    const QString &text, const CardSchool &cardSchool);
-    static void updateSchoolCounters(const QString &code, const QString &text, CardSchool cardSchool);
-
-private:
-    //Gen
-    static bool isArcaneGen(const QString &code);
-    static bool isFelGen(const QString &code);
-    static bool isFireGen(const QString &code);
-    static bool isFrostGen(const QString &code);
-    static bool isHolyGen(const QString &code);
-    static bool isShadowGen(const QString &code);
-    static bool isNatureGen(const QString &code);
-
-    //Syn
-    static bool isArcaneSyn(const QString &code);
-    static bool isFelSyn(const QString &code);
-    static bool isFireSyn(const QString &code);
-    static bool isFrostSyn(const QString &code);
-    static bool isHolySyn(const QString &code);
-    static bool isShadowSyn(const QString &code);
-    static bool isNatureSyn(const QString &code);
-    static bool isArcaneAllSyn(const QString &code, const QString &text);
-    static bool isFelAllSyn(const QString &code, const QString &text);
-    static bool isFireAllSyn(const QString &code, const QString &text);
-    static bool isFrostAllSyn(const QString &code, const QString &text);
-    static bool isHolyAllSyn(const QString &code, const QString &text);
-    static bool isShadowAllSyn(const QString &code, const QString &text);
-    static bool isNatureAllSyn(const QString &code, const QString &text);
+    static void getPartKeySynergies(const QString &partSynergy, QMap<QString, QMap<QString, int> > &synergyTagMap);
+    static bool isPartKey(const QString &partSynergy, const QString &code, QString &partSynergyTag, const QString &text, CardSchool cardSchool);
 };
 
 #endif // SCHOOLCOUNTER_H

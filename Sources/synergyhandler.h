@@ -5,7 +5,6 @@
 #include "Widgets/ui_extended.h"
 #include "Synergies/draftitemcounter.h"
 #include "Synergies/draftdropcounter.h"
-#include "Synergies/statsynergies.h"
 #include "utility.h"
 
 
@@ -62,7 +61,7 @@ private:
                         const QStringList &arenaCodes, bool all);
     void clearSynergyLists();
     bool shouldBeInSynergies(const QString &code);
-    void connectCounters(DraftDropCounter **dropCounters, DraftItemCounter **cardTypeCounters, DraftItemCounter **mechanicCounters);
+    void connectCounters(DraftDropCounter **dropCounters, QMap<QString, DraftItemCounter *> *cardTypeCounters, QMap<QString, DraftItemCounter *> *mechanicCounters);
     void createDraftItemCounters();
     void deleteDraftItemCounters();
 

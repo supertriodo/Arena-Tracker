@@ -14,13 +14,24 @@ public:
 
 //Variables
 private:
-    static DraftItemCounter **cardTypeCounters;
+    static QMap<QString, DraftItemCounter*> keySynergiesMap;
     static QMap<QString, QList<QString>> *synergyCodes;
 
 //Metodos
+private:
+    static QMap<QString, QString> getMapKeySynergies();
+    static QString getSynergyTag(const QString &key);
+    static bool isWeakKey(const QString &key);
+
+    static bool isKey(const QString &key, CardType cardType);
+    static bool isKeyGen(const QString &key, const QString &code, const QString &text);
+    static bool isKeySyn(const QString &key, const QString &code);
+    static bool isKeyAllSyn(const QString &key, const QString &code, const QString &text);
+
 public:
-    static DraftItemCounter **createCardTypeCounters(QObject *parent, QGridLayout *mechanicsLayout);
-    static void deleteCardTypeCounters();
+    static QMap<QString, DraftItemCounter*> * createCardTypeCounters(QObject *parent, QGridLayout *mechanicsLayout);
+    static QStringList getListKeySynergies();
+    static QStringList getListKeyLabels();
     static void setTheme();
     static void resetAll();
     static void setHidden(bool hide);
@@ -30,15 +41,12 @@ public:
     static QStringList debugCardTypeSynergies(const QString &code, const QString &text);
     static void getDirectLinkSynergies(const QString &code, const QMap<QString, QList<QString> > &directLinks, QMap<QString, int> &synergies);
     static void getCardTypeCounters(QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap);
-    static void getCardTypeSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap, const QString &text, CardType cardType);
     static void updateCardTypeCounters(const QString &code, QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
                                        const QString &text, CardType cardType);
-
-private:
-    static bool isCardType(CardType key, CardType cardType);
-    static bool isCardTypeGen(const QString &key, const QString &code, const QString &text);
-    static bool isCardTypeSyn(const QString &key, const QString &code);
-    static bool isCardTypeAllSyn(const QString &key, const QString &code, const QString &text);
+    static void getCardTypeSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap, const QString &text, CardType cardType);
+    static void getPartKeySynergies(const QString &partSynergy, QMap<QString, QMap<QString, int> > &synergyTagMap);
+    static bool isPartKey(const QString &partSynergy, const QString &code, QString &partSynergyTag,
+                          const QString &text, CardType cardType);
 };
 
 #endif // CARDTYPECOUNTER_H

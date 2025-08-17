@@ -8,7 +8,8 @@
 #include "../Synergies/draftitemcounter.h"
 #include "../Synergies/draftdropcounter.h"
 
-#define M_NUM_TYPES 3
+enum VType {V_MINION, V_SPELL, V_WEAPON, V_NUM_TYPES};
+enum VMechanics {V_AOE, V_TAUNT_ALL, V_SURVIVABILITY, V_DISCOVER_DRAW, V_PING, V_DAMAGE, V_DESTROY, V_REACH, V_NUM_MECHANICS};
 
 
 class DraftMechanicsWindow : public QMainWindow

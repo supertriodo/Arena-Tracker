@@ -2,6 +2,10 @@
 #include "../themehandler.h"
 
 
+DraftItemCounter::DraftItemCounter()
+{
+
+}
 DraftItemCounter::DraftItemCounter(QObject *parent, QString synergyTag, QString synergyTagExtra,
                                    QGridLayout *gridLayout, int gridRow, int gridCol,
                                    QPixmap pixmap, int iconWidth, bool iconHover, bool inDraftMechanicsWindow) : QObject(parent)
@@ -15,8 +19,6 @@ DraftItemCounter::DraftItemCounter(QObject *parent, QString synergyTag, QString 
 
     gridLayout->addLayout(horLayout, gridRow, gridCol);
 }
-
-
 DraftItemCounter::DraftItemCounter(QObject *parent, QString synergyTag) : QObject(parent)
 {
     //Synergy keys sin icono, solo datos
@@ -95,6 +97,12 @@ void DraftItemCounter::reset()
         labelCounter->setText("0");
         labelIcon->setDisabled(true);
     }
+}
+
+
+QString DraftItemCounter::getSynergyTag()
+{
+    return synergyTag;
 }
 
 

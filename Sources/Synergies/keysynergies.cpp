@@ -89,13 +89,6 @@ void KeySynergies::createKeySynergies()
 }
 
 
-QString KeySynergies::getSynergyTag(const QString &key)
-{
-    if(!keySynergiesMap.contains(key))  return "";
-    return keySynergiesMap[key].synergyTag;
-}
-
-
 void KeySynergies::setSynergyCodes(QMap<QString, QList<QString>> *synergyCodes)
 {
     KeySynergies::synergyCodes = synergyCodes;
@@ -186,9 +179,6 @@ void KeySynergies::updateKeySynergies(const QString &code, const QJsonArray &mec
         {
             keySynergiesMap[keyAll].increaseSyn(code);
         }
-
-        // qDebug()<<key<<keySynergiesMap[key].codeMap<<keySynergiesMap[key].codeSynMap;
-        // qDebug()<<keyAll<<keySynergiesMap[keyAll].codeMap<<keySynergiesMap[keyAll].codeSynMap;
     }
 }
 
@@ -212,7 +202,7 @@ void KeySynergies::getKeySynergies(const QString &code, QMap<QString, QMap<QStri
             keySynergiesMap[keyAll].insertSynCards(synergyTagMap);
         }
         //Syn
-        if(!isWeakKey(key))
+        if(!isWeakKeySyn(key))
         {
             if(isKeySyn(key+"Syn", code, mechanics, referencedTags, text, cardType, attack, cost))
             {
@@ -229,7 +219,7 @@ void KeySynergies::getKeySynergies(const QString &code, QMap<QString, QMap<QStri
 
 //Sinergias que no queremos que se muestren en cada carta pq son debiles y muchas.
 //Abarrotan la lista con sinergias innecesarias.
-bool KeySynergies::isWeakKey(const QString &key)
+bool KeySynergies::isWeakKeySyn(const QString &key)
 {
     QStringList weakKeys = {"return"};
     return weakKeys.contains(key);
@@ -283,6 +273,7 @@ bool KeySynergies::isPartKey(const QString &partSynergy, const QString &code, QS
         QString key = partSynergy;
         key.chop(6);
         partSynergyTag = getSynergyTag(key);
+        if(partSynergyTag.isEmpty())    return false;
 
         return isKey(key, code, mechanics, referencedTags, text, cardType, attack, cost) ||
                isKeyGen(key+"Gen", code, mechanics, referencedTags, text, cardType, attack, cost);
@@ -292,6 +283,7 @@ bool KeySynergies::isPartKey(const QString &partSynergy, const QString &code, QS
         QString key = partSynergy;
         key.chop(3);
         partSynergyTag = getSynergyTag(key);
+        if(partSynergyTag.isEmpty())    return false;
 
         return isKey(key, code, mechanics, referencedTags, text, cardType, attack, cost);
     }
@@ -300,6 +292,7 @@ bool KeySynergies::isPartKey(const QString &partSynergy, const QString &code, QS
         QString key = partSynergy;
         key.chop(3);
         partSynergyTag = getSynergyTag(key);
+        if(partSynergyTag.isEmpty())    return false;
         const QString &keyAll = key+"All";
 
         return isKeyAllSyn(keyAll+"Syn", code, mechanics, referencedTags, text, cardType, attack, cost);
@@ -308,6 +301,7 @@ bool KeySynergies::isPartKey(const QString &partSynergy, const QString &code, QS
     {
         QString key = partSynergy;
         partSynergyTag = getSynergyTag(key);
+        if(partSynergyTag.isEmpty())    return false;
         const QString &keyAll = key+"All";
 
         return isKeySyn(key+"Syn", code, mechanics, referencedTags, text, cardType, attack, cost) ||
@@ -316,7 +310,14 @@ bool KeySynergies::isPartKey(const QString &partSynergy, const QString &code, QS
 }
 
 
-QList <QString> KeySynergies::getListKeySynergies()
+QString KeySynergies::getSynergyTag(const QString &key)
+{
+    if(!keySynergiesMap.contains(key))  return "";
+    return keySynergiesMap[key].synergyTag;
+}
+
+
+QStringList KeySynergies::getListKeySynergies()
 {
     return getMapKeySynergies().keys();
 }
