@@ -171,7 +171,7 @@ void DraftDropCounter::setTransparency(Transparency transparency, bool mouseInAp
     const auto cardTypesKeys = DraftDropCounter::getListKeyLabels();
     for(const auto &key: cardTypesKeys)
     {
-        keySynergiesMap[key]->setTransparency(transparency, mouseInApp);
+        keySynergiesMap[key]->DraftItemCounter::setTransparency(transparency, mouseInApp);
     }
 }
 
@@ -305,7 +305,7 @@ void DraftDropCounter::updateDropCounters(const QString &code, QMap<QString, QSt
 
 QStringList DraftDropCounter::getListKeyLabels()
 {
-    getListKeySynergies();
+    return getListKeySynergies();
 }
 
 
