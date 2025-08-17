@@ -37,7 +37,7 @@ private:
 
 //Metodos
 public:
-    static QList<StatSyn> getStatsSynergiesFromJson(const QString &code, QMap<QString, QList<QString> > &synergyCodes);
+    static QList<StatSyn> getStatsSynergiesFromJson(const QString &code);
     void reset();
     void qDebugContents();
     void updateStatsMapSyn(const StatSyn &statSyn, const QString &code);
@@ -47,9 +47,9 @@ public:
 
     static void resetAll();
     static void setSynergyCodes(QMap<QString, QList<QString> > *synergyCodes);
+    static void updateStatsCards(const QString &code, CardType cardType, int attack, int health, int cost);
     static void getStatsCardsSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap,
                                        CardType cardType, int attack, int health, int cost);
-    static void updateStatsCards(const QString &code, CardType cardType, int attack, int health, int cost);
 };
 
 #endif // STATSYNERGIES_H

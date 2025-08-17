@@ -600,7 +600,6 @@ void SynergyHandler::debugMissingSynergiesAllSets()
             }
             //Wrong spelled mechanic
             if(!invalidMecs.isEmpty())  qDebug()<<"DEBUG SYNERGIES: Code:"<<code<<"No mecs:"<<invalidMecs;
-            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
             delete match;
         }
     }

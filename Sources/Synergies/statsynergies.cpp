@@ -21,6 +21,7 @@ void StatSynergies::reset()
 }
 
 
+//Tipico increaseSyn()
 void StatSynergies::updateStatsMapSyn(const StatSyn &statSyn, const QString &code)
 {
     switch(statSyn.op)
@@ -44,6 +45,7 @@ void StatSynergies::updateStatsMapSyn(const StatSyn &statSyn, const QString &cod
 }
 
 
+//Tipico increase() o increaseSyn()
 void StatSynergies::appendStatValue(bool appendToSyn, int statValue, const QString &code)
 {
     if(statValue > MAX_STAT)    statValue = MAX_STAT;
@@ -68,6 +70,7 @@ void StatSynergies::appendStatValue(bool appendToSyn, int statValue, const QStri
 }
 
 
+//Tipico insertCards()
 void StatSynergies::insertStatCards(const StatSyn &statSyn, QMap<QString,int> &synergies)
 {
     switch(statSyn.op)
@@ -91,6 +94,7 @@ void StatSynergies::insertStatCards(const StatSyn &statSyn, QMap<QString,int> &s
 }
 
 
+//Tipico insertCards() o insertSynCards()
 void StatSynergies::insertCards(bool insertSyn, int statValue, QMap<QString,int> &synergies)
 {
     if(statValue > MAX_STAT)    statValue = MAX_STAT;
@@ -136,12 +140,12 @@ void StatSynergies::qDebugContents()
 }
 
 
-QList<StatSyn> StatSynergies::getStatsSynergiesFromJson(const QString &code, QMap<QString, QList<QString>> &synergyCodes)
+QList<StatSyn> StatSynergies::getStatsSynergiesFromJson(const QString &code)
 {
     QList<StatSyn> statSyns;
 
-    if(!synergyCodes.contains(code))    return statSyns;
-    for(QString mechanic: (const QList<QString>)synergyCodes[code])
+    if(!synergyCodes->contains(code))    return statSyns;
+    for(QString mechanic: (const QList<QString>)(*synergyCodes)[code])
     {
         if(mechanic[0] == '=')
         {
@@ -256,83 +260,6 @@ void StatSynergies::setSynergyCodes(QMap<QString, QList<QString>> *synergyCodes)
 }
 
 
-void StatSynergies::getStatsCardsSynergies(const QString &code, QMap<QString, QMap<QString, int>> &synergyTagMap,
-                                           CardType cardType, int attack, int health, int cost)
-{
-    if(cardType == MINION)
-    {
-        costMinions.insertCards(true, cost, synergyTagMap["Cost"]);
-        attackMinions.insertCards(true, attack, synergyTagMap["Attack"]);
-        healthMinions.insertCards(true, health, synergyTagMap["Health"]);
-    }
-    else if(cardType == SPELL)
-    {
-        costSpells.insertCards(true, cost, synergyTagMap["Cost"]);
-    }
-    else if(cardType == WEAPON)
-    {
-        costWeapons.insertCards(true, cost, synergyTagMap["Cost"]);
-        attackWeapons.insertCards(true, attack, synergyTagMap["Attack"]);
-        healthWeapons.insertCards(true, health, synergyTagMap["Health"]);
-    }
-
-    //Synergies
-    const QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, *synergyCodes);
-    for(const StatSyn &statSyn: statSyns)
-    {
-        switch(statSyn.cardType)
-        {
-        case S_MINION:
-            switch(statSyn.statKind)
-            {
-            case S_COST:
-                if(statSyn.isGen)   costMinions.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
-                else                costMinions.insertStatCards(statSyn, synergyTagMap["Cost"]);
-                break;
-            case S_ATTACK:
-                if(statSyn.isGen)   attackMinions.insertCards(true, statSyn.statValue, synergyTagMap["Attack"]);
-                else                attackMinions.insertStatCards(statSyn, synergyTagMap["Attack"]);
-                break;
-            case S_HEALTH:
-                if(statSyn.isGen)   healthMinions.insertCards(true, statSyn.statValue, synergyTagMap["Health"]);
-                else                healthMinions.insertStatCards(statSyn, synergyTagMap["Health"]);
-                break;
-            }
-            break;
-        case S_SPELL:
-            switch(statSyn.statKind)
-            {
-            case S_COST:
-                if(statSyn.isGen)   costSpells.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
-                else                costSpells.insertStatCards(statSyn, synergyTagMap["Cost"]);
-                break;
-            case S_ATTACK:
-            case S_HEALTH:
-                break;
-            }
-            break;
-        case S_WEAPON:
-            switch(statSyn.statKind)
-            {
-            case S_COST:
-                if(statSyn.isGen)   costWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
-                else                costWeapons.insertStatCards(statSyn, synergyTagMap["Cost"]);
-                break;
-            case S_ATTACK:
-                if(statSyn.isGen)   attackWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Attack"]);
-                else                attackWeapons.insertStatCards(statSyn, synergyTagMap["Attack"]);
-                break;
-            case S_HEALTH:
-                if(statSyn.isGen)   healthWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Health"]);
-                else                healthWeapons.insertStatCards(statSyn, synergyTagMap["Health"]);
-                break;
-            }
-            break;
-        }
-    }
-}
-
-
 void StatSynergies::updateStatsCards(const QString &code, CardType cardType, int attack, int health, int cost)
 {
     if(cardType == MINION)
@@ -353,7 +280,7 @@ void StatSynergies::updateStatsCards(const QString &code, CardType cardType, int
     }
 
     //Synergies
-    const QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, *synergyCodes);
+    const QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code);
     for(const StatSyn &statSyn: statSyns)
     {
         switch(statSyn.cardType)
@@ -414,3 +341,160 @@ void StatSynergies::updateStatsCards(const QString &code, CardType cardType, int
     //    qDebug()<<"*****HEALTH MAP*****";
     //    healthMinions.qDebugContents();
 }
+
+
+void StatSynergies::getStatsCardsSynergies(const QString &code, QMap<QString, QMap<QString, int>> &synergyTagMap,
+                                           CardType cardType, int attack, int health, int cost)
+{
+    if(cardType == MINION)
+    {
+        costMinions.insertCards(true, cost, synergyTagMap["Cost"]);
+        attackMinions.insertCards(true, attack, synergyTagMap["Attack"]);
+        healthMinions.insertCards(true, health, synergyTagMap["Health"]);
+    }
+    else if(cardType == SPELL)
+    {
+        costSpells.insertCards(true, cost, synergyTagMap["Cost"]);
+    }
+    else if(cardType == WEAPON)
+    {
+        costWeapons.insertCards(true, cost, synergyTagMap["Cost"]);
+        attackWeapons.insertCards(true, attack, synergyTagMap["Attack"]);
+        healthWeapons.insertCards(true, health, synergyTagMap["Health"]);
+    }
+
+    //Synergies
+    const QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code);
+    for(const StatSyn &statSyn: statSyns)
+    {
+        switch(statSyn.cardType)
+        {
+        case S_MINION:
+            switch(statSyn.statKind)
+            {
+            case S_COST:
+                if(statSyn.isGen)   costMinions.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
+                else                costMinions.insertStatCards(statSyn, synergyTagMap["Cost"]);
+                break;
+            case S_ATTACK:
+                if(statSyn.isGen)   attackMinions.insertCards(true, statSyn.statValue, synergyTagMap["Attack"]);
+                else                attackMinions.insertStatCards(statSyn, synergyTagMap["Attack"]);
+                break;
+            case S_HEALTH:
+                if(statSyn.isGen)   healthMinions.insertCards(true, statSyn.statValue, synergyTagMap["Health"]);
+                else                healthMinions.insertStatCards(statSyn, synergyTagMap["Health"]);
+                break;
+            }
+            break;
+        case S_SPELL:
+            switch(statSyn.statKind)
+            {
+            case S_COST:
+                if(statSyn.isGen)   costSpells.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
+                else                costSpells.insertStatCards(statSyn, synergyTagMap["Cost"]);
+                break;
+            case S_ATTACK:
+            case S_HEALTH:
+                break;
+            }
+            break;
+        case S_WEAPON:
+            switch(statSyn.statKind)
+            {
+            case S_COST:
+                if(statSyn.isGen)   costWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
+                else                costWeapons.insertStatCards(statSyn, synergyTagMap["Cost"]);
+                break;
+            case S_ATTACK:
+                if(statSyn.isGen)   attackWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Attack"]);
+                else                attackWeapons.insertStatCards(statSyn, synergyTagMap["Attack"]);
+                break;
+            case S_HEALTH:
+                if(statSyn.isGen)   healthWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Health"]);
+                else                healthWeapons.insertStatCards(statSyn, synergyTagMap["Health"]);
+                break;
+            }
+            break;
+        }
+    }
+}
+
+
+// //Usada por LayeredSynergies para devolver sinergias parciales que luego haran union
+// void KeySynergies::getPartKeySynergies(const QString &partSynergy, QMap<QString, QMap<QString, int> > &synergyTagMap)
+// {
+//     if(partSynergy.endsWith("AllSyn"))
+//     {
+//         QString key = partSynergy;
+//         key.chop(6);
+//         const QString &keyAll = key+"All";
+
+//         if(keySynergiesMap.contains(keyAll))keySynergiesMap[keyAll]->insertCards(synergyTagMap);
+//     }
+//     else if(partSynergy.endsWith("Syn"))
+//     {
+//         QString key = partSynergy;
+//         key.chop(3);
+
+//         if(keySynergiesMap.contains(key))   keySynergiesMap[key]->insertCards(synergyTagMap);
+//     }
+//     else if(partSynergy.endsWith("Gen"))
+//     {
+//         QString key = partSynergy;
+//         key.chop(3);
+//         const QString &keyAll = key+"All";
+
+//         if(keySynergiesMap.contains(keyAll))keySynergiesMap[keyAll]->insertSynCards(synergyTagMap);
+//     }
+//     else
+//     {
+//         QString key = partSynergy;
+//         const QString &keyAll = key+"All";
+
+//         if(keySynergiesMap.contains(key))   keySynergiesMap[key]->insertSynCards(synergyTagMap);
+//         if(keySynergiesMap.contains(keyAll))keySynergiesMap[keyAll]->insertSynCards(synergyTagMap);
+//     }
+// }
+
+
+// //Usada por LayeredSynergies para verificar que el code hace sinergia con cada una de las partSynergy
+// bool KeySynergies::isPartKey(const QString &partSynergy, const QString &code, QString &partSynergyTag,
+//                              const QJsonArray &mechanics, const QJsonArray &referencedTags,
+//                              const QString &text, CardType cardType, int attack, int cost)
+// {
+//     if(partSynergy.endsWith("AllSyn"))
+//     {
+//         QString key = partSynergy;
+//         key.chop(6);
+//         partSynergyTag = getSynergyTag(key);
+
+//         return isKey(key, code, mechanics, referencedTags, text, cardType, attack, cost) ||
+//                isKeyGen(key+"Gen", code, mechanics, referencedTags, text, cardType, attack, cost);
+//     }
+//     else if(partSynergy.endsWith("Syn"))
+//     {
+//         QString key = partSynergy;
+//         key.chop(3);
+//         partSynergyTag = getSynergyTag(key);
+
+//         return isKey(key, code, mechanics, referencedTags, text, cardType, attack, cost);
+//     }
+//     else if(partSynergy.endsWith("Gen"))
+//     {
+//         QString key = partSynergy;
+//         key.chop(3);
+//         partSynergyTag = getSynergyTag(key);
+//         const QString &keyAll = key+"All";
+
+//         return isKeyAllSyn(keyAll+"Syn", code, mechanics, referencedTags, text, cardType, attack, cost);
+//     }
+//     else
+//     {
+//         QString key = partSynergy;
+//         partSynergyTag = getSynergyTag(key);
+//         const QString &keyAll = key+"All";
+
+//         return isKeySyn(key+"Syn", code, mechanics, referencedTags, text, cardType, attack, cost) ||
+//                isKeyAllSyn(keyAll+"Syn", code, mechanics, referencedTags, text, cardType, attack, cost);
+//     }
+// }
