@@ -3,6 +3,7 @@
 #include "qthread.h"
 #include "themehandler.h"
 #include "QDesktopServices"
+#include <QDebug>
 #include "Synergies/keysynergies.h"
 #include "Synergies/layeredsynergies.h"
 #include "Synergies/cardtypecounter.h"
@@ -378,7 +379,7 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic, QRegularExpress
     }
     if(mechanic.startsWith('&'))
     {
-        const QStringList layeredSynergy = mechanic.split('&', Qt::SkipEmptyParts);
+        const QStringList layeredSynergy = mechanic.split('&', QString::SkipEmptyParts);
         bool allValid = true;
         for(const auto &partSynergy: layeredSynergy)
         {
