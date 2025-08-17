@@ -343,6 +343,18 @@ QStringList CardTypeCounter::getListKeyLabels()
 }
 
 
+QStringList CardTypeCounter::getListValidSynergies()
+{
+    QStringList validMecs;
+    const auto ctKeys = CardTypeCounter::getListKeySynergies();
+    for(const QString &keyS: ctKeys)
+    {
+        validMecs << keyS+"Gen" << keyS+"Syn" << keyS+"AllSyn";
+    }
+    return validMecs;
+}
+
+
 QStringList CardTypeCounter::getListKeySynergies()
 {
     return getMapKeySynergies().keys();

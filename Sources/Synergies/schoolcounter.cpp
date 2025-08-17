@@ -205,6 +205,18 @@ QString SchoolCounter::getSynergyTag(const QString &key)
 }
 
 
+QStringList SchoolCounter::getListValidSynergies()
+{
+    QStringList validMecs;
+    const auto sKeys = SchoolCounter::getListKeySynergies();
+    for(const QString &keyS: sKeys)
+    {
+        validMecs << keyS+"Gen" << keyS+"Syn" << keyS+"AllSyn";
+    }
+    return validMecs;
+}
+
+
 QStringList SchoolCounter::getListKeySynergies()
 {
     return getMapKeySynergies().keys();

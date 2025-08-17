@@ -317,6 +317,18 @@ QString KeySynergies::getSynergyTag(const QString &key)
 }
 
 
+QStringList KeySynergies::getListValidSynergies()
+{
+    QStringList validMecs;
+    const auto keys = KeySynergies::getListKeySynergies();
+    for(const QString &keyS: keys)
+    {
+        validMecs << keyS << keyS+"Gen" << keyS+"Syn" << keyS+"AllSyn";
+    }
+    return validMecs;
+}
+
+
 QStringList KeySynergies::getListKeySynergies()
 {
     return getMapKeySynergies().keys();

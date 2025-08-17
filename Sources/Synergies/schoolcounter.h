@@ -30,6 +30,7 @@ private:
 public:
     static void createSchoolCounters(QObject *parent);
     static QStringList getListKeySynergies();
+    static QStringList getListValidSynergies();
     static void resetAll();
     static void setSynergyCodes(QMap<QString, QList<QString> > *synergyCodes);
     static QStringList debugSchoolSynergies(const QString &code, const QString &text);

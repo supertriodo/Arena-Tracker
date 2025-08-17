@@ -30,6 +30,7 @@ private:
 public:
     static void createRaceCounters(QObject *parent);
     static QStringList getListKeySynergies();
+    static QStringList getListValidSynergies();
     static void resetAll();
     static void setSynergyCodes(QMap<QString, QList<QString> > *synergyCodes);
     static QStringList debugRaceSynergies(const QString &code, const QJsonArray &mechanics, const QString &text);

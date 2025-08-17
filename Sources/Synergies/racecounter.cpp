@@ -209,6 +209,18 @@ QString RaceCounter::getSynergyTag(const QString &key)
 }
 
 
+QStringList RaceCounter::getListValidSynergies()
+{
+    QStringList validMecs;
+    const auto rKeys = RaceCounter::getListKeySynergies();
+    for(const QString &keyS: rKeys)
+    {
+        validMecs << keyS+"Gen" << keyS+"Syn" << keyS+"AllSyn";
+    }
+    return validMecs;
+}
+
+
 QStringList RaceCounter::getListKeySynergies()
 {
     return getMapKeySynergies().keys();

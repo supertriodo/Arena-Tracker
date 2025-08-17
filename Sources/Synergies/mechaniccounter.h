@@ -42,6 +42,7 @@ private:
 public:
     static QMap<QString, DraftItemCounter *> *createMechanicCounters(QObject *parent, QGridLayout *mechanicsLayout);
     static QStringList getListKeySynergies();
+    static QStringList getListValidSynergies();
     static QStringList getListKeyLabels();
     static void setTheme();
     static void resetAll();

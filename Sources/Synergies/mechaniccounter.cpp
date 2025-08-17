@@ -323,7 +323,7 @@ void MechanicCounter::getMechanicSynergies(const QString &code, QMap<QString, QM
 //Usada por LayeredSynergies para devolver sinergias parciales que luego haran union
 void MechanicCounter::getPartKeySynergies(const QString &partSynergy, const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap)
 {
-    //No abarca la complejidad de isDeathrattleGoodAll() en caso de ser "deathrattle" o "deathrattleGen" pero es aceptable.
+    //No abarca la complejidad de isDeathrattleGoodAll() en caso de ser "deathrattle" o "deathrattleOpponent" o "deathrattleGen" pero es aceptable.
     if(partSynergy.endsWith("AllSyn"))
     {
         QString key = partSynergy;
@@ -479,6 +479,26 @@ QStringList MechanicCounter::getListKeyLabels()
 {
     const QStringList keys = {"aoe", "tauntAll", "survival", "discoverDraw", "ping", "damageMinions", "destroy", "reach"};
     return keys;
+}
+
+
+QStringList MechanicCounter::getListValidSynergies()
+{
+    QStringList validMecs;
+    const auto mKeys = MechanicCounter::getListKeySynergies();
+    for(const QString &keyS: mKeys)
+    {
+        if(keyS.endsWith("GenGen") || keyS.endsWith("GenGenX"))
+        {
+            validMecs << keyS;
+        }
+        else
+        {
+            validMecs << keyS << keyS+"Syn";
+        }
+    }
+    validMecs << "tauntGen" << "tauntAllSyn" << "deathrattleGen" << "deathrattleOpponent" << "deathrattleGoodAllSyn";
+    return validMecs;
 }
 
 

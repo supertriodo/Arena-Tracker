@@ -44,6 +44,7 @@ private:
 
 public:
     static QStringList getListKeySynergies();
+    static QStringList getListValidSynergies();
     static void createKeySynergies();
     static void setSynergyCodes(QMap<QString, QList<QString> > *synergyCodes);
     static void resetAll();

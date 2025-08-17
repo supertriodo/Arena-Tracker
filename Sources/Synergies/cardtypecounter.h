@@ -31,6 +31,7 @@ private:
 public:
     static QMap<QString, DraftItemCounter*> * createCardTypeCounters(QObject *parent, QGridLayout *mechanicsLayout);
     static QStringList getListKeySynergies();
+    static QStringList getListValidSynergies();
     static QStringList getListKeyLabels();
     static void setTheme();
     static void resetAll();

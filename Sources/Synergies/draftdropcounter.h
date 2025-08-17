@@ -41,6 +41,7 @@ public:
 
     static QMap<QString, DraftDropCounter *> *createDropCounters(QObject *parent, QGridLayout *mechanicsLayout);
     static QStringList getListKeySynergies();
+    static QStringList getListValidSynergies();
     static QStringList getListKeyLabels();
     static void setTheme();
     static void resetAll();

@@ -309,6 +309,18 @@ QStringList DraftDropCounter::getListKeyLabels()
 }
 
 
+QStringList DraftDropCounter::getListValidSynergies()
+{
+    QStringList validMecs;
+    const auto dKeys = DraftDropCounter::getListKeySynergies();
+    for(const QString &keyS: dKeys)
+    {
+        validMecs << keyS;
+    }
+    return validMecs;
+}
+
+
 QStringList DraftDropCounter::getListKeySynergies()
 {
     return getMapKeySynergies().keys();
