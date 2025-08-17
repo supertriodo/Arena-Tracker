@@ -40,6 +40,7 @@ private:
 private:
     static QList<StatSyn> getStatsSynergiesFromJson(const QString &code);
     static StatSyn getStatSyn(const QString &mechanic);
+    static void getStatsSynergiesFromStatSyn(const StatSyn &statSyn, QMap<QString, QMap<QString, int> > &synergyTagMap);
     void reset();
     void qDebugContents();
     void increaseSynM(const StatSyn &statSyn, const QString &code);
@@ -54,9 +55,12 @@ private:
 public:
     static void resetAll();
     static void setSynergyCodes(QMap<QString, QList<QString> > *synergyCodes);
-    static void updateStatsCards(const QString &code, CardType cardType, int attack, int health, int cost);
-    static void getStatsCardsSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap,
-                                       CardType cardType, int attack, int health, int cost);
+    static void updateStatsSynergies(const QString &code, CardType cardType, int attack, int health, int cost);
+    static void getStatsSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap,
+                                  CardType cardType, int attack, int health, int cost);
+    void getPartKeySynergies(const QString &partSynergy, QMap<QString, QMap<QString, int> > &synergyTagMap);
+    bool isPartKey(const QString &partSynergy, QString &partSynergyTag,
+                                  CardType cardType, int attack, int health, int cost);
 };
 
 #endif // STATSYNERGIES_H

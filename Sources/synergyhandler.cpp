@@ -316,7 +316,7 @@ void SynergyHandler::updateCounters(
                                             draw, toYourHand, discover,
                                             mechanics, referencedTags, text, cardType, attack, cost);
     KeySynergies::updateKeySynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
-    StatSynergies::updateStatsCards(code, cardType, attack, health, cost);
+    StatSynergies::updateStatsSynergies(code, cardType, attack, health, cost);
     LayeredSynergies::updateLayeredSynergies(code);
 }
 
@@ -348,7 +348,7 @@ void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString
     SchoolCounter::getSchoolSynergies(code, synergyTagMap, text, cardSchool);
     MechanicCounter::getMechanicSynergies(code, synergyTagMap, mechanicIcons, mechanics, referencedTags, text, cardType, attack, cost);
     KeySynergies::getKeySynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
-    StatSynergies::getStatsCardsSynergies(code, synergyTagMap, cardType, attack, health, cost);
+    StatSynergies::getStatsSynergies(code, synergyTagMap, cardType, attack, health, cost);
     LayeredSynergies::getLayeredSynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
     CardTypeCounter::getDirectLinkSynergies(code, directLinks, synergyTagMap["Extra"]);
 }
@@ -380,46 +380,15 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic, QRegularExpress
         }
         return allValid;
     }
-    QStringList validMecs = {
-        "spellGen", "minionGen", "weaponGen", "locationGen",
-        "spellSyn", "minionSyn", "weaponSyn", "locationSyn",
-        "spellAllSyn", "minionAllSyn", "weaponAllSyn", "locationAllSyn",
 
-        "murlocGen", "demonGen", "mechGen", "elementalGen", "beastGen", "totemGen", "pirateGen",
-        "dragonGen", "nagaGen", "undeadGen", "quilboarGen", "draeneiGen",
-        "murlocSyn", "demonSyn", "mechSyn", "elementalSyn", "beastSyn", "totemSyn", "pirateSyn",
-        "dragonSyn", "nagaSyn", "undeadSyn", "quilboarSyn", "draeneiSyn",
-        "murlocAllSyn", "demonAllSyn", "mechAllSyn", "elementalAllSyn", "beastAllSyn", "totemAllSyn", "pirateAllSyn",
-        "dragonAllSyn", "nagaAllSyn", "undeadAllSyn", "quilboarAllSyn", "draeneiAllSyn",
-        //New race step
-        "arcaneGen", "felGen", "fireGen", "frostGen", "holyGen", "shadowGen", "natureGen",
-        "arcaneSyn", "felSyn", "fireSyn", "frostSyn", "holySyn", "shadowSyn", "natureSyn",
-        "arcaneAllSyn", "felAllSyn", "fireAllSyn", "frostAllSyn", "holyAllSyn", "shadowAllSyn", "natureAllSyn",
+    if(CardTypeCounter::getListValidSynergies().contains(mechanic))     return true;
+    if(DraftDropCounter::getListValidSynergies().contains(mechanic))    return true;
+    if(RaceCounter::getListValidSynergies().contains(mechanic))         return true;
+    if(SchoolCounter::getListValidSynergies().contains(mechanic))       return true;
+    if(MechanicCounter::getListValidSynergies().contains(mechanic))     return true;
+    if(KeySynergies::getListValidSynergies().contains(mechanic))        return true;
 
-        "drop2", "drop3", "drop4",
-
-        "discover", "draw", "toYourHand",
-        "discoverSyn", "drawSyn", "toYourHandSyn",
-        "restoreFriendlyHero", "armor",
-        "restoreFriendlyHeroSyn", "armorSyn",
-        "reach", "taunt", "tauntGen",
-        "reachSyn", "tauntSyn", "tauntAllSyn",
-        "damageMinions", "ping", "aoe", "destroy",
-        "damageMinionsSyn", "pingSyn", "aoeSyn", "destroySyn",
-
-        "deathrattle", "deathrattleGen", "deathrattleOpponent",
-        "deathrattleSyn", "deathrattleGoodAllSyn",
-
-        "jadeGolemGenGen", "heroPowerGenGenX"
-    };//TODO validMecs separar
-
-    const auto keys = KeySynergies::getListKeySynergies();
-    for(const QString &keyS: keys)
-    {
-        validMecs << keyS << keyS+"Gen" << keyS+"Syn" << keyS+"AllSyn";
-    }
-
-    return validMecs.contains(mechanic);
+    return false;
 }
 
 
