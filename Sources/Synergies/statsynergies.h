@@ -34,17 +34,24 @@ private:
     static StatSynergies costMinions, attackMinions, healthMinions, costSpells;
     static StatSynergies costWeapons, attackWeapons, healthWeapons;
     static QMap<QString, QList<QString>> * synergyCodes;
+    static QRegularExpressionMatch match;
 
 //Metodos
-public:
+private:
     static QList<StatSyn> getStatsSynergiesFromJson(const QString &code);
+    static StatSyn getStatSyn(const QString &mechanic);
     void reset();
     void qDebugContents();
-    void updateStatsMapSyn(const StatSyn &statSyn, const QString &code);
-    void appendStatValue(bool appendToSyn, int statValue, const QString &code);
-    void insertStatCards(const StatSyn &statSyn, QMap<QString, int> &synergies);
-    void insertCards(bool insertSyn, int statValue, QMap<QString, int> &synergies);
+    void increaseSynM(const StatSyn &statSyn, const QString &code);
+    void increase(int statValue, const QString &code);
+    void increaseSyn(int statValue, const QString &code);
+    void increaseX(bool appendToSyn, int statValue, const QString &code);
+    void insertCardsM(const StatSyn &statSyn, QMap<QString, int> &synergies);
+    void insertCards(int statValue, QMap<QString,int> &synergies);
+    void insertSynCards(int statValue, QMap<QString,int> &synergies);
+    void insertCardsX(bool insertSyn, int statValue, QMap<QString, int> &synergies);
 
+public:
     static void resetAll();
     static void setSynergyCodes(QMap<QString, QList<QString> > *synergyCodes);
     static void updateStatsCards(const QString &code, CardType cardType, int attack, int health, int cost);

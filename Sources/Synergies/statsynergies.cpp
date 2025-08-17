@@ -7,6 +7,7 @@
 StatSynergies StatSynergies::costMinions, StatSynergies::attackMinions, StatSynergies::healthMinions, StatSynergies::costSpells;
 StatSynergies StatSynergies::costWeapons, StatSynergies::attackWeapons, StatSynergies::healthWeapons;
 QMap<QString, QList<QString>> * StatSynergies::synergyCodes;
+QRegularExpressionMatch StatSynergies::match;
 
 StatSynergies::StatSynergies()
 {
@@ -21,32 +22,42 @@ void StatSynergies::reset()
 }
 
 
-//Tipico increaseSyn()
-void StatSynergies::updateStatsMapSyn(const StatSyn &statSyn, const QString &code)
+void StatSynergies::increaseSynM(const StatSyn &statSyn, const QString &code)
 {
     switch(statSyn.op)
     {
         case S_EQUAL:
-            appendStatValue(true, statSyn.statValue, code);
+            increaseSyn(statSyn.statValue, code);
         break;
         case S_LOWER_IGUAL:
             for(int i = statSyn.statValue; i >= 0; i--)
             {
-                appendStatValue(true, i, code);
+                increaseSyn(i, code);
             }
         break;
         case S_HIGHER_EQUAL:
             for(int i = statSyn.statValue; i <= MAX_STAT; i++)
             {
-                appendStatValue(true, i, code);
+                increaseSyn(i, code);
             }
         break;
     }
 }
 
 
-//Tipico increase() o increaseSyn()
-void StatSynergies::appendStatValue(bool appendToSyn, int statValue, const QString &code)
+void StatSynergies::increase(int statValue, const QString &code)
+{
+    increaseX(false, statValue, code);
+}
+
+
+void StatSynergies::increaseSyn(int statValue, const QString &code)
+{
+    increaseX(true, statValue, code);
+}
+
+
+void StatSynergies::increaseX(bool appendToSyn, int statValue, const QString &code)
 {
     if(statValue > MAX_STAT)    statValue = MAX_STAT;
     QMap<int, QMap<QString, int>> &statsMap = (appendToSyn?this->statsSynMap:this->statsMap);
@@ -70,32 +81,44 @@ void StatSynergies::appendStatValue(bool appendToSyn, int statValue, const QStri
 }
 
 
-//Tipico insertCards()
-void StatSynergies::insertStatCards(const StatSyn &statSyn, QMap<QString,int> &synergies)
+//Tipico insertCardsX()
+void StatSynergies::insertCardsM(const StatSyn &statSyn, QMap<QString,int> &synergies)
 {
     switch(statSyn.op)
     {
         case S_EQUAL:
-            insertCards(false, statSyn.statValue, synergies);
+            insertCards(statSyn.statValue, synergies);
         break;
         case S_LOWER_IGUAL:
             for(int i = statSyn.statValue; i >= 0; i--)
             {
-                insertCards(false, i, synergies);
+                insertCards(i, synergies);
             }
         break;
         case S_HIGHER_EQUAL:
             for(int i = statSyn.statValue; i <= MAX_STAT; i++)
             {
-                insertCards(false, i, synergies);
+                insertCards(i, synergies);
             }
         break;
     }
 }
 
 
+void StatSynergies::insertCards(int statValue, QMap<QString,int> &synergies)
+{
+    insertCardsX(false, statValue, synergies);
+}
+
+
+void StatSynergies::insertSynCards(int statValue, QMap<QString,int> &synergies)
+{
+    insertCardsX(true, statValue, synergies);
+}
+
+
 //Tipico insertCards() o insertSynCards()
-void StatSynergies::insertCards(bool insertSyn, int statValue, QMap<QString,int> &synergies)
+void StatSynergies::insertCardsX(bool insertSyn, int statValue, QMap<QString,int> &synergies)
 {
     if(statValue > MAX_STAT)    statValue = MAX_STAT;
     QMap<int, QMap<QString, int>> &statsMap = (insertSyn?this->statsSynMap:this->statsMap);
@@ -140,105 +163,57 @@ void StatSynergies::qDebugContents()
 }
 
 
+StatSyn StatSynergies::getStatSyn(const QString &mechanic)
+{
+    StatSyn statSyn;
+
+    static const auto regex = QRegularExpression("^=([<>]?)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)([0-9]*)$");
+    if(mechanic.contains(regex, &match))
+    {
+        QString op = match.captured(1);
+        QString syngen = match.captured(2);
+        QString cardType = match.captured(3);
+        QString stat = match.captured(4);
+        int value = match.captured(5).toInt();
+
+        if(op.isNull())         statSyn.op = S_EQUAL;
+        else if(op == '<')      statSyn.op = S_LOWER_IGUAL;
+        else/* if(op == '>')*/  statSyn.op = S_HIGHER_EQUAL;
+
+        if(syngen == "Gen")             statSyn.isGen = true;
+        else/* if(syngen == "Syn")*/    statSyn.isGen = false;
+
+        if(cardType == "Minion")            statSyn.cardType = S_MINION;
+        else if(cardType == "Spell")        statSyn.cardType = S_SPELL;
+        else/* if(cardType == "Weapon")*/   statSyn.cardType = S_WEAPON;
+
+        if(stat == "Cost")              statSyn.statKind = S_COST;
+        else if(stat == "Attack")       statSyn.statKind = S_ATTACK;
+        else/* if(stat == "Health")*/   statSyn.statKind = S_HEALTH;
+
+        statSyn.statValue = value;
+
+        qDebug()<<op<<syngen<<cardType<<stat<<value;
+    }
+    else
+    {
+        statSyn.statValue = -1;
+    }
+    return statSyn;
+}
+
+
 QList<StatSyn> StatSynergies::getStatsSynergiesFromJson(const QString &code)
 {
-    QList<StatSyn> statSyns;
+    QList<StatSyn> statSynList;
 
-    if(!synergyCodes->contains(code))    return statSyns;
-    for(QString mechanic: (const QList<QString>)(*synergyCodes)[code])
+    if(!synergyCodes->contains(code))    return statSynList;
+    for(const QString &mechanic: qAsConst((*synergyCodes)[code]))
     {
-        if(mechanic[0] == '=')
-        {
-            mechanic.remove(0,1);
-
-            //Operator
-            StatSyn statSyn;
-            QChar c = mechanic[0];
-            if(c == '<')
-            {
-                statSyn.op = S_LOWER_IGUAL;
-                mechanic.remove(0,1);
-            }
-            else if(c == '>')
-            {
-                statSyn.op = S_HIGHER_EQUAL;
-                mechanic.remove(0,1);
-            }
-            else    statSyn.op = S_EQUAL;
-
-            //Gen o Syn
-            if(mechanic.startsWith("Gen"))
-            {
-                statSyn.isGen = true;
-                mechanic.remove(0,3);
-            }
-            else if(mechanic.startsWith("Syn"))
-            {
-                statSyn.isGen = false;
-                mechanic.remove(0,3);
-            }
-            else
-            {
-                qDebug()<<"WARNING: Synergy Stat failed waiting Gen/Syn:" << mechanic << "Code:" << code;
-                break;
-            }
-
-            //CardType
-            if(mechanic.startsWith("Minion"))
-            {
-                statSyn.cardType = S_MINION;
-                mechanic.remove(0,6);
-            }
-            else if(mechanic.startsWith("Spell"))
-            {
-                statSyn.cardType = S_SPELL;
-                mechanic.remove(0,5);
-            }
-            else if(mechanic.startsWith("Weapon"))
-            {
-                statSyn.cardType = S_WEAPON;
-                mechanic.remove(0,6);
-            }
-            else
-            {
-                qDebug()<<"WARNING: Synergy Stat failed waiting Minion/Spell/Weapon:" << mechanic << "Code:" << code;
-                break;
-            }
-
-            //Stat
-            if(mechanic.startsWith("Cost"))
-            {
-                statSyn.statKind = S_COST;
-                mechanic.remove(0,4);
-            }
-            else if(mechanic.startsWith("Attack"))
-            {
-                statSyn.statKind = S_ATTACK;
-                mechanic.remove(0,6);
-            }
-            else if(mechanic.startsWith("Health"))
-            {
-                statSyn.statKind = S_HEALTH;
-                mechanic.remove(0,6);
-            }
-            else
-            {
-                qDebug()<<"WARNING: Synergy Stat failed waiting Cost/Attack/Health:" << mechanic << "Code:" << code;
-                break;
-            }
-
-            //Value
-            statSyn.statValue = mechanic.toInt();
-            statSyns.append(statSyn);
-
-            //Error
-            if(statSyn.statValue == 0)
-            {
-                qDebug()<<"WARNING: Synergy Stat failed waiting value if not 0:" << mechanic << "Code:" << code;
-            }
-        }
+        const StatSyn statSyn = getStatSyn(mechanic);
+        if(statSyn.statValue != -1) statSynList.append(statSyn);
     }
-    return statSyns;
+    return statSynList;
 }
 
 
@@ -264,19 +239,19 @@ void StatSynergies::updateStatsCards(const QString &code, CardType cardType, int
 {
     if(cardType == MINION)
     {
-        costMinions.appendStatValue(false, cost, code);
-        attackMinions.appendStatValue(false, attack, code);
-        healthMinions.appendStatValue(false, health, code);
+        costMinions.increase(cost, code);
+        attackMinions.increase(attack, code);
+        healthMinions.increase(health, code);
     }
     else if(cardType == SPELL)
     {
-        costSpells.appendStatValue(false, cost, code);
+        costSpells.increase(cost, code);
     }
     else if(cardType == WEAPON)
     {
-        costWeapons.appendStatValue(false, cost, code);
-        attackWeapons.appendStatValue(false, attack, code);
-        healthWeapons.appendStatValue(false, health, code);
+        costWeapons.increase(cost, code);
+        attackWeapons.increase(attack, code);
+        healthWeapons.increase(health, code);
     }
 
     //Synergies
@@ -289,16 +264,16 @@ void StatSynergies::updateStatsCards(const QString &code, CardType cardType, int
             switch(statSyn.statKind)
             {
             case S_COST:
-                if(statSyn.isGen)   costMinions.appendStatValue(false, statSyn.statValue, code);
-                else                costMinions.updateStatsMapSyn(statSyn, code);
+                if(statSyn.isGen)   costMinions.increase(statSyn.statValue, code);
+                else                costMinions.increaseSynM(statSyn, code);
                 break;
             case S_ATTACK:
-                if(statSyn.isGen)   attackMinions.appendStatValue(false, statSyn.statValue, code);
-                else                attackMinions.updateStatsMapSyn(statSyn, code);
+                if(statSyn.isGen)   attackMinions.increase(statSyn.statValue, code);
+                else                attackMinions.increaseSynM(statSyn, code);
                 break;
             case S_HEALTH:
-                if(statSyn.isGen)   healthMinions.appendStatValue(false, statSyn.statValue, code);
-                else                healthMinions.updateStatsMapSyn(statSyn, code);
+                if(statSyn.isGen)   healthMinions.increase(statSyn.statValue, code);
+                else                healthMinions.increaseSynM(statSyn, code);
                 break;
             }
             break;
@@ -306,8 +281,8 @@ void StatSynergies::updateStatsCards(const QString &code, CardType cardType, int
             switch(statSyn.statKind)
             {
             case S_COST:
-                if(statSyn.isGen)   costSpells.appendStatValue(false, statSyn.statValue, code);
-                else                costSpells.updateStatsMapSyn(statSyn, code);
+                if(statSyn.isGen)   costSpells.increase(statSyn.statValue, code);
+                else                costSpells.increaseSynM(statSyn, code);
                 break;
             case S_ATTACK:
             case S_HEALTH:
@@ -318,16 +293,16 @@ void StatSynergies::updateStatsCards(const QString &code, CardType cardType, int
             switch(statSyn.statKind)
             {
             case S_COST:
-                if(statSyn.isGen)   costWeapons.appendStatValue(false, statSyn.statValue, code);
-                else                costWeapons.updateStatsMapSyn(statSyn, code);
+                if(statSyn.isGen)   costWeapons.increase(statSyn.statValue, code);
+                else                costWeapons.increaseSynM(statSyn, code);
                 break;
             case S_ATTACK:
-                if(statSyn.isGen)   attackWeapons.appendStatValue(false, statSyn.statValue, code);
-                else                attackWeapons.updateStatsMapSyn(statSyn, code);
+                if(statSyn.isGen)   attackWeapons.increase(statSyn.statValue, code);
+                else                attackWeapons.increaseSynM(statSyn, code);
                 break;
             case S_HEALTH:
-                if(statSyn.isGen)   healthWeapons.appendStatValue(false, statSyn.statValue, code);
-                else                healthWeapons.updateStatsMapSyn(statSyn, code);
+                if(statSyn.isGen)   healthWeapons.increase(statSyn.statValue, code);
+                else                healthWeapons.increaseSynM(statSyn, code);
                 break;
             }
             break;
@@ -348,19 +323,19 @@ void StatSynergies::getStatsCardsSynergies(const QString &code, QMap<QString, QM
 {
     if(cardType == MINION)
     {
-        costMinions.insertCards(true, cost, synergyTagMap["Cost"]);
-        attackMinions.insertCards(true, attack, synergyTagMap["Attack"]);
-        healthMinions.insertCards(true, health, synergyTagMap["Health"]);
+        costMinions.insertSynCards(cost, synergyTagMap["Cost"]);
+        attackMinions.insertSynCards(attack, synergyTagMap["Attack"]);
+        healthMinions.insertSynCards(health, synergyTagMap["Health"]);
     }
     else if(cardType == SPELL)
     {
-        costSpells.insertCards(true, cost, synergyTagMap["Cost"]);
+        costSpells.insertSynCards(cost, synergyTagMap["Cost"]);
     }
     else if(cardType == WEAPON)
     {
-        costWeapons.insertCards(true, cost, synergyTagMap["Cost"]);
-        attackWeapons.insertCards(true, attack, synergyTagMap["Attack"]);
-        healthWeapons.insertCards(true, health, synergyTagMap["Health"]);
+        costWeapons.insertSynCards(cost, synergyTagMap["Cost"]);
+        attackWeapons.insertSynCards(attack, synergyTagMap["Attack"]);
+        healthWeapons.insertSynCards(health, synergyTagMap["Health"]);
     }
 
     //Synergies
@@ -373,16 +348,16 @@ void StatSynergies::getStatsCardsSynergies(const QString &code, QMap<QString, QM
             switch(statSyn.statKind)
             {
             case S_COST:
-                if(statSyn.isGen)   costMinions.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
-                else                costMinions.insertStatCards(statSyn, synergyTagMap["Cost"]);
+                if(statSyn.isGen)   costMinions.insertSynCards(statSyn.statValue, synergyTagMap["Cost"]);
+                else                costMinions.insertCardsM(statSyn, synergyTagMap["Cost"]);
                 break;
             case S_ATTACK:
-                if(statSyn.isGen)   attackMinions.insertCards(true, statSyn.statValue, synergyTagMap["Attack"]);
-                else                attackMinions.insertStatCards(statSyn, synergyTagMap["Attack"]);
+                if(statSyn.isGen)   attackMinions.insertSynCards(statSyn.statValue, synergyTagMap["Attack"]);
+                else                attackMinions.insertCardsM(statSyn, synergyTagMap["Attack"]);
                 break;
             case S_HEALTH:
-                if(statSyn.isGen)   healthMinions.insertCards(true, statSyn.statValue, synergyTagMap["Health"]);
-                else                healthMinions.insertStatCards(statSyn, synergyTagMap["Health"]);
+                if(statSyn.isGen)   healthMinions.insertSynCards(statSyn.statValue, synergyTagMap["Health"]);
+                else                healthMinions.insertCardsM(statSyn, synergyTagMap["Health"]);
                 break;
             }
             break;
@@ -390,8 +365,8 @@ void StatSynergies::getStatsCardsSynergies(const QString &code, QMap<QString, QM
             switch(statSyn.statKind)
             {
             case S_COST:
-                if(statSyn.isGen)   costSpells.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
-                else                costSpells.insertStatCards(statSyn, synergyTagMap["Cost"]);
+                if(statSyn.isGen)   costSpells.insertSynCards(statSyn.statValue, synergyTagMap["Cost"]);
+                else                costSpells.insertCardsM(statSyn, synergyTagMap["Cost"]);
                 break;
             case S_ATTACK:
             case S_HEALTH:
@@ -402,16 +377,16 @@ void StatSynergies::getStatsCardsSynergies(const QString &code, QMap<QString, QM
             switch(statSyn.statKind)
             {
             case S_COST:
-                if(statSyn.isGen)   costWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
-                else                costWeapons.insertStatCards(statSyn, synergyTagMap["Cost"]);
+                if(statSyn.isGen)   costWeapons.insertSynCards(statSyn.statValue, synergyTagMap["Cost"]);
+                else                costWeapons.insertCardsM(statSyn, synergyTagMap["Cost"]);
                 break;
             case S_ATTACK:
-                if(statSyn.isGen)   attackWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Attack"]);
-                else                attackWeapons.insertStatCards(statSyn, synergyTagMap["Attack"]);
+                if(statSyn.isGen)   attackWeapons.insertSynCards(statSyn.statValue, synergyTagMap["Attack"]);
+                else                attackWeapons.insertCardsM(statSyn, synergyTagMap["Attack"]);
                 break;
             case S_HEALTH:
-                if(statSyn.isGen)   healthWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Health"]);
-                else                healthWeapons.insertStatCards(statSyn, synergyTagMap["Health"]);
+                if(statSyn.isGen)   healthWeapons.insertSynCards(statSyn.statValue, synergyTagMap["Health"]);
+                else                healthWeapons.insertCardsM(statSyn, synergyTagMap["Health"]);
                 break;
             }
             break;
@@ -421,7 +396,7 @@ void StatSynergies::getStatsCardsSynergies(const QString &code, QMap<QString, QM
 
 
 // //Usada por LayeredSynergies para devolver sinergias parciales que luego haran union
-// void KeySynergies::getPartKeySynergies(const QString &partSynergy, QMap<QString, QMap<QString, int> > &synergyTagMap)
+// void StatSynergies::getPartKeySynergies(const QString &partSynergy, QMap<QString, QMap<QString, int> > &synergyTagMap)
 // {
 //     if(partSynergy.endsWith("AllSyn"))
 //     {
