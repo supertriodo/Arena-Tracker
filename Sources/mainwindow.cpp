@@ -4673,12 +4673,13 @@ void MainWindow::testPopularList(int i)
 }
 
 
+//mage warrior druid hunter
 void MainWindow::testDraft()
 {
     // draftHandler->beginHeroDraft();
 
-    QTimer::singleShot(2000, this, [=] () {
-        draftHandler->beginDraft(Utility::classEnum2classLogNumber(MAGE), deckHandler->getDeckCardList());});
+    // QTimer::singleShot(2000, this, [=] () {
+    //     draftHandler->beginDraft(Utility::classEnum2classLogNumber(MAGE), deckHandler->getDeckCardList());});
 
     for(int i=0; i<3; i++)
     {
@@ -4885,7 +4886,7 @@ void MainWindow::testDelay()
     // testDownloadRotation(true/*, "SC_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
 
-    // testDraft();
+    testDraft();
     // QTimer::singleShot(20000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";
     // Utility::mergeHSRwithFireCards();
     // Utility::checkMissingGoldenCards();

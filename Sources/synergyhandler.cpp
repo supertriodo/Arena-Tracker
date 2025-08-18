@@ -307,7 +307,6 @@ void SynergyHandler::updateCounters(
     CardSchool cardSchool = deckCard.getSchool();
 
     DraftDropCounter::updateDropCounters(code, drop2Map, drop3Map, drop4Map, attack, health, cost);
-    updateManaCounter(code, cost);
     CardTypeCounter::updateCardTypeCounters(code, spellMap, minionMap, weaponMap, text, cardType);
     RaceCounter::updateRaceCounters(code, mechanics, text, cardRace);
     SchoolCounter::updateSchoolCounters(code, text, cardSchool);
@@ -318,6 +317,7 @@ void SynergyHandler::updateCounters(
     KeySynergies::updateKeySynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
     StatSynergies::updateStatsSynergies(code, cardType, attack, health, cost);
     LayeredSynergies::updateLayeredSynergies(code);
+    updateManaCounter(code, cost);
 }
 
 

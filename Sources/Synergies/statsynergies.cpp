@@ -192,8 +192,6 @@ StatSyn StatSynergies::getStatSyn(const QString &mechanic)
         else/* if(stat == "Health")*/   statSyn.statKind = S_HEALTH;
 
         statSyn.statValue = value;
-
-        qDebug()<<op<<syngen<<cardType<<stat<<value;
     }
     else
     {
