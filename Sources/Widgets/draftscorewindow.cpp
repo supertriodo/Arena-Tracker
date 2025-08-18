@@ -10,6 +10,9 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     #if DEBUG_OVERLAYS_LEFT
         screenIndex = 0;
     #endif
+    #if DEBUG_OVERLAYS_RIGHT
+            screenIndex = 1;
+    #endif
 #endif
 
     scoreWidth = static_cast<int>(sizeCard.width()*0.7);

@@ -49,6 +49,7 @@ public:
     void insertSynCards(QMap<QString, QMap<QString, int> > &synergyTagMap);
     int count();
     QMap<QString, int> &getCodeMap();
+    QMap<QString, int> &getCodeSynMap();
     QMap<QString, QString> getCodeTagMap();
     void setTheme(QPixmap pixmap, int iconWidth, bool inDraftMechanicsWindow);
     void hide();

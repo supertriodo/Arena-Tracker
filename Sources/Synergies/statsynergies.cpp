@@ -176,7 +176,7 @@ StatSyn StatSynergies::getStatSyn(const QString &mechanic)
         QString stat = match.captured(4);
         int value = match.captured(5).toInt();
 
-        if(op.isNull())         statSyn.op = S_EQUAL;
+        if(op.isEmpty())        statSyn.op = S_EQUAL;
         else if(op == '<')      statSyn.op = S_LOWER_IGUAL;
         else/* if(op == '>')*/  statSyn.op = S_HIGHER_EQUAL;
 
@@ -309,12 +309,13 @@ void StatSynergies::updateStatsSynergies(const QString &code, CardType cardType,
         }
     }
 
-    //    qDebug()<<"*****COST MAP*****";
-    //    costMinions.qDebugContents();
-    //    qDebug()<<"*****ATTACK MAP*****";
-    //    attackMinions.qDebugContents();
-    //    qDebug()<<"*****HEALTH MAP*****";
-    //    healthMinions.qDebugContents();
+    //Debug
+    // qDebug()<<"*****COST MAP*****";
+    // costMinions.qDebugContents();
+    // qDebug()<<"*****ATTACK MAP*****";
+    // attackMinions.qDebugContents();
+    // qDebug()<<"*****HEALTH MAP*****";
+    // healthMinions.qDebugContents();
 }
 
 

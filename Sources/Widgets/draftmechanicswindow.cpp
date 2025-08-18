@@ -12,6 +12,9 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     #if DEBUG_OVERLAYS_LEFT
         screenIndex = 0;
     #endif
+    #if DEBUG_OVERLAYS_RIGHT
+            screenIndex = 1;
+    #endif
 #endif
 
     this->showDrops = true;

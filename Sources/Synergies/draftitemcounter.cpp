@@ -287,6 +287,12 @@ QMap<QString, int> &DraftItemCounter::getCodeMap()
 }
 
 
+QMap<QString, int> &DraftItemCounter::getCodeSynMap()
+{
+    return codeSynMap;
+}
+
+
 QMap<QString, QString> DraftItemCounter::getCodeTagMap()
 {
     QMap<QString, QString> codeTagMap;
