@@ -266,6 +266,7 @@ private slots:
     void testDownloadRotation(bool fromHearth, const QString &miniSet="");
     void testSecretsHSR(LoadingScreenState loadingScreenState);
     void testPopularList(int i=2);
+    void testDraft();
     void confirmNewArenaDraft(QString hero);
     void transparentAlways();
     void transparentAuto();

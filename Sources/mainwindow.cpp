@@ -4673,6 +4673,30 @@ void MainWindow::testPopularList(int i)
 }
 
 
+void MainWindow::testDraft()
+{
+    // draftHandler->beginHeroDraft();
+
+    QTimer::singleShot(2000, this, [=] () {
+        draftHandler->beginDraft(Utility::classEnum2classLogNumber(MAGE), deckHandler->getDeckCardList());});
+
+    for(int i=0; i<3; i++)
+    {
+        // 1. Crear el botón
+        QString num = QString::number(i);
+        QPushButton* miBoton = new QPushButton(num);
+
+        // 2. Conectar la señal 'clicked' a una función lambda
+        QObject::connect(miBoton, &QPushButton::clicked, [this, num](){
+            draftHandler->pickCard(num);
+        });
+
+        // 3. Añadir el botón al layout
+        ui->draftHorizontalLayout->addWidget(miBoton);
+    }
+}
+
+
 void MainWindow::testSynergies()
 {
     // draftHandler->getSynergyHandler()->testSynergies(/*"SC_"*/);
@@ -4861,13 +4885,11 @@ void MainWindow::testDelay()
     // testDownloadRotation(true/*, "SC_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
 
+    // testDraft();
     // QTimer::singleShot(20000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";
     // Utility::mergeHSRwithFireCards();
     // Utility::checkMissingGoldenCards();
     // QTimer::singleShot(15000, this, SLOT(testPopularList()));
-    // draftHandler->beginHeroDraft();
-    // QTimer::singleShot(2000, this, [=] () {
-    //    draftHandler->beginDraft(Utility::classEnum2classLogNumber(MAGE), deckHandler->getDeckCardList());});
 
     // testArenaGames();
     // testPlan();
