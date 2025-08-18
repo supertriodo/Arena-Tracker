@@ -349,7 +349,7 @@ void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString
     MechanicCounter::getMechanicSynergies(code, synergyTagMap, mechanicIcons, mechanics, referencedTags, text, cardType, attack, cost);
     KeySynergies::getKeySynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
     StatSynergies::getStatsSynergies(code, synergyTagMap, cardType, attack, health, cost);
-    LayeredSynergies::getLayeredSynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
+    LayeredSynergies::getLayeredSynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, cardRace, cardSchool, attack, health, cost);
     CardTypeCounter::getDirectLinkSynergies(code, directLinks, synergyTagMap["Extra"]);
 }
 

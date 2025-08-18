@@ -1,5 +1,10 @@
 #include "layeredsynergies.h"
+#include "cardtypecounter.h"
+#include "racecounter.h"
+#include "schoolcounter.h"
+#include "mechaniccounter.h"
 #include "keysynergies.h"
+#include "statsynergies.h"
 #include <QSet>
 
 QMap<QStringList, QMap<QString, int>> LayeredSynergies::layeredSynergiesMap;
@@ -99,8 +104,9 @@ void LayeredSynergies::insertCards(const QString &synergyTag, const QMap<QString
 
 
 void LayeredSynergies::getLayeredSynergies(const QString &code, QMap<QString, QMap<QString, int>> &synergyTagMap,
-                                           const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                                           const QString &text, CardType cardType, int attack, int cost)
+                                           const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text,
+                                           CardType cardType, const QList<CardRace> &cardRace, CardSchool cardSchool,
+                                           int attack, int health, int cost)
 {
     //Layered synergies del code
     const QList<QStringList> layeredSynergyList = getLayeredSynergiesFromJson(code);
@@ -110,7 +116,7 @@ void LayeredSynergies::getLayeredSynergies(const QString &code, QMap<QString, QM
 
         for(const QString &partSynergy: layeredSynergy)
         {
-            KeySynergies::getPartKeySynergies(partSynergy, partSynergyTagMap);
+            getPartKeySynergies(partSynergy, code, partSynergyTagMap);
         }
 
         bool first = true;
@@ -157,7 +163,7 @@ void LayeredSynergies::getLayeredSynergies(const QString &code, QMap<QString, QM
         for(const QString &partSynergy: layeredSynergy)
         {
             QString partSynergyTag;
-            if(!KeySynergies::isPartKey(partSynergy, code, partSynergyTag, mechanics, referencedTags, text, cardType, attack, cost))
+            if(!isPartKey(partSynergy, code, partSynergyTag, mechanics, referencedTags, text, cardType, cardRace, cardSchool, attack, health, cost))
             {
                 fullSynergy = false;
                 break;
@@ -178,12 +184,64 @@ void LayeredSynergies::getLayeredSynergies(const QString &code, QMap<QString, QM
 }
 
 
-
-
-
-
-
-
+void LayeredSynergies::getPartKeySynergies(const QString &partSynergy, const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap)
+{
+    if(partSynergy.startsWith("="))
+    {
+        StatSynergies::getPartKeySynergies(partSynergy, synergyTagMap);
+    }
+    if(CardTypeCounter::getListValidSynergies().contains(partSynergy))
+    {
+        CardTypeCounter::getPartKeySynergies(partSynergy, synergyTagMap);
+    }
+    if(RaceCounter::getListValidSynergies().contains(partSynergy))
+    {
+        RaceCounter::getPartKeySynergies(partSynergy, synergyTagMap);
+    }
+    if(SchoolCounter::getListValidSynergies().contains(partSynergy))
+    {
+        SchoolCounter::getPartKeySynergies(partSynergy, synergyTagMap);
+    }
+    if(MechanicCounter::getListValidSynergies().contains(partSynergy))
+    {
+        MechanicCounter::getPartKeySynergies(partSynergy, code, synergyTagMap);
+    }
+    if(KeySynergies::getListValidSynergies().contains(partSynergy))
+    {
+        KeySynergies::getPartKeySynergies(partSynergy, synergyTagMap);
+    }
+}
+bool LayeredSynergies::isPartKey(const QString &partSynergy, const QString &code, QString &partSynergyTag,
+                                 const QJsonArray &mechanics, const QJsonArray &referencedTags,const QString &text,
+                                 CardType cardType, const QList<CardRace> &cardRace, CardSchool cardSchool,
+                                 int attack, int health, int cost)
+{
+    if(partSynergy.startsWith("="))
+    {
+        return StatSynergies::isPartKey(partSynergy, partSynergyTag, cardType, attack, health, cost);
+    }
+    if(CardTypeCounter::getListValidSynergies().contains(partSynergy))
+    {
+        return CardTypeCounter::isPartKey(partSynergy, code, partSynergyTag, text, cardType);
+    }
+    if(RaceCounter::getListValidSynergies().contains(partSynergy))
+    {
+        return RaceCounter::isPartKey(partSynergy, code, partSynergyTag, mechanics, text, cardRace);
+    }
+    if(SchoolCounter::getListValidSynergies().contains(partSynergy))
+    {
+        return SchoolCounter::isPartKey(partSynergy, code, partSynergyTag, text, cardSchool);
+    }
+    if(MechanicCounter::getListValidSynergies().contains(partSynergy))
+    {
+        return MechanicCounter::isPartKey(partSynergy, code, partSynergyTag, mechanics, referencedTags, text, cardType, attack, cost);
+    }
+    if(KeySynergies::getListValidSynergies().contains(partSynergy))
+    {
+        return KeySynergies::isPartKey(partSynergy, code, partSynergyTag, mechanics, referencedTags, text, cardType, attack, cost);
+    }
+    return false;
+}
 
 
 

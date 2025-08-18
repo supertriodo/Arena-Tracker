@@ -58,9 +58,8 @@ public:
     static void updateStatsSynergies(const QString &code, CardType cardType, int attack, int health, int cost);
     static void getStatsSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap,
                                   CardType cardType, int attack, int health, int cost);
-    void getPartKeySynergies(const QString &partSynergy, QMap<QString, QMap<QString, int> > &synergyTagMap);
-    bool isPartKey(const QString &partSynergy, QString &partSynergyTag,
-                                  CardType cardType, int attack, int health, int cost);
+    static void getPartKeySynergies(const QString &partSynergy, QMap<QString, QMap<QString, int> > &synergyTagMap);
+    static bool isPartKey(const QString &partSynergy, QString &partSynergyTag, CardType cardType, int attack, int health, int cost);
 };
 
 #endif // STATSYNERGIES_H
