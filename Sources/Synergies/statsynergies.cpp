@@ -167,7 +167,7 @@ StatSyn StatSynergies::getStatSyn(const QString &mechanic)
 {
     StatSyn statSyn;
 
-    static const auto regex = QRegularExpression("^=([<>]?)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)([0-9]*)$");
+    static const auto regex = QRegularExpression("^=([<>]?)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)([0-9]{1,2})$");
     if(mechanic.contains(regex, &match))
     {
         QString op = match.captured(1);

@@ -356,7 +356,7 @@ void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString
 
 bool SynergyHandler::isValidSynergyCode(const QString &mechanic, QRegularExpressionMatch *match)
 {
-    static const auto regex = QRegularExpression("^=[<>]?(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)[0-9]*$");
+    static const auto regex = QRegularExpression("^=[<>]?(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)[0-9]{1,2}$");
     if(mechanic.contains(regex, match))
     {
         return true;
