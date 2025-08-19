@@ -2,6 +2,7 @@
 #define MECHANICCOUNTER_H
 
 #include "Sources/Synergies/draftitemcounter.h"
+#include "Sources/synergyhandler.h"
 #include "Sources/utility.h"
 #include "qjsonarray.h"
 #include <QMap>
@@ -9,6 +10,8 @@
 
 class MechanicCounter
 {
+    friend SynergyHandler;
+
 public:
     MechanicCounter();
 

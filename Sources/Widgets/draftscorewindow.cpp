@@ -472,7 +472,11 @@ void DraftScoreWindow::groupSynergyTags(QMap<QString, QMap<QString, int>> &syner
             if(synergyTagMap[synergyTag].contains(code))
             {
                 if(synergyTagJoin.isEmpty())    synergyTagJoin.append(synergyTag);
-                else                            synergyTagJoin.append(" - " + synergyTag);
+                else
+                {
+                    if(synergyTag.contains(synergyTagJoin))         synergyTagJoin = synergyTag;
+                    else if(!synergyTagJoin.contains(synergyTag))   synergyTagJoin.append(" - " + synergyTag);
+                }
                 numCards = synergyTagMap[synergyTag][code];
                 synergyTagMap[synergyTag].remove(code);
             }

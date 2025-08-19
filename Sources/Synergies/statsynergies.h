@@ -4,6 +4,7 @@
 #include "Sources/utility.h"
 #include <QMap>
 #include <QObject>
+#include <QRegularExpressionMatch>
 
 
 enum SynergyStat {S_COST, S_ATTACK, S_HEALTH};
