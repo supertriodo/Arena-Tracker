@@ -410,6 +410,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {
             CardType cardType = Utility::getTypeFromCode(code);
+            CardRarity rarity = Utility::getRarityFromCode(code);
             QString text = Utility::cardEnTextFromCode(code).toLower();
             QString name = Utility::cardEnNameFromCode(code).toLower();
             int attack = Utility::getCardAttribute(code, "attack").toInt();
@@ -420,10 +421,9 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             bool showImages = false;
             // bool showImages = true;
             if(
-                KeySynergies::containsAll(text, "<b>deathrattle</b> cost")
+                // KeySynergies::containsAll(text, "<b>deathrattle</b> cost")
                 // KeySynergies::containsAll(text, "deathrattle attack")
-
-                // (synergyCodes)[code].contains("deathrattle")
+                synergyCodes[code].isEmpty() && rarity == LEGENDARY
                 // KeySynergies::isKey("lifesteal", code, mechanics, referencedTags, text, cardType, attack, cost)
                 // KeySynergies::isKeyGen("lifestealGen", code, mechanics, referencedTags, text, cardType, attack, cost)
                 // KeySynergies::isKeySyn("lifestealSyn", code, mechanics, referencedTags, text, cardType, attack, cost)
@@ -431,7 +431,6 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //                mechanics.contains(QJsonValue("MAGNETIC"))
 //                referencedTags.contains(QJsonValue("CHOOSE_ONE"))
                // && cardType != MINION
-//                mechanics.contains(QJsonValue("CORRUPT"))
 //                && attack<4 && health<4
                // cost == 1
 //                && !isTokenGen(code, mechanics, text)
@@ -927,7 +926,7 @@ BATTLECRY/COMBO/ECHO/DEATHRATTLE: returnsyn(battlecry/choose one/combo/echo),
                 silenceOwnSyn/evolveSyn(deathrattle/malo)
 ENRAGE/FRENZY/TAKE DAMAGE: enrage(take damage)/rushGiverSyn
 RUSHGIVERSYN: enrage/frenzy, poison, damage adjacents
-SUMMON: token(summon)
+SUMMON: token 2+(3/3)max
 TOYOURHAND: tokenCard(small cards to hand) <--> token(2+) o spellGen
 PLAY CARDS: tokenCardSyn
 BUFF ALL: tokenSyn(buff 3+ minions), handBuff
