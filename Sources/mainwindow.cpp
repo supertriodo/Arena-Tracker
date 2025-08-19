@@ -4679,7 +4679,7 @@ void MainWindow::testDraft()
     // draftHandler->beginHeroDraft();
 
     QTimer::singleShot(2000, this, [=] () {
-        draftHandler->beginDraft(Utility::classEnum2classLogNumber(ROGUE), deckHandler->getDeckCardList());});
+        draftHandler->beginDraft(Utility::classEnum2classLogNumber(MAGE), deckHandler->getDeckCardList());});
 
     for(int i=0; i<3; i++)
     {
@@ -4695,15 +4695,6 @@ void MainWindow::testDraft()
         // 3. Añadir el botón al layout
         ui->draftHorizontalLayout->addWidget(miBoton);
     }
-}
-
-
-void MainWindow::testSynergies()
-{
-    // draftHandler->getSynergyHandler()->testSynergies(/*"SC_"*/);
-    // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0/*, "SC_"*/);//PLACEHOLDER_202204
-    // draftHandler->getSynergyHandler()->debugDrops();
-    draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
 
@@ -4871,6 +4862,15 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
         checkArenaCards();
     }
     //Fallo --> Failed to download card image
+}
+
+
+void MainWindow::testSynergies()
+{
+    // draftHandler->getSynergyHandler()->testSynergies(/*"SC_"*/);
+    // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0/*, "SC_"*/);//PLACEHOLDER_202204
+    // draftHandler->getSynergyHandler()->debugDrops();
+    draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
 

@@ -417,16 +417,20 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             int cost = Utility::getCardAttribute(code, "cost").toInt();
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
+            bool showImages = false;
+            // bool showImages = true;
             if(
-                // KeySynergies::containsAll(text, "starship")
-                KeySynergies::isKey("lifesteal", code, mechanics, referencedTags, text, cardType, attack, cost)
+                KeySynergies::containsAll(text, "<b>deathrattle</b> cost")
+                // KeySynergies::containsAll(text, "deathrattle attack")
+
+                // (synergyCodes)[code].contains("deathrattle")
+                // KeySynergies::isKey("lifesteal", code, mechanics, referencedTags, text, cardType, attack, cost)
                 // KeySynergies::isKeyGen("lifestealGen", code, mechanics, referencedTags, text, cardType, attack, cost)
                 // KeySynergies::isKeySyn("lifestealSyn", code, mechanics, referencedTags, text, cardType, attack, cost)
                 // KeySynergies::isKeyAllSyn("lifestealAllSyn", code, mechanics, referencedTags, text, cardType, attack, cost)
-                // text.contains("kindred")
 //                mechanics.contains(QJsonValue("MAGNETIC"))
 //                referencedTags.contains(QJsonValue("CHOOSE_ONE"))
-               && cardType != MINION
+               // && cardType != MINION
 //                mechanics.contains(QJsonValue("CORRUPT"))
 //                && attack<4 && health<4
                // cost == 1
@@ -456,13 +460,14 @@ void SynergyHandler::testSynergies(const QString &miniSet)
                 // qDebug()<<code;
                 // qDebug()<<mechanics<<endl<<referencedTags;
 
-                // if(num>0 && num<=50)
-                // {
-                //     QDesktopServices::openUrl(QUrl(
-                //         "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
-                //         ));
-                //     QThread::msleep(100);
-                // }
+                if(showImages && num>0 && num<=50)
+                // if(showImages && num>50 && num<=100)
+                {
+                    QDesktopServices::openUrl(QUrl(
+                        "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+                        ));
+                    QThread::msleep(100);
+                }
             }
             Q_UNUSED(cardType);
             Q_UNUSED(text);
@@ -1006,6 +1011,7 @@ REGLAS
 +Corpse para todo token que no genere risen minions (no dejan corpse) y para reborn y deathrattle.
 +CorpseSyn solo si gasta 2+ corpses.
 +freezeEnemy deben poder usarse sobre enemigos, combo con destroy tardio (freezeEnemySyn).
++windfuryMinion y deathrattle son solo para minions.
 +ping (NO RANDOM/NO DEATHRATTLE): tienen como proposito eliminar divineShield y rematar, deben ser proactivos, no random ni deathrattle.
 +damageMinions y destroy (SI RANDOM/NO DEATHRATTLE): deben ser proactivos, permitimos que sean random pero no deathrattle ni secretos (random o no)
 +aoe (SI RANDOM/SI DEATHRATTLE): puede ser deathrattle random (>= 2dmg), quitaremos manualmente excepciones como el tentaculo de n'zoth o unstable ghoul (1 dmg).

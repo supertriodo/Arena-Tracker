@@ -5,6 +5,7 @@
 #include "mechaniccounter.h"
 #include "keysynergies.h"
 #include "statsynergies.h"
+#include <QDebug>
 #include <QSet>
 
 QMap<QStringList, QMap<QString, int>> LayeredSynergies::layeredSynergiesMap;
@@ -77,7 +78,7 @@ void LayeredSynergies::updateLayeredSynergies(const QString &code)
         }
     }
 
-    //Debug
+    // qDebug()<<endl<<"----- UPDATE -----"<<code;
     // for(auto layeredSynergy: layeredSynergiesMap.keys())
     // {
     //     qDebug()<<layeredSynergy<<layeredSynergiesMap[layeredSynergy];
@@ -114,10 +115,14 @@ void LayeredSynergies::getLayeredSynergies(const QString &code, QMap<QString, QM
     {
         QMap<QString, QMap<QString, int>> partSynergyTagMap;
 
+        // qDebug()<<endl<<"----- CODE -----"<<code;
         for(const QString &partSynergy: layeredSynergy)
         {
             getPartKeySynergies(partSynergy, code, partSynergyTagMap);
+            // qDebug()<<partSynergy<<partSynergyTagMap;
         }
+        //En caso de que no haya ningun codigo de una partSynergy
+        if(layeredSynergy.count() != partSynergyTagMap.count()) continue;
 
         bool first = true;
         QString synergyTag = "";
@@ -160,16 +165,20 @@ void LayeredSynergies::getLayeredSynergies(const QString &code, QMap<QString, QM
         bool fullSynergy = true;
         bool first = true;
         QString synergyTag = "";
+        // qDebug()<<endl<<"----- STORED LAYSYN -----";
         for(const QString &partSynergy: layeredSynergy)
         {
             QString partSynergyTag;
+            // qDebug()<<partSynergy;
             if(!isPartKey(partSynergy, code, partSynergyTag, mechanics, referencedTags, text, cardType, cardRace, cardSchool, attack, health, cost))
             {
+                // qDebug()<<"FALSE";
                 fullSynergy = false;
                 break;
             }
             else
             {
+                // qDebug()<<"TRUE";
                 if(first)   first = false;
                 else        synergyTag += " + ";
                 synergyTag += partSynergyTag;
