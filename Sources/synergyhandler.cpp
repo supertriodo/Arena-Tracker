@@ -398,11 +398,11 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(arenaCodes, true);
     int num = 0;
 
-    for(QString &code: arenaCodes)
+    // for(QString &code: arenaCodes)
     // for(QString &code: (QStringList)Utility::getSetCodes("SPACE", true, false))
     // for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
     // for(QString &code: (QStringList)Utility::getStandardCodes())
-    // for(QString &code: (QStringList)Utility::getWildCodes())
+    for(QString &code: (QStringList)Utility::getWildCodes())
     {
         if(code.startsWith("VAN_"))     continue;
         if(code.startsWith("CORE_"))    code = code.mid(5);
@@ -418,12 +418,15 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                KeySynergies::containsAll(text, "starship")
-                // KeySynergies::isKey("overload", code, mechanics, referencedTags, text, cardType, attack, cost)
+                // KeySynergies::containsAll(text, "starship")
+                KeySynergies::isKey("lifesteal", code, mechanics, referencedTags, text, cardType, attack, cost)
+                // KeySynergies::isKeyGen("lifestealGen", code, mechanics, referencedTags, text, cardType, attack, cost)
+                // KeySynergies::isKeySyn("lifestealSyn", code, mechanics, referencedTags, text, cardType, attack, cost)
+                // KeySynergies::isKeyAllSyn("lifestealAllSyn", code, mechanics, referencedTags, text, cardType, attack, cost)
                 // text.contains("kindred")
 //                mechanics.contains(QJsonValue("MAGNETIC"))
 //                referencedTags.contains(QJsonValue("CHOOSE_ONE"))
-//                cardType == MINION
+               && cardType != MINION
 //                mechanics.contains(QJsonValue("CORRUPT"))
 //                && attack<4 && health<4
                // cost == 1
@@ -453,14 +456,13 @@ void SynergyHandler::testSynergies(const QString &miniSet)
                 // qDebug()<<code;
                 // qDebug()<<mechanics<<endl<<referencedTags;
 
-                if(num>0 && num<=50)
-                // if(num>50 && num<=100)
-                {
-                    QDesktopServices::openUrl(QUrl(
-                        "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
-                        ));
-                    QThread::msleep(100);
-                }
+                // if(num>0 && num<=50)
+                // {
+                //     QDesktopServices::openUrl(QUrl(
+                //         "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+                //         ));
+                //     QThread::msleep(100);
+                // }
             }
             Q_UNUSED(cardType);
             Q_UNUSED(text);

@@ -19,8 +19,8 @@
 #define DEBUG_REPLAY_AUTO_ADVANCE false
 #define DEBUG_SHOW_MATCHES false
 #define DEBUG_OVERLAYS_LEFT false
-#define DEBUG_OVERLAYS_RIGHT true
-#define DEBUG_ALLOW_SAME_TRIO true
+#define DEBUG_OVERLAYS_RIGHT false
+#define DEBUG_ALLOW_SAME_TRIO false
 
 
 using namespace cv;
