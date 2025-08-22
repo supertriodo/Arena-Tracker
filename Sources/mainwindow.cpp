@@ -4882,7 +4882,7 @@ void MainWindow::testDelay()
 
     // downloadHearthArenaTierlistOriginal();
     // testHearthArenaTierlist();
-    // testDownloadCardsJson();///v1/226021
+    // testDownloadCardsJson();///v1/226642
     // testDownloadRotation(true/*, "SC_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
 
