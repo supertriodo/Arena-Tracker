@@ -5634,6 +5634,15 @@
 "PVPDR_SCH_Active47" : [ "Bubba" ],
 "PVPDR_SCH_Active46" : [ "Princess" ],
 "PVPDR_SCH_Active43" : [ "Holy Book" ],
+"DREAM_05" : [ "Nightmare" ],
+"ICC_314t3" : [ "Doom Pact" ],
+"ICC_314t5" : [ "Death Coil" ],
+"ICC_314t8" : [ "Death and Decay" ],
+"TOY_400t3" : [ "Twin Slice" ],
+"TOY_400t4" : [ "Imprisoned Antaen" ],
+"TOY_401t" : [ "Skull of Gul'dan" ],
+"TTN_855" : [ "Tyr's Tears" ],
+"TLC_EVENT_402" : [ "Staff of the Endbringer" ],
 "DIRECT_LINKS":
 {
   "-----------------------------------------WARRIOR------------------------------------------------": "",

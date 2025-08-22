@@ -492,22 +492,15 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
     if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
     else                                codeList.append(Utility::getSetCodes(set, true, onlyCollectible));
 
-    qDebug()<<"\n-----SynergiesNames.json-----\n";
-    for(const QString &code: codeList)
-    {
-        if(miniSet.isEmpty() || code.startsWith(miniSet))
-        {
-            qDebug()<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";
-        }
-    }
-
     qDebug()<<"\n-----Synergies.json-----\n";
     int num = 0;
+    QMap<QString, QStringList> synergiesMap;
     for(const QString &code: codeList)
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {
-            debugSynergiesCode(code, ++num);
+            QStringList mec = debugSynergiesCode(code, ++num);
+            synergiesMap.insert(code, mec);
 
             if(num>openFrom && num<=openTo)
             {
@@ -520,7 +513,47 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
         }
     }
 
+    qDebug()<<"\n-----SynergiesNames.json-----\n";
+    for(const QString &code: codeList)
+    {
+        if(miniSet.isEmpty() || code.startsWith(miniSet))
+        {
+            qDebug()<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";
+        }
+    }
+
+    saveSynergiesSetJson(synergiesMap);
     clearSynergyLists();
+}
+
+
+void SynergyHandler::saveSynergiesSetJson(QMap<QString, QStringList> &synergiesMap)
+{
+    QFile file("/home/triodo/modelo/synergiesSet.json");
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "ERROR: Cannot create:" << file.errorString();
+        return;
+    }
+
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+
+    bool first = true;
+    for(const auto &code: synergiesMap.keys())
+    {
+        QStringList mecs = synergiesMap[code];
+        if(first)
+        {
+            out << "{\n";
+            first = false;
+        }
+        else    out << ",\n";
+        QString dq = mecs.isEmpty()?"":"\"";
+        out << QStringLiteral("\"%1\" : [ %3%2%3 ]").arg(code, mecs.join("\", \""), dq);
+    }
+    out << "\n}";
 }
 
 
@@ -532,14 +565,16 @@ bool SynergyHandler::shouldBeInSynergies(const QString &code)
 }
 
 
-void SynergyHandler::debugMissingSynergiesAllSets()
+void SynergyHandler::debugMissingSynergies(bool onlyArena, bool showCards)
 {
     QStringList arenaCodes = Utility::getAllArenaCodes();
     initSynergyCodes(arenaCodes, true);
 
     int num = 0;
+    QMap<QString, QStringList> synergiesMap;
     const QStringList wildCodes = Utility::getWildCodes();
-    for(const QString &code: (const QStringList)wildCodes)
+    const QStringList &codes = onlyArena?arenaCodes:wildCodes;
+    for(const QString &code: codes)
     {
         //Missing synergy
         bool codeMissing = !synergyCodes.contains(code);
@@ -554,15 +589,17 @@ void SynergyHandler::debugMissingSynergiesAllSets()
 
             if(subCodeMissing && shouldBeInSynergies(code))
             {
-                debugSynergiesCode(code, ++num);
+                if(num == 0)    qDebug()<<"\n-----Synergies.json-----\n";
+                QStringList mec = debugSynergiesCode(code, ++num);
+                synergiesMap.insert(code, mec);
 
-               // if(num>0 && num<=50)
-               // {
-               //     QDesktopServices::openUrl(QUrl(
-               //         "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
-               //         ));
-               //     QThread::msleep(100);
-               // }
+               if(showCards && num>0 && num<=50)
+               {
+                   QDesktopServices::openUrl(QUrl(
+                       "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+                       ));
+                   QThread::msleep(100);
+               }
             }
         }
         else
@@ -574,7 +611,7 @@ void SynergyHandler::debugMissingSynergiesAllSets()
                 if(!isValidSynergyCode(mechanic, match))    invalidMecs.append(mechanic);
             }
             //Wrong spelled mechanic
-            if(!invalidMecs.isEmpty())  qDebug()<<"DEBUG SYNERGIES: Code:"<<code<<"No mecs:"<<invalidMecs;
+            if(!invalidMecs.isEmpty())  qDebug()<<"<<<<<DEBUG SYNERGIES INVALID: Code:"<<code<<"No mecs:"<<invalidMecs;
             delete match;
         }
     }
@@ -584,7 +621,14 @@ void SynergyHandler::debugMissingSynergiesAllSets()
     }
     else
     {
-        qDebug()<<"DEBUG SYNERGIES: Those synergies missing.";
+        qDebug()<<"\n-----SynergiesNames.json-----\n";
+        for(const QString &code: synergiesMap.keys())
+        {
+            qDebug()<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";
+        }
+
+        saveSynergiesSetJson(synergiesMap);
+        qDebug()<<"\n<<<<<DEBUG SYNERGIES: Those synergies missing.";
     }
 
 
@@ -601,14 +645,14 @@ void SynergyHandler::debugMissingSynergiesAllSets()
     }
     else
     {
-        qDebug()<<"DEBUG SYNERGIES: Those synergies to be removed.";
+        qDebug()<<"<<<<<DEBUG SYNERGIES: Those synergies to be removed.";
     }
 
     clearSynergyLists();
 }
 
 
-void SynergyHandler::debugSynergiesCode(QString code, int num)
+QStringList SynergyHandler::debugSynergiesCode(QString code, int num)
 {
     QString origCode = code;
     if(code.startsWith("CORE_"))
@@ -649,6 +693,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
 //            if(name == iname)   qDebug()<<"--REV NAME-- :"<<icode<<"-"<<origCode<<": ["<<synergyCodes[icode]<<"],";
 //        }
     }
+    return mec;
 }
 
 

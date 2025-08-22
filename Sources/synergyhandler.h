@@ -24,8 +24,8 @@ private:
 //Metodos
 public:
     void debugSynergiesSet(const QString &set, int openFrom=0, int openTo=-1, const QString &miniSet="", bool onlyCollectible=true);
-    void debugSynergiesCode(QString code, int num=0);
-    void debugMissingSynergiesAllSets();
+    QStringList debugSynergiesCode(QString code, int num=0);
+    void debugMissingSynergies(bool onlyArena, bool showCards);
     void debugDrops();
     bool isValidSynergyCode(const QString &mechanic, QRegularExpressionMatch *match);
     void testSynergies(const QString &miniSet="");
@@ -61,6 +61,7 @@ private:
                         const QStringList &arenaCodes, bool all);
     void clearSynergyLists();
     bool shouldBeInSynergies(const QString &code);
+    void saveSynergiesSetJson(QMap<QString, QStringList> &synergiesMap);
     void connectCounters(QMap<QString, DraftDropCounter *> *dropCounters,
                          QMap<QString, DraftItemCounter *> *cardTypeCounters,
                          QMap<QString, DraftItemCounter *> *mechanicCounters);

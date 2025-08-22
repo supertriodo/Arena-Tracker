@@ -4870,7 +4870,7 @@ void MainWindow::testSynergies()
     // draftHandler->getSynergyHandler()->testSynergies(/*"SC_"*/);
     // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0/*, "SC_"*/);//PLACEHOLDER_202204
     // draftHandler->getSynergyHandler()->debugDrops();
-    draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
+    draftHandler->getSynergyHandler()->debugMissingSynergies(true, false);
 }
 
 
@@ -4942,7 +4942,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 33.2 Patch Notes
+//|-Synergy / Code  --> 33.2.2 Patch Notes
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
@@ -5088,11 +5088,6 @@ void MainWindow::testDelay()
 
 
 //TODO
-//Deathrattle cost sinergy
-//Incluir tipo de carta (minion, weapon, spell, location) en LLM
-//Fix wr con 1 decimal en draft tab
-//synergies de bundles
-//debugMissingSynergiesAllSets() de rotacion actual + bundles
 //drops en hand tab / replay tab
 //Deck weight explained
 
