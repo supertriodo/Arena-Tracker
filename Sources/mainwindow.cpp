@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createLogLoader();//-->GameWatcher -->DraftHandler
     createCardWindow();//-->A lot
     createCardListWindow();//-->PlanHandler -->SecretsHandler -->DraftHandler
-    createPremiumHandler();//-->ArenaHandler -->PlanHandler -->DraftHandler -->TrackobotUploader
+    createPremiumHandler();//-->ArenaHandler -->PlanHandler -->DraftHandler -->TrackobotUploader -->DrawCardHandler
 
     //Se hace despues de descargar el nuevo cards json o cuando se sabe que no hay
     //uno nuevo que descargar.
@@ -745,6 +745,8 @@ void MainWindow::createPremiumHandler()
             rngCardHandler, SLOT(setPremium(bool)));
     connect(premiumHandler, SIGNAL(setPremium(bool)),
             secretsHandler, SLOT(setPremium(bool)));
+    connect(premiumHandler, SIGNAL(setPremium(bool)),
+            drawCardHandler, SLOT(setPremium(bool)));
     connect(trackobotUploader, SIGNAL(connected(QString,QString)),
             premiumHandler, SLOT(checkPremium(QString,QString)));
     connect(trackobotUploader, SIGNAL(disconnected()),
@@ -4877,8 +4879,8 @@ void MainWindow::testSynergies()
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
-    testSynergies();
+    // testHeroPortraits();
+    // testSynergies();
 
     // downloadHearthArenaTierlistOriginal();
     // testHearthArenaTierlist();
@@ -5088,7 +5090,6 @@ void MainWindow::testDelay()
 
 
 //TODO
-//drops en hand tab / replay tab
 //Deck weight explained
 
 

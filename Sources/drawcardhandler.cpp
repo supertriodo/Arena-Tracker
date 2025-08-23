@@ -73,7 +73,7 @@ void DrawCardHandler::clearDrawAnimating()
 
 void DrawCardHandler::newDrawCard(QString code, bool mulligan)
 {
-    DrawCard drawCard(code);
+    DrawCard drawCard(code, mulligan && premium);
     drawCard.listItem = new QListWidgetItem();
     drawCardList.append(drawCard);
     ui->drawListWidget->addItem(drawCard.listItem);
@@ -176,4 +176,10 @@ void DrawCardHandler::redrawAllCards()
     {
         drawCard.draw();
     }
+}
+
+
+void DrawCardHandler::setPremium(bool premium)
+{
+    this->premium = premium;
 }

@@ -574,6 +574,7 @@ void SynergyHandler::debugMissingSynergies(bool onlyArena, bool showCards)
     QMap<QString, QStringList> synergiesMap;
     const QStringList wildCodes = Utility::getWildCodes();
     const QStringList &codes = onlyArena?arenaCodes:wildCodes;
+    const QStringList coreCodes = Utility::getSetCodes("CORE", true, true);
     for(const QString &code: codes)
     {
         //Missing synergy
@@ -581,7 +582,7 @@ void SynergyHandler::debugMissingSynergies(bool onlyArena, bool showCards)
         if(codeMissing)
         {
             bool subCodeMissing = true;
-            if(code.startsWith("CORE_"))
+            if(code.startsWith("CORE_") && coreCodes.contains(code))
             {
                 QString subCode = code.mid(5);
                 if(synergyCodes.contains(subCode))  subCodeMissing = false;
@@ -739,8 +740,6 @@ void SynergyHandler::debugDrops()
     {
         const auto &code = pair.first;
         const auto &dropRatio = pair.second;
-        int attack = Utility::getCardAttribute(code, "attack").toInt();
-        int health = Utility::getCardAttribute(code, "health").toInt();
         int cost = Utility::getCardAttribute(code, "cost").toInt();
 
         //>0.2 drop
@@ -752,9 +751,9 @@ void SynergyHandler::debugDrops()
         // if(cost == 4)
         {
             int played = statsMap[code].value("played").toInt();
-            bool drop2 = DraftDropCounter::isDrop2(code, cost, attack, health);
-            bool drop3 = DraftDropCounter::isDrop3(code, cost, attack, health);
-            bool drop4 = DraftDropCounter::isDrop4(code, cost, attack, health);
+            bool drop2 = DraftDropCounter::isDrop2(code);
+            bool drop3 = DraftDropCounter::isDrop3(code);
+            bool drop4 = DraftDropCounter::isDrop4(code);
             bool drop = drop2 || drop3 || drop4;
             if(played>10000)
             {

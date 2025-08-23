@@ -29,7 +29,9 @@ private:
     bool isGreenTargetDrop();
     void init(int targetDrops);
 
-    static QMap<QString, QString> getMapKeySynergies();
+    static bool isDrop2(const QString &code, int cost, int attack, int health);
+    static bool isDrop3(const QString &code, int cost, int attack, int health);
+    static bool isDrop4(const QString &code, int cost, int attack, int health);
 
 public:
     void reset();
@@ -43,6 +45,7 @@ public:
     static QStringList getListKeySynergies();
     static QStringList getListValidSynergies();
     static QStringList getListKeyLabels();
+    static QMap<QString, QString> getMapKeySynergies();
     static void setTheme();
     static void resetAll();
     static void setHidden(bool hide);
@@ -55,9 +58,9 @@ public:
     static void updateDropCounters(const QString &code, QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
                                    int attack, int health, int cost);
 
-    static bool isDrop2(const QString &code, int cost, int attack, int health);
-    static bool isDrop3(const QString &code, int cost, int attack, int health);
-    static bool isDrop4(const QString &code, int cost, int attack, int health);
+    static bool isDrop2(const QString &code);
+    static bool isDrop3(const QString &code);
+    static bool isDrop4(const QString &code);
 };
 
 #endif // DRAFTDROPCOUNTER_H

@@ -19,6 +19,7 @@ private:
     bool drawAnimating;
     QList<DrawCard> drawCardList;
     int drawDisappear;
+    bool premium;
 
 
 //Metodos
@@ -41,6 +42,7 @@ signals:
 public slots:
     void playerCardToHand(int id, QString code, int turn);
     void clearDrawList();
+    void setPremium(bool premium);
 
 private slots:
     void adjustDrawSize();

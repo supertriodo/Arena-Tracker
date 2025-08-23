@@ -339,6 +339,10 @@ QMap<QString, QString> DraftDropCounter::getMapKeySynergies()
 }
 
 
+bool DraftDropCounter::isDrop2(const QString &code)
+{
+    return isDrop2(code, 0, 0, 0);
+}
 bool DraftDropCounter::isDrop2(const QString &code, int cost, int attack, int health)
 {
     if(synergyCodes->contains(code))
@@ -354,6 +358,10 @@ bool DraftDropCounter::isDrop2(const QString &code, int cost, int attack, int he
     }
     return false;
 }
+bool DraftDropCounter::isDrop3(const QString &code)
+{
+    return isDrop3(code, 0, 0, 0);
+}
 bool DraftDropCounter::isDrop3(const QString &code, int cost, int attack, int health)
 {
     if(synergyCodes->contains(code))
@@ -368,6 +376,10 @@ bool DraftDropCounter::isDrop3(const QString &code, int cost, int attack, int he
         return true;
     }
     return false;
+}
+bool DraftDropCounter::isDrop4(const QString &code)
+{
+    return isDrop4(code, 0, 0, 0);
 }
 bool DraftDropCounter::isDrop4(const QString &code, int cost, int attack, int health)
 {

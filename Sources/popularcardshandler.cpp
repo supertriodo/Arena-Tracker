@@ -165,8 +165,6 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
     {
         QList<CardClass> cardClass = Utility::getClassFromCode(code);
         int cost = std::min(Utility::getCardAttribute(code, "cost").toInt(), 10);
-        int attack = Utility::getCardAttribute(code, "attack").toInt();
-        int health = Utility::getCardAttribute(code, "health").toInt();
 
         if(cost>=2)
         {
@@ -176,9 +174,9 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
                 {
                     if(cardsPickratesMap[i][code]>=10)
                     {
-                        if(cost>4 || DraftDropCounter::isDrop2(code, cost, attack, health) ||
-                            DraftDropCounter::isDrop3(code, cost, attack, health) ||
-                            DraftDropCounter::isDrop4(code, cost, attack, health))
+                        if(cost>4 || DraftDropCounter::isDrop2(code) ||
+                            DraftDropCounter::isDrop3(code) ||
+                            DraftDropCounter::isDrop4(code))
                         {
                             cardsByPickrate[i][cost-2].append(code);
                         }
@@ -191,9 +189,9 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
                 {
                     if(cardClassItem<NUM_HEROS && cardsPickratesMap[cardClassItem][code]>=10)
                     {
-                        if(cost>4 || DraftDropCounter::isDrop2(code, cost, attack, health) ||
-                            DraftDropCounter::isDrop3(code, cost, attack, health) ||
-                            DraftDropCounter::isDrop4(code, cost, attack, health))
+                        if(cost>4 || DraftDropCounter::isDrop2(code) ||
+                            DraftDropCounter::isDrop3(code) ||
+                            DraftDropCounter::isDrop4(code))
                         {
                             cardsByPickrate[cardClassItem][cost-2].append(code);
                         }

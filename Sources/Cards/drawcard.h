@@ -1,13 +1,13 @@
 #ifndef DRAWCARD_H
 #define DRAWCARD_H
 
-#include "deckcard.h"
+#include "synergycard.h"
 
 
-class DrawCard : public DeckCard
+class DrawCard : public SynergyCard
 {
 public:
-    DrawCard(QString code);
+    DrawCard(QString code, bool showDrops=false);
     ~DrawCard();
 
 //Metodos
