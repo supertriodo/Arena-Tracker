@@ -4,6 +4,7 @@
 
 QMap<QString, DraftItemCounter*> MechanicCounter::keySynergiesMap;
 QMap<QString, QList<QString>> * MechanicCounter::synergyCodes = nullptr;
+LavaButton * MechanicCounter::lavaButton;
 
 MechanicCounter::MechanicCounter()
 {
@@ -11,8 +12,10 @@ MechanicCounter::MechanicCounter()
 }
 
 
-QMap<QString, DraftItemCounter*> * MechanicCounter::createMechanicCounters(QObject *parent, QGridLayout *mechanicsLayout)
+QMap<QString, DraftItemCounter*> * MechanicCounter::createMechanicCounters(QObject *parent, QGridLayout *mechanicsLayout, LavaButton *lavaButton)
 {
+    MechanicCounter::lavaButton = lavaButton;
+
     QMap<QString, QString> map = getMapKeySynergies();
     const auto keys = map.keys();
     for(const QString &key: keys)
@@ -149,7 +152,7 @@ void MechanicCounter::getMechanicCounters(QMap<QString, QString> &aoeMap, QMap<Q
                                           QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
                                           QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
                                           QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
-                                          int &draw, int &toYourHand, int &discover)
+                                          QList<SynergyWeightCard> &synergyWeightCardList)
 {
     aoeMap = keySynergiesMap["aoe"]->getCodeTagMap();
     tauntMap = keySynergiesMap["tauntAll"]->getCodeTagMap();
@@ -159,38 +162,7 @@ void MechanicCounter::getMechanicCounters(QMap<QString, QString> &aoeMap, QMap<Q
     damageMap = keySynergiesMap["damageMinions"]->getCodeTagMap();
     destroyMap = keySynergiesMap["destroy"]->getCodeTagMap();
     reachMap = keySynergiesMap["reach"]->getCodeTagMap();
-
-    discover = draw = toYourHand = 0;
-    {
-        QMap<QString, int> codeMap = keySynergiesMap["discover"]->getCodeMap();
-        const QList<QString> codeList = codeMap.keys();
-        for(const QString &code: codeList)
-        {
-            QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-            QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-            discover += codeMap[code] * numDiscoverGen(code, mechanics, referencedTags);
-        }
-    }
-    {
-        QMap<QString, int> codeMap = keySynergiesMap["draw"]->getCodeMap();
-        const QList<QString> codeList = codeMap.keys();
-        for(const QString &code: codeList)
-        {
-            QString text = Utility::cardEnTextFromCode(code).toLower();
-            draw += codeMap[code] * numDrawGen(code, text);
-        }
-    }
-    {
-        QMap<QString, int> codeMap = keySynergiesMap["toYourHand"]->getCodeMap();
-        const QList<QString> codeList = codeMap.keys();
-        for(const QString &code: codeList)
-        {
-            QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-            QString text = Utility::cardEnTextFromCode(code).toLower();
-            int cost = Utility::getCardAttribute(code, "cost").toInt();
-            toYourHand += codeMap[code] * numToYourHandGen(code, cost, mechanics, text);
-        }
-    }
+    synergyWeightCardList = lavaButton->getsynergyWeightCardListDupped();
 }
 
 
@@ -199,7 +171,7 @@ void MechanicCounter::updateMechanicCounters(const QString &code,
                                              QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
                                              QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
                                              QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
-                                             int &draw, int &toYourHand, int &discover,
+                                             QList<SynergyWeightCard> &synergyWeightCardList,
                                              const QJsonArray &mechanics, const QJsonArray &referencedTags,
                                              const QString &text, CardType cardType, int attack, int cost)
 {
@@ -252,11 +224,14 @@ void MechanicCounter::updateMechanicCounters(const QString &code,
         keySynergiesMap["survival"]->increase(code);
         survivabilityMap.insertMulti(code, "");
     }
-    discover = numDiscoverGen(code, mechanics, referencedTags);
-    draw = numDrawGen(code, text);
-    toYourHand = numToYourHandGen(code, cost, mechanics, text);
     if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType))     keySynergiesMap["deathrattleGoodAll"]->increase(code);
     if(isDeathrattleGoodAllSyn(code, text))                                 keySynergiesMap["deathrattleGoodAll"]->increaseSyn(code);
+
+    int draw = numDrawGen(code, text);
+    int toYourHand = numToYourHandGen(code, cost, mechanics, text);
+    int discover = numDiscoverGen(code, mechanics, referencedTags);
+    lavaButton->increase(code, draw, toYourHand, discover);
+    synergyWeightCardList.append(SynergyWeightCard(code, draw, toYourHand, discover));
 }
 
 

@@ -1653,3 +1653,107 @@ QStringList Utility::getSetCodesSpecific(const QString &set)
     return {};
 }
 
+
+int Utility::getCorrectedCardMana(const QString &code, int cost)
+{
+    QString otherCode = Utility::otherCodeConstant(code);
+
+    //Evitar draw/discover cost 0/1/2 -> no draw y mantenemos coste original
+    //Descuento minions on board -> suponemos 2 aliados y 2 enemigos (4 total)
+    //Descuento spells cast this game -> 3
+    {
+        QStringList candidates = {
+            GRASP_THE_FUTURE, TIMEWAY_WANDERER, BLOODBLOOM, PRIMORDIAL_GLYPH, FAR_SIGHT, CHEAT_DEATH,
+            LUNAS_POCKET_GALAXY, ACADEMIC_ESPIONAGE, HAUNTING_VISIONS, WAXMANCY, IMPRISONED_SATYR, SKULL_OF_GULDAN, DEMONIC_STUDIES,
+            DRACONIC_STUDIES, ATHLETIC_STUDIES, PRIMORDIAL_STUDIES, CARRION_STUDIES, NATURE_STUDIES, ILLIDARI_STUDIES, INSIGHT,
+            FLOODSAIL_DECKHAND, EFFICIENT_OCTOBOT, LIVING_SEED, SCABBS_CUTTERBUTTER, KINDLING_ELEMENTAL, CELESTIAL_INK_SET,
+            RUNED_MITHRIL_ROD, SIGIL_OF_ALACRITY, TO_THE_FRONT, CERATHINE_FLEETRUNNER, RECONNAISSANCE, SHIVERING_SORCERESS,
+            BRACING_COLD, WAYWARD_SAGE, SWIFTSCALE_TRICKSTER, PLANTED_EVIDENCE, SERRATED_BONE_SPIKE, MURLOCULA, BONELORD_FROSTWHISPER,
+            ROTTEN_RODENT, PRIESTESS_VALISHJ, FREQUENCY_OSCILLATOR, LOVE_EVERLASTING, BIG_DREAMS, BLOOD_TREANT, AQUA_ARCHIVIST,
+            HUNTERS_INSIGHT, SANDBOX_SCOUNDREL, ENSMALLEN, AVIANA_ELUNES_CHOSEN, REANIMATED_PTERRORDAX, ENTOMOLOGIST_TORU, BLASTEROID
+        };
+        if(candidates.contains(code) || candidates.contains(otherCode)) return 0;
+    }
+
+    {
+        QStringList candidates = {
+            FROM_THE_DEPTHS, EYE_BEAM, AUCTIONHOUSE_GAVEL, SI7_SKULKER, PRIDE_SEEKER, STORMPIKE_MARSHAL, MURKWATER_SCRIBE,
+            LIFE_FROM_DEATH, RUSH_THE_STAGE, HOLY_COWBOY, LOAD_THE_CHAMBER, SPARKLING_PHIAL, BOULDERING_BUDDY, FELFIRE_BONFIRE
+        };
+        if(candidates.contains(code) || candidates.contains(otherCode)) return 1;
+    }
+
+    {
+        QStringList candidates = {
+            FRENZIED_FELWING, PALM_READING, FELGORGER, FROSTWOLF_WARMASTER, STORMPIKE_BATTLE_RAM, SEAFLOOR_GATEWAY, GREENTHUMB_GARDENER,
+            LIGHT_OF_THE_PHOENIX, SPREAD_THE_WORD, JAZZ_BASS, ALTERED_CHORD, CATTLE_RUSTLER
+        };
+        if(candidates.contains(code) || candidates.contains(otherCode)) return 2;
+    }
+
+    {
+        QStringList candidates = {
+            NERUBIAN_PROPHET, CORRIDOR_CREEPER, SECOND_RATE_BRUISER, DREAMPETAL_FLORIST, FEL_GUARDIANS, CUTTING_CLASS, GRANITE_FORGEBORN,
+            CLUMSY_COURIER, EXCAVATION_SPECIALIST, ANUBREKHAN, INZAH, WISDOM_OF_NORGANNON, TRAM_OPERATOR, SPIRIT_PEDDLER, URSOL
+        };
+        if(candidates.contains(code) || candidates.contains(otherCode)) return 3;
+    }
+
+    {
+        QStringList candidates = {
+            MOLTEN_BLADE, SHIFTER_ZERUS, SHIFTING_SCROLL, CHAMELEOS, UMBRAL_OWL, TENT_TRASHER, FROSTSABER_MATRIARCH, WILDPAW_GNOLL,
+            SCRIBBLING_STENOGRAPHER, SHADOW_OF_DEMISE, RELIC_OF_DIMENSIONS, STITCHED_GIANT, DJ_MANASTORM, STARSTRUNG_BOW, PRISMATIC_BEAM,
+            THRISTY_DRIFTER, MANTLE_SHAPER, TABLE_FLIP, EREDAR_BRUTE, AGAMAGGAN
+        };
+        if(candidates.contains(code) || candidates.contains(otherCode)) return 4;
+    }
+
+    {
+        QStringList candidates = {
+            FORBIDDEN_SHAPING, FORBIDDEN_FLAME, FORBIDDEN_HEALING, FORBIDDEN_RITUAL, FORBIDDEN_ANCIENT, FORBIDDEN_WORDS, MOGU_FLESHSHAPER,
+            RABBLE_BOUNCER, DEVOUT_PUPIL, EMBIGGEN, POWER_WORD_FORTITUDE, SHIELD_SHATTER, LOKHOLAR_THE_ICE_LORD, LIGHTRAY, CRYPT_KEEPER,
+            VENGEFUL_WALLOPER, ABYSSAL_BASSIST, IMPRISONED_HORROR, CULTIVATION, FORBIDDEN_FRUIT, RED_GIANT
+        };
+        if(candidates.contains(code) || candidates.contains(otherCode)) return 5;
+    }
+
+    {
+        QStringList candidates = {
+            TIMEBOUND_GIANT, DEMONBOLT, SEA_GIANT, BLOODBOIL_BRUTE, FLESH_GIANT, IREBOUND_BRUTE, THE_GARDENS_GRACE,
+            GIGANTOTEM, GOLDSHIRE_GNOLL, LIVING_HORIZON, SEASIDE_GIANT
+        };
+        if(candidates.contains(code) || candidates.contains(otherCode)) return 6;
+    }
+
+    {
+        QStringList candidates = {
+            URZUL_GIANT, LOST_EXARCH, FYE_THE_SETTING_SUN
+        };
+        if(candidates.contains(code) || candidates.contains(otherCode)) return 7;
+    }
+
+    {
+        QStringList candidates = {
+            CLOCKWORK_GIANT, MULCHMUNCHER, RESKA_THE_PIT_BOSS
+        };
+        if(candidates.contains(code) || candidates.contains(otherCode)) return 8;
+    }
+
+    {
+        QStringList candidates = {
+            GRAVE_HORROR
+        };
+        if(candidates.contains(code) || candidates.contains(otherCode)) return 9;
+    }
+
+    {
+        QStringList candidates = {
+            LIVING_MANA, NAGA_GIANT, FANOTTEM_LORD_OF_THE_OPERA, YOGG_SARON_UNLEASHED, PLAYHOUSE_GIANT, THE_CEASELESS_EXPANSE
+        };
+        if(candidates.contains(code) || candidates.contains(otherCode)) return 10;
+    }
+
+    int overload = Utility::getCardAttribute(code, "overload").toInt();
+    return std::min(10, cost) + overload;
+}
+

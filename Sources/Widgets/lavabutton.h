@@ -1,9 +1,9 @@
 #ifndef LAVABUTTON_H
 #define LAVABUTTON_H
 
+#include "Sources/Cards/synergyweightcard.h"
 #include <QObject>
 #include <QLabel>
-#include "../utility.h"
 
 class LavaButton : public QLabel
 {
@@ -16,7 +16,7 @@ public:
 //Variables
 private:
     float value, value_0_1, min, max;
-    int drawCards, toYourHandCards, discoverCards;
+    QList<SynergyWeightCard> synergyWeightCardList;
 
 //Metodos
 private:
@@ -27,8 +27,11 @@ protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 public:
-    void setValue(int totalMana, int numCards, int drawCards, int toYourHandCards, int discoverCards);
+    void setValue(float manaAvg);
     void reset();
+    void increase(SynergyWeightCard &synergyWeightCard);
+    void increase(const QString &code, int draw, int toYourHand, int discover);
+    QList<SynergyWeightCard> getsynergyWeightCardListDupped();
 };
 
 #endif // LAVABUTTON_H

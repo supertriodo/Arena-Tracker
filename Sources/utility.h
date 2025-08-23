@@ -182,6 +182,7 @@ public:
     static void mergeHSRwithFireCards();
     static void shrinkText(QFont &font, const QString &text, int startFontSize, int maxLong);
     static void buildDbfIdMap(QMap<int, QString> *map);
+    static int getCorrectedCardMana(const QString &code, int cost);
 };
 
 #endif // UTILITY_H

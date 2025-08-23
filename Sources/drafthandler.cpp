@@ -118,7 +118,7 @@ void DraftHandler::createScoreItems()
 
 void DraftHandler::createSynergyHandler()
 {
-    this->synergyHandler = new SynergyHandler(this->parent(),ui);
+    this->synergyHandler = new SynergyHandler(this->parent(), ui, lavaButton);
     connect(synergyHandler, SIGNAL(itemEnter(QList<SynergyCard>&,QRect&,int,int)),
             this, SIGNAL(itemEnter(QList<SynergyCard>&,QRect&,int,int)));
     connect(synergyHandler, SIGNAL(itemLeave()),
@@ -1005,25 +1005,20 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
                 drop2Map, drop3Map, drop4Map,
                 aoeMap, tauntMap, survivabilityMap, drawMap,
                 pingMap, damageMap, destroyMap, reachMap;
-    int tdraw, ttoYourHand, tdiscover;
-    tdraw = ttoYourHand = tdiscover = 0;
+    QList<SynergyWeightCard> synergyWeightCardList;
     for(DeckCard &deckCard: deckCardList)
     {
         if(deckCard.getType() == INVALID_TYPE)  continue;
         QString code = deckCard.getCode();
         for(int i=0; i<deckCard.total; i++)
         {
-            int draw, toYourHand, discover;
             synergyHandler->updateCounters(
                            deckCard,
                            spellMap, minionMap, weaponMap,
                            drop2Map, drop3Map, drop4Map,
                            aoeMap, tauntMap, survivabilityMap, drawMap,
                            pingMap, damageMap, destroyMap, reachMap,
-                           draw, toYourHand, discover);
-            tdraw += draw;
-            ttoYourHand += toYourHand;
-            tdiscover += discover;
+                           synergyWeightCardList);
 
             deckRatingHA += getHAScore(code);
             deckRatingFire += (fireWRMap == nullptr) ? 0 : fireWRMap[this->arenaHero][code];
@@ -1032,8 +1027,8 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
     }
 
     int numCards = CardTypeCounter::draftedCardsCount();
-    lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, tdraw, ttoYourHand, tdiscover);
-
+    int totalMana = synergyHandler->getManaCounterCount();
+    lavaButton->setValue((totalMana/static_cast<float>(numCards)));
     updateDeckScore();
     emit pDebug("Counters starts with " + QString::number(numCards) + " cards.");
 }
@@ -1655,16 +1650,17 @@ void DraftHandler::pickCard(QString code)
                     drop2Map, drop3Map, drop4Map,
                     aoeMap, tauntMap, survivabilityMap, drawMap,
                     pingMap, damageMap, destroyMap, reachMap;
-        int draw, toYourHand, discover;
+        QList<SynergyWeightCard> synergyWeightCardList;
         synergyHandler->updateCounters(draftCard,
                                        spellMap, minionMap, weaponMap,
                                        drop2Map, drop3Map, drop4Map,
                                        aoeMap, tauntMap, survivabilityMap, drawMap,
                                        pingMap, damageMap, destroyMap, reachMap,
-                                       draw, toYourHand, discover);
+                                       synergyWeightCardList);
 
         int numCards = CardTypeCounter::draftedCardsCount();
-        lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, draw, toYourHand, discover);
+        int totalMana = synergyHandler->getManaCounterCount();
+        lavaButton->setValue((totalMana/static_cast<float>(numCards)));
         updateDeckScore(getHAScore(code),
                         (fireWRMap == nullptr) ? 0 : fireWRMap[this->arenaHero][code],
                         (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][code]);
@@ -1675,7 +1671,7 @@ void DraftHandler::pickCard(QString code)
                                                  aoeMap, tauntMap, survivabilityMap, drawMap,
                                                  pingMap, damageMap, destroyMap, reachMap,
                                                  synergyHandler->getCorrectedCardMana(draftCard), numCards);
-            draftMechanicsWindow->updateDeckWeight(numCards, draw, toYourHand, discover);
+            draftMechanicsWindow->updateDeckWeight(synergyWeightCardList, numCards);
         }
     }
 
@@ -3044,18 +3040,18 @@ void DraftHandler::initDraftMechanicsWindowCounters()
                 drop2Map, drop3Map, drop4Map,
                 aoeMap, tauntMap, survivabilityMap, drawMap,
                 pingMap, damageMap, destroyMap, reachMap;
-    int draw, toYourHand, discover;
+    QList<SynergyWeightCard> synergyWeightCardList;
     int manaCounter = synergyHandler->getCounters(spellMap, minionMap, weaponMap,
                                                   drop2Map, drop3Map, drop4Map,
                                                   aoeMap, tauntMap, survivabilityMap, drawMap,
                                                   pingMap, damageMap, destroyMap, reachMap,
-                                                  draw, toYourHand, discover);
+                                                  synergyWeightCardList);
     draftMechanicsWindow->updateCounters(spellMap, minionMap, weaponMap,
                                          drop2Map, drop3Map, drop4Map,
                                          aoeMap, tauntMap, survivabilityMap, drawMap,
                                          pingMap, damageMap, destroyMap, reachMap,
                                          manaCounter, numCards);
-    draftMechanicsWindow->updateDeckWeight(numCards, draw, toYourHand, discover);
+    draftMechanicsWindow->updateDeckWeight(synergyWeightCardList, numCards);
     updateDeckScore();
 }
 

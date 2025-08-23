@@ -18,6 +18,7 @@ LIBS += -lz
 SOURCES += Sources/main.cpp\
     Sources/Cards/popularcard.cpp \
     Sources/Cards/synergycard.cpp \
+    Sources/Cards/synergyweightcard.cpp \
     Sources/Synergies/cardtypecounter.cpp \
     Sources/Synergies/draftdropcounter.cpp \
     Sources/Synergies/keysynergies.cpp \
@@ -91,6 +92,7 @@ SOURCES += Sources/main.cpp\
 HEADERS  += Sources/mainwindow.h \
     Sources/Cards/popularcard.h \
     Sources/Cards/synergycard.h \
+    Sources/Cards/synergyweightcard.h \
     Sources/Synergies/cardtypecounter.h \
     Sources/Synergies/draftdropcounter.h \
     Sources/Synergies/keysynergies.h \

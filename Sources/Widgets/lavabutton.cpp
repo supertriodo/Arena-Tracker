@@ -11,13 +11,11 @@ LavaButton::LavaButton(QWidget *parent, float min, float max) : QLabel(parent)
     this->value = this->min = min;
     this->value_0_1 = 0;
     this->max = max;
-    this->drawCards = this->toYourHandCards = this->discoverCards = 0;
 }
 
 
 void LavaButton::reset()
 {
-    this->drawCards = this->toYourHandCards = this->discoverCards = 0;
     this->value = 0;
     update();
 }
@@ -36,32 +34,77 @@ void LavaButton::mousePressEvent(QMouseEvent *event)
 }
 
 
-void LavaButton::setValue(int totalMana, int numCards, int drawCards, int toYourHandCards, int discoverCards)
+void LavaButton::setValue(float manaAvg)
 {
-    this->drawCards += drawCards;
-    this->toYourHandCards += toYourHandCards;
-    this->discoverCards += discoverCards;
+    float totalWeightMana = 0;
+    int numCards = 0;
 
-#ifdef QT_DEBUG
-    qDebug() << QString("Mana: ") + QString::number(totalMana) +
-                QString("- Cards: ") + QString::number(numCards) +
-                QString("- Draw: ") + QString::number(this->drawCards) + "(" + QString::number(drawCards) + ")" +
-                QString("- ToYourHand: ") + QString::number(this->toYourHandCards) + "(" + QString::number(toYourHandCards) + ")" +
-                QString("- Discover: ") + QString::number(this->discoverCards) + "(" + QString::number(discoverCards) + ")";
-#endif
+    for(SynergyWeightCard &synergyCard: synergyWeightCardList)
+    {
+        totalWeightMana += synergyCard.processWeightMana(manaAvg) * synergyCard.total;
+        numCards += synergyCard.total;
+    }
 
-    if(numCards == 0)    return;
-    value = (
-                totalMana +
-                this->drawCards * (totalMana/static_cast<float>(numCards)) +
-                this->toYourHandCards * 4 +
-                this->discoverCards * 4
-             )/static_cast<float>(numCards);
-
+    this->value = totalWeightMana / std::max(1, numCards);
     this->value_0_1 = (value - min)/(max - min);
     if(value_0_1 > 1) value_0_1 = 1;
     if(value_0_1 < 0) value_0_1 = 0;
     draw();
+}
+
+
+void LavaButton::increase(SynergyWeightCard &synergyWeightCard)
+{
+    const QString &code = synergyWeightCard.getCode();
+    bool duplicatedCard = false;
+    for(SynergyWeightCard &synergyCard: synergyWeightCardList)
+    {
+        if(synergyCard.getCode() == code)
+        {
+            synergyCard.total++;
+            synergyCard.remaining = synergyCard.total;
+            duplicatedCard = true;
+            break;
+        }
+    }
+
+    if(!duplicatedCard)
+    {
+        synergyWeightCardList.append(synergyWeightCard);
+    }
+}
+void LavaButton::increase(const QString &code, int draw, int toYourHand, int discover)
+{
+    bool duplicatedCard = false;
+    for(SynergyWeightCard &synergyCard: synergyWeightCardList)
+    {
+        if(synergyCard.getCode() == code)
+        {
+            synergyCard.total++;
+            synergyCard.remaining = synergyCard.total;
+            duplicatedCard = true;
+            break;
+        }
+    }
+
+    if(!duplicatedCard)
+    {
+        synergyWeightCardList.append(SynergyWeightCard(code, draw, toYourHand, discover));
+    }
+}
+
+
+QList<SynergyWeightCard> LavaButton::getsynergyWeightCardListDupped()
+{
+    QList<SynergyWeightCard> duppedList;
+    for(const SynergyWeightCard &synergyCard: synergyWeightCardList)
+    {
+        for(int i=0; i<synergyCard.total; i++)
+        {
+            duppedList << synergyCard;
+        }
+    }
+    return duppedList;
 }
 
 

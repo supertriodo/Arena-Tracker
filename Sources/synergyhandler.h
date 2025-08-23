@@ -2,6 +2,7 @@
 #define SYNERGYHANDLER_H
 
 #include <QObject>
+#include "Sources/Widgets/lavabutton.h"
 #include "Widgets/ui_extended.h"
 #include "Synergies/draftitemcounter.h"
 #include "Synergies/draftdropcounter.h"
@@ -12,7 +13,7 @@ class SynergyHandler : public QObject
 {
     Q_OBJECT
 public:
-    SynergyHandler(QObject *parent, Ui::Extended *ui);
+    SynergyHandler(QObject *parent, Ui::Extended *ui, LavaButton *lavaButton);
     ~SynergyHandler();
 
 //Variables
@@ -35,7 +36,7 @@ public:
                     QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
                     QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
                     QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
-                    int &draw, int &toYourHand, int &discover);
+                    QList<SynergyWeightCard> &synergyWeightCardList);
     void updateCounters(DeckCard &deckCard,
                         QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
                         QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
@@ -43,7 +44,7 @@ public:
                         QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
                         QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
                         QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
-                        int &draw, int &toYourHand, int &discover);
+                        QList<SynergyWeightCard> &synergyWeightCardList);
     void getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergies,
                       QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
     bool initSynergyCodes(const QStringList &arenaCodes, bool all=false);
@@ -51,7 +52,6 @@ public:
     void setTransparency(Transparency transparency, bool mouseInApp);
     void setTheme();
     int getCorrectedCardMana(DeckCard &deckCard);
-    int getCorrectedCardMana(const QString &code, int cost);
     int getManaCounterCount();
     void setHidden(bool hide);
 
@@ -65,7 +65,7 @@ private:
     void connectCounters(QMap<QString, DraftDropCounter *> *dropCounters,
                          QMap<QString, DraftItemCounter *> *cardTypeCounters,
                          QMap<QString, DraftItemCounter *> *mechanicCounters);
-    void createDraftItemCounters();
+    void createDraftItemCounters(LavaButton *lavaButton);
 
     void updateManaCounter(const QString &code, int cost);
 

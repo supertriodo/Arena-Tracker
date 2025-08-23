@@ -57,7 +57,7 @@ public:
                         QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
                         QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
                         int manaIncrease, int numCards);
-    void updateDeckWeight(int numCards, int draw, int toYourHand, int discover);
+    void updateDeckWeight(QList<SynergyWeightCard> &synergyWeightCardList, int numCards);
     void setTheme();
     int draftedCardsCount();
     void showHelpReenter();

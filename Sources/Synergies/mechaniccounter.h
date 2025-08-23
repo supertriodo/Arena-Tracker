@@ -1,6 +1,7 @@
 #ifndef MECHANICCOUNTER_H
 #define MECHANICCOUNTER_H
 
+#include "Sources/Cards/synergyweightcard.h"
 #include "Sources/Synergies/draftitemcounter.h"
 #include "Sources/synergyhandler.h"
 #include "Sources/utility.h"
@@ -19,6 +20,7 @@ public:
 private:
     static QMap<QString, DraftItemCounter*> keySynergiesMap;
     static QMap<QString, QList<QString>> *synergyCodes;
+    static LavaButton *lavaButton;
 
 //Metodos
 private:
@@ -43,7 +45,7 @@ private:
     static bool isDeathrattleGoodAllSyn(const QString &code, const QString &text);
 
 public:
-    static QMap<QString, DraftItemCounter *> *createMechanicCounters(QObject *parent, QGridLayout *mechanicsLayout);
+    static QMap<QString, DraftItemCounter *> *createMechanicCounters(QObject *parent, QGridLayout *mechanicsLayout, LavaButton *lavaButton);
     static QStringList getListKeySynergies();
     static QStringList getListValidSynergies();
     static QStringList getListKeyLabels();
@@ -58,13 +60,13 @@ public:
                                     QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
                                     QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
                                     QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
-                                    int &draw, int &toYourHand, int &discover);
+                                    QList<SynergyWeightCard> &synergyWeightCardList);
     static void updateMechanicCounters(const QString &code,
                                        QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
                                        QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
                                        QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
                                        QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
-                                       int &draw, int &toYourHand, int &discover,
+                                       QList<SynergyWeightCard> &synergyWeightCardList,
                                        const QJsonArray &mechanics, const QJsonArray &referencedTags,
                                        const QString &text, CardType cardType, int attack, int cost);
     static void getMechanicSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap, QMap<MechanicIcons, int> &mechanicIcons,
