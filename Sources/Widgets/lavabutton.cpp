@@ -11,6 +11,11 @@ LavaButton::LavaButton(QWidget *parent, float min, float max) : QLabel(parent)
     this->value = this->min = min;
     this->value_0_1 = 0;
     this->max = max;
+
+    connect(this, SIGNAL(enter(HoverLabel*)),
+            this, SLOT(sendIconEnter()));
+    connect(this, SIGNAL(leave(HoverLabel*)),
+            this, SIGNAL(iconLeave()));
 }
 
 
@@ -172,4 +177,21 @@ void LavaButton::paintEvent(QPaintEvent *event)
         painterObject.drawPixmap(targetAll, icon.pixmap(width(), height(), QIcon::Disabled, QIcon::On));
     }
 }
+
+
+void LavaButton::sendIconEnter()
+{
+    //Positioning
+    QPoint topLeft = this->mapToGlobal(QPoint(0,0));
+    QPoint bottomRight = this->mapToGlobal(QPoint(this->width(),this->height()));
+    QRect labelRect = QRect(topLeft, bottomRight);
+
+    //synergyCardList
+    QMap<int,SynergyCard> synergyCardMap;
+    for(SynergyCard &synergyCard: synergyWeightCardList)  synergyCardMap.insertMulti(synergyCard.getCost(), synergyCard);
+    QList<SynergyCard> synergyCardOrderedList = synergyCardMap.values();
+
+    emit iconEnter(synergyCardOrderedList, labelRect);
+}
+
 

@@ -88,6 +88,11 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     lavaButton->setFixedWidth(scoreWidth);
     lavaButton->setToolTip("Deck weight");
 
+    connect(lavaButton, SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(lavaButton, SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+
     scoreButtonFire = new ScoreButton(centralWidget, Score_Fire, classOrder);
     scoreButtonFire->setFixedHeight(scoreWidth);
     scoreButtonFire->setFixedWidth(scoreWidth);

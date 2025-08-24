@@ -64,7 +64,7 @@ private:
     void saveSynergiesSetJson(QMap<QString, QStringList> &synergiesMap);
     void connectCounters(QMap<QString, DraftDropCounter *> *dropCounters,
                          QMap<QString, DraftItemCounter *> *cardTypeCounters,
-                         QMap<QString, DraftItemCounter *> *mechanicCounters);
+                         QMap<QString, DraftItemCounter *> *mechanicCounters, LavaButton *lavaButton);
     void createDraftItemCounters(LavaButton *lavaButton);
 
     void updateManaCounter(const QString &code, int cost);

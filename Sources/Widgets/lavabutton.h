@@ -32,6 +32,13 @@ public:
     void increase(SynergyWeightCard &synergyWeightCard);
     void increase(const QString &code, int draw, int toYourHand, int discover);
     QList<SynergyWeightCard> getsynergyWeightCardListDupped();
+
+signals:
+    void iconEnter(QList<SynergyCard> &synergyCardList, QRect &labelRect);
+    void iconLeave();
+
+private slots:
+    void sendIconEnter();
 };
 
 #endif // LAVABUTTON_H

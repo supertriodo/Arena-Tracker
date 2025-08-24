@@ -27,7 +27,8 @@ SynergyHandler::~SynergyHandler()
 
 void SynergyHandler::connectCounters(QMap<QString, DraftDropCounter*> * dropCounters,
                                      QMap<QString, DraftItemCounter*> * cardTypeCounters,
-                                     QMap<QString, DraftItemCounter*> * mechanicCounters)
+                                     QMap<QString, DraftItemCounter*> * mechanicCounters,
+                                     LavaButton *lavaButton)
 {
     const auto cardTypesKeys = CardTypeCounter::getListKeyLabels();
     for(const auto &key: cardTypesKeys)
@@ -55,6 +56,11 @@ void SynergyHandler::connectCounters(QMap<QString, DraftDropCounter*> * dropCoun
         connect((*mechanicCounters)[key], SIGNAL(iconLeave()),
                 this, SIGNAL(itemLeave()));
     }
+
+    connect(lavaButton, SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(lavaButton, SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
 }
 
 
@@ -73,7 +79,7 @@ void SynergyHandler::createDraftItemCounters(LavaButton *lavaButton)
     SchoolCounter::createSchoolCounters(this);
     KeySynergies::createKeySynergies();
 
-    connectCounters(dropCounters, cardTypeCounters, mechanicCounters);
+    connectCounters(dropCounters, cardTypeCounters, mechanicCounters, lavaButton);
 
     CardTypeCounter::setSynergyCodes(&synergyCodes);
     DraftDropCounter::setSynergyCodes(&synergyCodes);
