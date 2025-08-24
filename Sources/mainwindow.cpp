@@ -1144,6 +1144,7 @@ void MainWindow::leaveArena()
     draftHandler->leaveArena();
     deckHandler->leaveArena();
     popularCardsHandler->leaveArena();
+    drawCardHandler->leaveArena();
 }
 
 
@@ -1393,6 +1394,10 @@ void MainWindow::createGameWatcher()
             drawCardHandler, SLOT(clearDrawList()));
     connect(gameWatcher, SIGNAL(playerCardToHand(int,QString,int)),
             drawCardHandler, SLOT(playerCardToHand(int,QString,int)));
+    connect(gameWatcher, SIGNAL(enterArena()),
+            drawCardHandler, SLOT(enterArena()));
+    // connect(gameWatcher, SIGNAL(leaveArena()),//MainWindow::leaveArena()
+    //         drawCardHandler, SLOT(leaveArena()));
 
     connect(gameWatcher, SIGNAL(newArena(QString)),
             draftHandler, SLOT(beginDraft(QString)));
@@ -5091,7 +5096,6 @@ void MainWindow::testDelay()
 
 //TODO
 //Manual
-//Drops only arena
 //Separar draw/discover/Gen cards
 
 

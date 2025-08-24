@@ -6,6 +6,7 @@ DrawCardHandler::DrawCardHandler(QObject *parent, Ui::Extended *ui) : QObject(pa
     this->ui = ui;
     this->drawAnimating = false;
     this->drawDisappear = 10;
+    this->inArena = false;
 
     completeUI();
 }
@@ -73,7 +74,7 @@ void DrawCardHandler::clearDrawAnimating()
 
 void DrawCardHandler::newDrawCard(QString code, bool mulligan)
 {
-    DrawCard drawCard(code, mulligan && premium);
+    DrawCard drawCard(code, mulligan && inArena && premium);
     drawCard.listItem = new QListWidgetItem();
     drawCardList.append(drawCard);
     ui->drawListWidget->addItem(drawCard.listItem);
@@ -182,4 +183,16 @@ void DrawCardHandler::redrawAllCards()
 void DrawCardHandler::setPremium(bool premium)
 {
     this->premium = premium;
+}
+
+
+void DrawCardHandler::enterArena()
+{
+    this->inArena = true;
+}
+
+
+void DrawCardHandler::leaveArena()
+{
+    this->inArena = false;
 }

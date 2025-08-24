@@ -20,6 +20,7 @@ private:
     QList<DrawCard> drawCardList;
     int drawDisappear;
     bool premium;
+    bool inArena;
 
 
 //Metodos
@@ -43,6 +44,8 @@ public slots:
     void playerCardToHand(int id, QString code, int turn);
     void clearDrawList();
     void setPremium(bool premium);
+    void enterArena();
+    void leaveArena();
 
 private slots:
     void adjustDrawSize();
