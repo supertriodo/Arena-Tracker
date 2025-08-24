@@ -6,7 +6,7 @@
 #include <QPainterPath>
 #include <QDesktopServices>
 
-LavaButton::LavaButton(QWidget *parent, float min, float max) : QLabel(parent)
+LavaButton::LavaButton(QWidget *parent, float min, float max) : HoverLabel(parent)
 {
     this->value = this->min = min;
     this->value_0_1 = 0;

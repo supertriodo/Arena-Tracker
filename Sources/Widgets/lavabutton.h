@@ -2,10 +2,10 @@
 #define LAVABUTTON_H
 
 #include "Sources/Cards/synergyweightcard.h"
+#include "Sources/Widgets/hoverlabel.h"
 #include <QObject>
-#include <QLabel>
 
-class LavaButton : public QLabel
+class LavaButton : public HoverLabel
 {
     Q_OBJECT
 

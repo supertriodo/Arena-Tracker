@@ -7,9 +7,17 @@ CardListWindow::CardListWindow(QWidget *parent, SecretsHandler *secretsHandler) 
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
     this->secretsHandler = secretsHandler;
+
+    QWidget *mainWidget = new QWidget(this);
+    QHBoxLayout *hLayout = new QHBoxLayout(mainWidget);
+    hLayout->setContentsMargins(0, 0, 0, 0);
     listWidget = new MoveListWidget(this);
+    listWidget2 = new MoveListWidget(this);
     listWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setCentralWidget(listWidget);
+    listWidget2->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    hLayout->addWidget(listWidget);
+    hLayout->addWidget(listWidget2);
+    setCentralWidget(mainWidget);
     setAttribute(Qt::WA_TranslucentBackground, true);
 }
 
@@ -19,10 +27,18 @@ CardListWindow::~CardListWindow()
 }
 
 
+void CardListWindow::clear()
+{
+    listWidget->clear();
+    listWidget2->clear();
+    listWidget2->hide();
+}
+
+
 void CardListWindow::loadSecret(int id, QRect &rectCard, int maxTop, int maxBottom, bool alignReverse)
 {
     //Clear and delete items
-    listWidget->clear();
+    clear();
 
     //Get codes
     QStringList codes = secretsHandler->getSecretOptionCodes(id);
@@ -68,7 +84,7 @@ void CardListWindow::loadSecret(int id, QRect &rectCard, int maxTop, int maxBott
 void CardListWindow::loadDraftItem(QList<SynergyCard> &synergyCardList, QRect &rectCard, int maxTop, int maxBottom, bool alignReverse)
 {
     //Clear and delete items
-    listWidget->clear();
+    clear();
 
     if(synergyCardList.isEmpty())
     {
@@ -111,7 +127,7 @@ void CardListWindow::loadDraftItem(QList<SynergyCard> &synergyCardList, QRect &r
 void CardListWindow::loadDraftOverlayItem(QList<SynergyCard> &synergyCardList, QPoint &originList, int maxLeft, int maxRight)
 {
     //Clear and delete items
-    listWidget->clear();
+    clear();
 
     if(synergyCardList.isEmpty())
     {
@@ -119,15 +135,29 @@ void CardListWindow::loadDraftOverlayItem(QList<SynergyCard> &synergyCardList, Q
         return;
     }
 
+    int doubleColumn = (synergyCardList.count()>=10);
+    int i=0;
     for(SynergyCard &card: synergyCardList)
     {
         card.listItem = new QListWidgetItem();//Items son auto delete en clear()
-        listWidget->addItem(card.listItem);
+        if(!doubleColumn || (i%2==0))
+        {
+            listWidget->addItem(card.listItem);
+        }
+        else
+        {
+            listWidget2->addItem(card.listItem);
+        }
         card.draw();
+        i++;
     }
 
-    int winWidth = listWidget->sizeHintForColumn(0);
-    int winHeight = listWidget->count()*listWidget->sizeHintForRow(0) + 2*listWidget->frameWidth();
+    if(doubleColumn)    listWidget2->show();
+    int lwWidth = listWidget->sizeHintForColumn(0);
+    int lw2Width = listWidget2->sizeHintForColumn(0);
+    int winWidth = doubleColumn?(lwWidth + lw2Width):(lwWidth);
+    int winHeight = std::max(listWidget->count()*listWidget->sizeHintForRow(0) + 2*listWidget->frameWidth(),
+                             listWidget2->count()*listWidget2->sizeHintForRow(0) + 2*listWidget2->frameWidth());
     setFixedSize(winWidth, winHeight);
 
     int moveX, moveY;

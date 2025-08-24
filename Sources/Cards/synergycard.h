@@ -13,9 +13,10 @@ public:
 
 //Variables
 private:
-    QString synergyTag;
-
     static int synergyWidth;
+
+protected:
+    QString synergyTag;
 
 //Metodos
 private:

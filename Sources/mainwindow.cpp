@@ -5090,8 +5090,9 @@ void MainWindow::testDelay()
 
 
 //TODO
-//Deck weight explained
-
+//Manual
+//Drops only arena
+//Separar draw/discover/Gen cards
 
 
 

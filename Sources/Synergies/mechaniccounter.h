@@ -24,7 +24,6 @@ private:
 
 //Metodos
 private:
-    static QMap<QString, QString> getMapKeySynergies();
     static bool hasKeyAll(const QString &key);
     static QString getSynergyTag(const QString &key);
 
@@ -46,6 +45,7 @@ private:
 
 public:
     static QMap<QString, DraftItemCounter *> *createMechanicCounters(QObject *parent, QGridLayout *mechanicsLayout, LavaButton *lavaButton);
+    static QMap<QString, QString> getMapKeySynergies();
     static QStringList getListKeySynergies();
     static QStringList getListValidSynergies();
     static QStringList getListKeyLabels();

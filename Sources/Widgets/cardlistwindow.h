@@ -20,9 +20,13 @@ public:
 //Variables
 private:
     MoveListWidget * listWidget;
+    MoveListWidget * listWidget2;
     SecretsHandler * secretsHandler;
 
 //Metodos
+private:
+    void clear();
+
 protected:
     void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
     void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
