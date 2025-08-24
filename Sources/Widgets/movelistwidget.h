@@ -3,6 +3,20 @@
 
 #include <QObject>
 #include <QListWidget>
+#include <QStyledItemDelegate>
+
+
+class PixelPerfectDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+public:
+    explicit PixelPerfectDelegate(QObject *parent = nullptr);
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+};
+
+
 
 class MoveListWidget : public QListWidget
 {
@@ -10,6 +24,9 @@ class MoveListWidget : public QListWidget
 
 public:
     MoveListWidget(QWidget *parent = nullptr);
+
+private:
+    PixelPerfectDelegate* m_delegate;
 
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event) Q_DECL_OVERRIDE;

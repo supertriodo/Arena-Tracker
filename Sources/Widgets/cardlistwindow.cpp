@@ -11,6 +11,7 @@ CardListWindow::CardListWindow(QWidget *parent, SecretsHandler *secretsHandler) 
     QWidget *mainWidget = new QWidget(this);
     QHBoxLayout *hLayout = new QHBoxLayout(mainWidget);
     hLayout->setContentsMargins(0, 0, 0, 0);
+    hLayout->setSpacing(0);
     listWidget = new MoveListWidget(this);
     listWidget2 = new MoveListWidget(this);
     listWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

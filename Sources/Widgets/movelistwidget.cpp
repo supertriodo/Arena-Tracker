@@ -1,7 +1,31 @@
 #include "movelistwidget.h"
 #include "../Cards/deckcard.h"
 #include "../themehandler.h"
-#include <QtWidgets>
+#include "qevent.h"
+
+
+PixelPerfectDelegate::PixelPerfectDelegate(QObject *parent) : QStyledItemDelegate(parent)
+{
+}
+void PixelPerfectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
+    if (icon.isNull()) {
+        return;
+    }
+    icon.paint(painter, option.rect);
+}
+QSize PixelPerfectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    Q_UNUSED(option);
+    QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
+    if (icon.isNull()) {
+        return QSize(0, 0);
+    }
+    return icon.actualSize(QSize(1024, 1024));
+}
+
+
 
 MoveListWidget::MoveListWidget(QWidget *parent) : QListWidget(parent)
 {
@@ -14,6 +38,9 @@ MoveListWidget::MoveListWidget(QWidget *parent) : QListWidget(parent)
     this->setSelectionBehavior(QAbstractItemView::SelectRows);
     this->setSelectionMode(QAbstractItemView::NoSelection);
     this->setFocusPolicy(Qt::NoFocus);
+
+    m_delegate = new PixelPerfectDelegate(this);
+    this->setItemDelegate(m_delegate);
 }
 
 
