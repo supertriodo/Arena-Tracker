@@ -22,7 +22,6 @@ private:
 //Metodos
 private:
     int readLine(QFile &file, QString &utf8Line);
-    bool isLogReset();
     void reset();
     void initLogComponent(QString logComponentString);
 
@@ -32,7 +31,6 @@ public:
     static void setCopyGameLogs(bool value);
 
 signals:
-    void logReset();
     void newLogLineRead(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="LogWorker");
 };

@@ -2494,12 +2494,11 @@ void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QSt
 void MainWindow::logReset()
 {
     deckHandler->unlockDeckInterface();
-    deckHandler->leaveArena();
     rngCardHandler->clearRngList();
     drawCardHandler->clearDrawList();
     popularCardsHandler->resetCardsInterface();
-    popularCardsHandler->leaveArena();
     enemyHandHandler->unlockEnemyInterface();
+    leaveArena();
     gameWatcher->reset();
 }
 

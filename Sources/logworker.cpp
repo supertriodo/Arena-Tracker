@@ -55,26 +55,6 @@ void LogWorker::reset()
 }
 
 
-bool LogWorker::isLogReset()
-{
-    qint64 newSize = QFileInfo (logPath).size();
-
-    if(newSize < logSize)
-    {
-        //Log se ha reiniciado
-        emit pDebug("Log " + logComponentString + " reset. FileSize: " + QString::number(newSize) + " < " + QString::number(logSize));
-        emit logReset();
-        reset();
-        return true;
-    }
-    else
-    {
-        logSize = newSize;
-        return false;
-    }
-}
-
-
 int LogWorker::readLine(QFile &file, QString &utf8Line)
 {
     char c;
@@ -97,8 +77,6 @@ int LogWorker::readLine(QFile &file, QString &utf8Line)
 
 void LogWorker::readLog()
 {
-    isLogReset();
-
     QFile logFile(logPath);
     if(!logFile.exists())
     {

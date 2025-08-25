@@ -55,8 +55,6 @@ void LogLoader::createLogWorker(QString logComponent)
 
     if(logComponent == "LoadingScreen" || synchronized)
     {
-        connect(logWorker, SIGNAL(logReset()),
-                this, SIGNAL(logReset()));
         connect(logWorker, SIGNAL(newLogLineRead(LogComponent,QString,qint64,qint64)),
                 this, SLOT(emitNewLogLineRead(LogComponent,QString,qint64,qint64)));
     }
@@ -88,6 +86,7 @@ void LogLoader::checkLogDir()
         recentLogDir = logDir;
         emit pDebug("New RecentLogDir: " + recentLogDir);
         createLogWorkers();
+        emit logReset();
     }
     else
     {
