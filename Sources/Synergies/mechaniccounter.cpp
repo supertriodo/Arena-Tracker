@@ -89,6 +89,8 @@ void MechanicCounter::resetAll()
     keySynergiesMap["deathrattleGoodAll"]->reset();
     keySynergiesMap["survival"]->reset();
     keySynergiesMap["discoverDraw"]->reset();
+
+    lavaButton->reset();
 }
 
 

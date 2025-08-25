@@ -81,7 +81,6 @@ void DraftHandler::createScoreItems()
     lavaButton = new LavaButton(ui->tabDraft, 3, 5.5);
     lavaButton->setFixedHeight(width);
     lavaButton->setFixedWidth(width);
-    lavaButton->reset();
     lavaButton->setToolTip("Deck weight");
     lavaButton->hide();
 
@@ -635,8 +634,6 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         draftCards[i].draw(comboBoxCard[i]);
         comboBoxCard[i]->setCurrentIndex(0);
     }
-
-    lavaButton->reset();
 
     if(!alreadyDrafting)
     {
@@ -1766,7 +1763,6 @@ void DraftHandler::refreshDraft()
     }
 
     synergyHandler->clearCounters();
-    lavaButton->reset();
     deckRatingHA = 0;
     deckRatingHSR = 0;
     deckRatingFire = 0;

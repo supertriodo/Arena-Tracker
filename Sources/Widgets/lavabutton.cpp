@@ -49,7 +49,7 @@ void LavaButton::setValue(int totalMana, int numDD, int numCards)
     {
         float weightCard = synergyCard.processWeightMana(manaAvg);
         totalWeightMana += weightCard * synergyCard.total;
-        qDebug()<<QStringLiteral("+ %1 * %2 = %3").arg(weightCard).arg(synergyCard.total).arg(totalWeightMana);//TODO
+        // qDebug()<<QStringLiteral("+ %1 * %2 = %3").arg(weightCard).arg(synergyCard.total).arg(totalWeightMana);
     }
 
     this->value = totalWeightMana / std::max(1, numCards);
@@ -57,7 +57,7 @@ void LavaButton::setValue(int totalMana, int numDD, int numCards)
     if(value_0_1 > 1) value_0_1 = 1;
     if(value_0_1 < 0) value_0_1 = 0;
     draw();
-    qDebug()<<QStringLiteral("%1 / %2 = %3").arg(totalWeightMana).arg(numCards).arg(value);//TODO
+    // qDebug()<<QStringLiteral("%1 / %2 = %3").arg(totalWeightMana).arg(numCards).arg(value);
 }
 
 
