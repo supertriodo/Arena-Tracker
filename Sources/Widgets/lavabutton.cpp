@@ -22,6 +22,7 @@ LavaButton::LavaButton(QWidget *parent, float min, float max) : HoverLabel(paren
 void LavaButton::reset()
 {
     this->value = 0;
+    this->synergyWeightCardList.clear();
     update();
 }
 
@@ -39,15 +40,16 @@ void LavaButton::mousePressEvent(QMouseEvent *event)
 }
 
 
-void LavaButton::setValue(float manaAvg)
+void LavaButton::setValue(int totalMana, int numDD, int numCards)
 {
+    float manaAvg = (totalMana + (numDD * 4)) / static_cast<float>(numCards);
     float totalWeightMana = 0;
-    int numCards = 0;
 
     for(SynergyWeightCard &synergyCard: synergyWeightCardList)
     {
-        totalWeightMana += synergyCard.processWeightMana(manaAvg) * synergyCard.total;
-        numCards += synergyCard.total;
+        float weightCard = synergyCard.processWeightMana(manaAvg);
+        totalWeightMana += weightCard * synergyCard.total;
+        qDebug()<<QStringLiteral("+ %1 * %2 = %3").arg(weightCard).arg(synergyCard.total).arg(totalWeightMana);//TODO
     }
 
     this->value = totalWeightMana / std::max(1, numCards);
@@ -55,6 +57,7 @@ void LavaButton::setValue(float manaAvg)
     if(value_0_1 > 1) value_0_1 = 1;
     if(value_0_1 < 0) value_0_1 = 0;
     draw();
+    qDebug()<<QStringLiteral("%1 / %2 = %3").arg(totalWeightMana).arg(numCards).arg(value);//TODO
 }
 
 
@@ -66,7 +69,7 @@ void LavaButton::increase(SynergyWeightCard &synergyWeightCard)
     {
         if(synergyCard.getCode() == code)
         {
-            synergyCard.total++;
+            synergyCard.total += synergyWeightCard.total;
             synergyCard.remaining = synergyCard.total;
             duplicatedCard = true;
             break;
@@ -99,17 +102,9 @@ void LavaButton::increase(const QString &code, int draw, int toYourHand, int dis
 }
 
 
-QList<SynergyWeightCard> LavaButton::getsynergyWeightCardListDupped()
+QList<SynergyWeightCard> LavaButton::getsynergyWeightCardList()
 {
-    QList<SynergyWeightCard> duppedList;
-    for(const SynergyWeightCard &synergyCard: synergyWeightCardList)
-    {
-        for(int i=0; i<synergyCard.total; i++)
-        {
-            duppedList << synergyCard;
-        }
-    }
-    return duppedList;
+    return synergyWeightCardList;
 }
 
 
@@ -187,9 +182,9 @@ void LavaButton::sendIconEnter()
     QRect labelRect = QRect(topLeft, bottomRight);
 
     //synergyCardList
-    QMap<int,SynergyCard> synergyCardMap;
-    for(SynergyCard &synergyCard: synergyWeightCardList)  synergyCardMap.insertMulti(synergyCard.getCost(), synergyCard);
-    QList<SynergyCard> synergyCardOrderedList = synergyCardMap.values();
+    QList<SynergyCard> synergyCardOrderedList;
+    for(const SynergyCard &synergyCard: qAsConst(synergyWeightCardList))    synergyCardOrderedList << synergyCard;
+    std::sort(synergyCardOrderedList.begin(), synergyCardOrderedList.end());
 
     emit iconEnter(synergyCardOrderedList, labelRect);
 }

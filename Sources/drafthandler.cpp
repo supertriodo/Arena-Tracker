@@ -1,6 +1,7 @@
 #include "drafthandler.h"
 #include "themehandler.h"
 #include "Synergies/cardtypecounter.h"
+#include "Synergies/mechaniccounter.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
@@ -1026,9 +1027,10 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
         }
     }
 
-    int numCards = CardTypeCounter::draftedCardsCount();
     int totalMana = synergyHandler->getManaCounterCount();
-    lavaButton->setValue((totalMana/static_cast<float>(numCards)));
+    int numDD = MechanicCounter::getDiscoverDrawCounter();
+    int numCards = CardTypeCounter::draftedCardsCount();
+    lavaButton->setValue(totalMana, numDD, numCards);
     updateDeckScore();
     emit pDebug("Counters starts with " + QString::number(numCards) + " cards.");
 }
@@ -1658,9 +1660,10 @@ void DraftHandler::pickCard(QString code)
                                        pingMap, damageMap, destroyMap, reachMap,
                                        synergyWeightCardList);
 
-        int numCards = CardTypeCounter::draftedCardsCount();
         int totalMana = synergyHandler->getManaCounterCount();
-        lavaButton->setValue((totalMana/static_cast<float>(numCards)));
+        int numDD = MechanicCounter::getDiscoverDrawCounter();
+        int numCards = CardTypeCounter::draftedCardsCount();
+        lavaButton->setValue(totalMana, numDD, numCards);
         updateDeckScore(getHAScore(code),
                         (fireWRMap == nullptr) ? 0 : fireWRMap[this->arenaHero][code],
                         (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][code]);

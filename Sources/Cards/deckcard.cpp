@@ -734,7 +734,7 @@ QString DeckCard::getName()
 }
 
 
-int DeckCard::getCost()
+int DeckCard::getCost() const
 {
     return cost;
 }
@@ -790,4 +790,30 @@ int DeckCard::getCardHeight()
 int DeckCard::getCardWidth()
 {
     return (cardHeight<=35)?218:static_cast<int>(cardHeight/35.0*218);
+}
+
+
+bool DeckCard::operator<(const DeckCard &other) const
+{
+    return getCost() < other.getCost();
+}
+bool DeckCard::operator==(const DeckCard& other) const
+{
+    return getCost() == other.getCost();
+}
+bool DeckCard::operator!=(const DeckCard& other) const
+{
+    return !(*this == other);
+}
+bool DeckCard::operator>(const DeckCard& other) const
+{
+    return other < *this;
+}
+bool DeckCard::operator<=(const DeckCard& other) const
+{
+    return !(*this > other); // o !(other < *this)
+}
+bool DeckCard::operator>=(const DeckCard& other) const
+{
+    return !(*this < other);
 }

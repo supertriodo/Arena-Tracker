@@ -454,7 +454,8 @@ void DraftMechanicsWindow::updateDeckWeight(QList<SynergyWeightCard> &synergyWei
     }
 
     int totalMana = manaCounter->count();
-    lavaButton->setValue((totalMana/static_cast<float>(numCards)));
+    int numDD = mechanicCounters[V_DISCOVER_DRAW]->count();
+    lavaButton->setValue(totalMana, numDD, numCards);
 
     if(showingHelp) hideHelp();
 }

@@ -64,7 +64,7 @@ float SynergyWeightCard::processWeightMana(float drawMultiplier)
         synergyTag = text;
         if(showSynergyDetails)
         {
-            synergyTag += QStringLiteral(" (%1)").arg(detailText);
+            synergyTag += QStringLiteral("  (%1)").arg(detailText);
         }
     }
     this->cost = weightMana;

@@ -74,7 +74,7 @@ public:
     QList<CardClass> getCardClass();
     QList<CardRace> getRace();
     CardSchool getSchool();
-    int getCost();
+    int getCost() const;
     void setCode(QString code);
     void setManaLimit(bool top);
     void resetManaLimits();
@@ -89,6 +89,12 @@ public:
     void setBadScoreHSR(bool badScore=true);
     void setBadScoreFire(bool badScore=true);
     void setRedraftingReview(bool show=true);
+    bool operator<(const DeckCard &other) const;
+    bool operator==(const DeckCard& other) const;
+    bool operator!=(const DeckCard& other) const;
+    bool operator>(const DeckCard& other) const;
+    bool operator<=(const DeckCard& other) const;
+    bool operator>=(const DeckCard& other) const;
 
     static void setDrawClassColor(bool value);
     static void setDrawSpellWeaponColor(bool value);

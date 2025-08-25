@@ -27,11 +27,11 @@ protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 public:
-    void setValue(float manaAvg);
+    void setValue(int totalMana, int numDD, int numCards);
     void reset();
     void increase(SynergyWeightCard &synergyWeightCard);
     void increase(const QString &code, int draw, int toYourHand, int discover);
-    QList<SynergyWeightCard> getsynergyWeightCardListDupped();
+    QList<SynergyWeightCard> getsynergyWeightCardList();
 
 signals:
     void iconEnter(QList<SynergyCard> &synergyCardList, QRect &labelRect);

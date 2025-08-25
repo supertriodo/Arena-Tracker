@@ -5096,7 +5096,6 @@ void MainWindow::testDelay()
 
 //TODO
 //Manual
-//Separar draw/discover/Gen cards
 
 
 

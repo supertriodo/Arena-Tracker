@@ -162,7 +162,7 @@ void MechanicCounter::getMechanicCounters(QMap<QString, QString> &aoeMap, QMap<Q
     damageMap = keySynergiesMap["damageMinions"]->getCodeTagMap();
     destroyMap = keySynergiesMap["destroy"]->getCodeTagMap();
     reachMap = keySynergiesMap["reach"]->getCodeTagMap();
-    synergyWeightCardList = lavaButton->getsynergyWeightCardListDupped();
+    synergyWeightCardList = lavaButton->getsynergyWeightCardList();
 }
 
 
@@ -440,6 +440,12 @@ bool MechanicCounter::isPartKey(const QString &partSynergy, const QString &code,
                    isKeyAllSyn(keyAll+"Syn", code);
         }
     }
+}
+
+
+int MechanicCounter::getDiscoverDrawCounter()
+{
+    return keySynergiesMap["discoverDraw"]->count();
 }
 
 

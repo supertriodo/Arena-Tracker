@@ -49,6 +49,7 @@ public:
     static QStringList getListKeySynergies();
     static QStringList getListValidSynergies();
     static QStringList getListKeyLabels();
+    static int getDiscoverDrawCounter();
     static void setTheme();
     static void resetAll();
     static void setHidden(bool hide);
