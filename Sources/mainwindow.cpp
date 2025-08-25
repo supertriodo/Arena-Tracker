@@ -4883,8 +4883,8 @@ void MainWindow::testSynergies()
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    // testHeroPortraits();
-    // testSynergies();
+    testHeroPortraits();
+    testSynergies();
 
     // downloadHearthArenaTierlistOriginal();
     // testHearthArenaTierlist();
@@ -5095,7 +5095,6 @@ void MainWindow::testDelay()
 
 //TODO
 //Manual
-
 
 
 

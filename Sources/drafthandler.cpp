@@ -762,6 +762,9 @@ void DraftHandler::leaveArena()
         // }
     }
     else if(heroDrafting)   endHeroDraft();
+
+    //Debug - Save deck on leave
+    // deckHandler->saveDraftDeck(Utility::classEnum2classLogNumber(arenaHero));
 }
 
 
