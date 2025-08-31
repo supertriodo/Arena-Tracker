@@ -142,7 +142,7 @@ private:
     void completeUI();
     cv::MatND getHist(const QString &code);
     cv::MatND getHist(const Mat &srcBase);
-    void initCodesAndHistMaps(bool skipScreenSettings=false);
+    void initCodesAndHistMaps(QList<DeckCard> &deckCardList, bool skipScreenSettings=false);
     void resetTab(bool alreadyDrafting);
     void clearLists(bool keepCounters);
     void endDraft(bool createNewArena);

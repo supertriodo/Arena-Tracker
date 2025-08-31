@@ -555,7 +555,7 @@ void DraftHandler::initLightForgeTiers(const CardClass heroClass, const bool mul
 
 //Desde la reforma de arena solo cargamos los screensettings en buildDraftMechanicsWindow() o al elegir heroe y empezar draft.
 //continueDraft y heroDrafts esperan a buscar el template ya que hay una pantalla pasillo.
-void DraftHandler::initCodesAndHistMaps(bool skipScreenSettings)
+void DraftHandler::initCodesAndHistMaps(QList<DeckCard> &deckCardList, bool skipScreenSettings)
 {
     cardsDownloading.clear();
     cardsHist.clear();
@@ -576,6 +576,16 @@ void DraftHandler::initCodesAndHistMaps(bool skipScreenSettings)
 
         QTimer::singleShot(delay, this, [=] () {newFindScreenLoop(skipScreenSettings);});
         QStringList arenaCodes = Utility::getAllArenaCodes();
+
+        //Incluimos como arenaCodes los codes del mazo actual ya que puede ocurrir que en los bundles
+        //Se esten considerando otros codigos para la misma carta que no es la que HS usa.
+        //Asi nos aseguramos que initSynergies incluye las cartas del mazo actual.
+        for(const DeckCard &deckCard: deckCardList)
+        {
+            const QString code = deckCard.getCode();
+            if(!arenaCodes.contains(code))  arenaCodes << code;
+        }
+
         initLightForgeTiers(arenaHero, multiclassArena, arenaCodes, true);
         initHearthArenaTiers(arenaHero, multiclassArena);
         if(drafting)
@@ -884,7 +894,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
 
     for(int i=0; i<3; i++)  prevCodes[i] = "";
 
-    initCodesAndHistMaps(skipScreenSettings);
+    initCodesAndHistMaps(deckCardList, skipScreenSettings);
     resetTab(alreadyDrafting);
     initSynergyCounters(deckCardList);
     createTwitchHandler();
@@ -1236,7 +1246,7 @@ bool DraftHandler::buildDraftMechanicsWindow()
 
     clearLists(false);
 
-    initCodesAndHistMaps();
+    initCodesAndHistMaps(*deckCardList);
     initSynergyCounters(*deckCardList);
     return true;
 }
@@ -2980,7 +2990,8 @@ void DraftHandler::beginHeroDraft()
     clearLists(false);
     this->heroDrafting = true;
 
-    initCodesAndHistMaps(true);
+    QList<DeckCard> deckCardList;
+    initCodesAndHistMaps(deckCardList, true);
     createTwitchHandler();
 }
 

@@ -716,7 +716,7 @@ bool DeckCard::isCode(const QString &code)
 }
 
 
-QString DeckCard::getCode()
+QString DeckCard::getCode() const
 {
     return code;
 }

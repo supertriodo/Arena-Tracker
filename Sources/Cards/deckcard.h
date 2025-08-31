@@ -67,7 +67,7 @@ protected:
 public:
     void draw();
     bool isCode(const QString &code);
-    QString getCode();
+    QString getCode() const;
     CardType getType();
     QString getName();
     CardRarity getRarity();
