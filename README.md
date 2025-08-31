@@ -81,8 +81,9 @@ If you build on Mac check:
 
 
 ## Thanks to:
-* https://hsreplay.net
 * http://hearthstonejson.com
+* https://hsreplay.net
+* https://www.firestoneapp.com/arena/classes
 * http://www.heartharena.com
 * https://github.com/probonopd/linuxdeployqt
 * Arena Tracker is a [HearthSim](http://hearthsim.info) project. Join us on [Discord](https://discord.gg/hearthsim).
