@@ -4954,7 +4954,7 @@ void MainWindow::testDelay()
 
     // downloadHearthArenaTierlistOriginal();
     // testHearthArenaTL();
-    // checkHearthArenaTLCodes();//Necesario si trustHA
+    // checkHearthArenaTLCodes(true);//Necesario si trustHA
 
     // testDownloadCardsJson();///v1/226642
     // testDownloadRotation(true/*, "SC_"*/);//Force hearthpwn true
