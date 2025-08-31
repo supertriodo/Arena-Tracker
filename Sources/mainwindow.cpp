@@ -4705,7 +4705,7 @@ void MainWindow::testDraft()
 
 
 //Verifica HATL codes son los correctos (los que aparecen en HS), mirando que esten en HSR winrates.
-void MainWindow::checkHearthArenaTLCodes()
+void MainWindow::checkHearthArenaTLCodes(bool infoOnly)
 {
     QStringList arenaCodes = Utility::getAllArenaCodes();
 
@@ -4723,10 +4723,12 @@ void MainWindow::checkHearthArenaTLCodes()
             qDebug()<<"HATL wrong code:"<<code<<"-->"<<hsrCode;
         }
     }
+    qDebug()<<swapCodes.count()<<"swaps.";
+    if(infoOnly)    return;
 
     //Realizamos reemplazos en hearthArena.json
-    QString HAfilename = QDir::homePath() + "/Documentos/ArenaTracker/HearthArena/hearthArena.json";
-    QFile file(HAfilename);
+    QString HAsource = QDir::homePath() + "/Documentos/ArenaTracker/HearthArena/hearthArena.json";
+    QFile file(HAsource);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qWarning() << "Error opening hearthArena.json";
@@ -4754,6 +4756,10 @@ void MainWindow::checkHearthArenaTLCodes()
     stream.setDevice(&file);
     stream << content;
     file.close();
+
+    QString HAlocal = Utility::extraPath() + "/hearthArena.json";
+    QFile::remove(HAlocal);
+    QFile::copy(HAsource, HAlocal);
 
     qDebug()<<swapCodes.count()<<"swaps made.";
 }
