@@ -2667,6 +2667,10 @@ void MainWindow::downloadHearthArenaJson(int version)
             pDebug("Extra: Json HearthArena removed.");
         }
 
+        //Remove histograms
+        removeHistograms();
+        Utility::createDir(Utility::histogramsPath());
+
         settings.setValue("haVersion", version);
         networkManager->get(QNetworkRequest(QUrl(HA_URL + QString("/hearthArena.json"))));
         pDebug("Extra: Json HearthArena --> Download from: " + QString(HA_URL) + QString("/hearthArena.json"));
@@ -4727,8 +4731,9 @@ void MainWindow::checkHearthArenaTLCodes(bool infoOnly)
     if(infoOnly)    return;
 
     //Realizamos reemplazos en hearthArena.json
+    QString HAlocal = Utility::extraPath() + "/hearthArena.json";
     QString HAsource = QDir::homePath() + "/Documentos/ArenaTracker/HearthArena/hearthArena.json";
-    QFile file(HAsource);
+    QFile file(HAlocal);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qWarning() << "Error opening hearthArena.json";
@@ -4762,9 +4767,8 @@ void MainWindow::checkHearthArenaTLCodes(bool infoOnly)
     stream << content;
     file.close();
 
-    QString HAlocal = Utility::extraPath() + "/hearthArena.json";
-    QFile::remove(HAlocal);
-    QFile::copy(HAsource, HAlocal);
+    QFile::remove(HAsource);
+    QFile::copy(HAlocal, HAsource);
 
     qDebug()<<numSwap<<"swaps made." << (swapCodes.count()-numSwap) << "are in bundles.";
 }

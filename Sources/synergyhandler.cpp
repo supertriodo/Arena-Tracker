@@ -574,7 +574,7 @@ bool SynergyHandler::shouldBeInSynergies(const QString &code)
 void SynergyHandler::debugMissingSynergies(bool onlyArena, bool showCards)
 {
     QStringList arenaCodes = Utility::getAllArenaCodes();
-    initSynergyCodes(arenaCodes, true);
+    initSynergyCodes(arenaCodes, !onlyArena);
 
     int num = 0;
     QMap<QString, QStringList> synergiesMap;
