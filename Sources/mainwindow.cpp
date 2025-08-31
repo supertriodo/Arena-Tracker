@@ -2159,7 +2159,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_Z)
             {
                 if(this->planWindow == nullptr)    createDetachWindow(ui->tabPlan);
-                planWindow->resize(QSize(1080, 1080));
+                planWindow->resize(QSize(960, 1080));
                 planWindow->move(1920, 0);
 
                 if(this->deckWindow == nullptr)    createDetachWindow(ui->tabDeck);
@@ -2167,15 +2167,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 deckWindow->move(1920-deckWindow->width(), 0);
 
                 if(this->enemyWindow == nullptr)    createDetachWindow(ui->tabEnemy);
-                enemyWindow->resize(QSize(enemyWindow->width(), 800));
-                enemyWindow->move(0, 0);
+                enemyWindow->resize(QSize(enemyWindow->width(), 700));
+                enemyWindow->move(0, 120);
 
                 if(this->graveyardWindow == nullptr)    createDetachWindow(ui->tabGraveyard);
-                graveyardWindow->resize(QSize(graveyardWindow->width(), 800));
-                graveyardWindow->move(1920+1080, 0);
+                graveyardWindow->resize(QSize(graveyardWindow->width(), 540));
+                graveyardWindow->move(1920+planWindow->width(), 0);
 
-                this->resize(QSize(300, 800));
-                this->move(1920+1080+graveyardWindow->width(), 0);
+                this->resize(QSize(400, 540));
+                this->move(1920+planWindow->width()+graveyardWindow->width(), 0);
             }
 #endif
 #ifdef QT_DEBUG
