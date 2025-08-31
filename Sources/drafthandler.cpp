@@ -583,7 +583,7 @@ void DraftHandler::initCodesAndHistMaps(QList<DeckCard> &deckCardList, bool skip
         for(const DeckCard &deckCard: deckCardList)
         {
             const QString code = deckCard.getCode();
-            if(!arenaCodes.contains(code))  arenaCodes << code;
+            if(!code.isEmpty() && !arenaCodes.contains(code))   arenaCodes << code;
         }
 
         initLightForgeTiers(arenaHero, multiclassArena, arenaCodes, true);
