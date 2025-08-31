@@ -235,7 +235,6 @@ private:
     void showFireScores(QString hsrCodes[], QString cardNames[]);
     QString getHSRCode(QString code);
     QString getFireCode(QString code);
-    QString getHSRFireCode(QString code, bool HSR);
     QString getHACode(QString code);
     bool isEmptyDeck();
     void addLFCode(const QString &code, const CardClass &heroClass, const bool multiClassDraft, bool buildCodesByClass);
@@ -243,6 +242,7 @@ private:
     int getHAScore(const QString &code);
 
 public:
+    QString getHSRFireCode(QString code, bool HSR, CardClass heroClass);
     void setDeckScores();
     void buildHeroCodesList();
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

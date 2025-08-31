@@ -262,7 +262,8 @@ private slots:
     void testSynergies();
     void testHeroPortraits();
     void downloadHeroPortrait(QString code);
-    void testHearthArenaTierlist();
+    void testHearthArenaTL();
+    void checkHearthArenaTLCodes();
     void testDownloadRotation(bool fromHearth, const QString &miniSet="");
     void testSecretsHSR(LoadingScreenState loadingScreenState);
     void testPopularList(int i=2);

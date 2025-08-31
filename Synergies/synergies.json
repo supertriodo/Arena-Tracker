@@ -2261,7 +2261,7 @@
 "GDB_873" : [ "discover", "comboGen" ],
 "GDB_874" : [ "drop2", "discover", "battlecry", "returnSyn", "spellGen" ],
 "GDB_875" : [ "battlecry", "comboAllSyn" ],
-"GDB_876" : [ "drop2", "battlecry", "returnSyn", "otherClass", "starshipGen", "starshipAllSyn" ],
+"GDB_876" : [ "drop2", "battlecry", "returnSyn", "otherClass", "starshipGen", "starshipAllSyn", "toYourHand" ],
 "GDB_877" : [ "damageMinions", "rush", "deathrattle", "attackBuff", "healthBuff", "rushGiver", "tokenSyn" ],
 "GDB_878" : [ "murlocAllSyn", "battlecry", "returnSyn" ],
 "GDB_881" : [ "damageMinions", "comboAllSyn" ],

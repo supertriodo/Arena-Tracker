@@ -4704,7 +4704,62 @@ void MainWindow::testDraft()
 }
 
 
-void MainWindow::testHearthArenaTierlist()
+//Verifica HATL codes son los correctos (los que aparecen en HS), mirando que esten en HSR winrates.
+void MainWindow::checkHearthArenaTLCodes()
+{
+    QStringList arenaCodes = Utility::getAllArenaCodes();
+
+    //Buscamos reemplazos
+    QMap<QString, QString> swapCodes;
+    for(const QString &code: qAsConst(arenaCodes))
+    {
+        QList<CardClass> heroClassList = Utility::getClassFromCode(code);
+        CardClass heroClass = heroClassList.first();
+        if(heroClass == NEUTRAL)    heroClass = MAGE;
+        QString hsrCode = draftHandler->getHSRFireCode(code, true, heroClass);
+        if(hsrCode != code)
+        {
+            swapCodes.insert('"'+code+'"', '"'+hsrCode+'"');
+            qDebug()<<"HATL wrong code:"<<code<<"-->"<<hsrCode;
+        }
+    }
+
+    //Realizamos reemplazos en hearthArena.json
+    QString HAfilename = QDir::homePath() + "/Documentos/ArenaTracker/HearthArena/hearthArena.json";
+    QFile file(HAfilename);
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qWarning() << "Error opening hearthArena.json";
+        return;
+    }
+
+    QTextStream stream(&file);
+    stream.setCodec("UTF-8");
+    QString content = stream.readAll();
+    file.close();
+
+    QMapIterator<QString, QString> i(swapCodes);
+    while(i.hasNext())
+    {
+        i.next();
+        content.replace(i.key(), i.value());
+    }
+
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
+    {
+        qWarning() << "Error opening hearthArena.json";
+        return;
+    }
+
+    stream.setDevice(&file);
+    stream << content;
+    file.close();
+
+    qDebug()<<swapCodes.count()<<"swaps made.";
+}
+
+
+void MainWindow::testHearthArenaTL()
 {
     QStringList arenaSets;
     arenaSets <<  "CORE" <<
@@ -4887,10 +4942,13 @@ void MainWindow::testDelay()
     testSynergies();
 
     // downloadHearthArenaTierlistOriginal();
-    // testHearthArenaTierlist();
+    // testHearthArenaTL();
+    // checkHearthArenaTLCodes();//Necesario si trustHA
+
     // testDownloadCardsJson();///v1/226642
     // testDownloadRotation(true/*, "SC_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
+
 
     // testDraft();
     // QTimer::singleShot(20000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";
