@@ -4723,7 +4723,7 @@ void MainWindow::checkHearthArenaTLCodes(bool infoOnly)
             qDebug()<<"HATL wrong code:"<<code<<"-->"<<hsrCode;
         }
     }
-    qDebug()<<swapCodes.count()<<"swaps.";
+    qDebug()<<swapCodes.count()<<"needed swaps.";
     if(infoOnly)    return;
 
     //Realizamos reemplazos en hearthArena.json
@@ -4740,11 +4740,16 @@ void MainWindow::checkHearthArenaTLCodes(bool infoOnly)
     QString content = stream.readAll();
     file.close();
 
+    int numSwap = 0;
     QMapIterator<QString, QString> i(swapCodes);
     while(i.hasNext())
     {
         i.next();
-        content.replace(i.key(), i.value());
+        if(content.contains(i.key()))
+        {
+            content.replace(i.key(), i.value());
+            numSwap++;
+        }
     }
 
     if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
@@ -4761,7 +4766,7 @@ void MainWindow::checkHearthArenaTLCodes(bool infoOnly)
     QFile::remove(HAlocal);
     QFile::copy(HAsource, HAlocal);
 
-    qDebug()<<swapCodes.count()<<"swaps made.";
+    qDebug()<<numSwap<<"swaps made." << (swapCodes.count()-numSwap) << "are in bundles.";
 }
 
 
