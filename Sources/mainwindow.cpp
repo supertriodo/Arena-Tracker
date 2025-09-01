@@ -4944,7 +4944,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testSynergies()
 {
     // draftHandler->getSynergyHandler()->testSynergies(/*"SC_"*/);
-    // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0/*, "SC_"*/);//PLACEHOLDER_202204
+    // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0/*, "SC_"*/);//modelo/synergiesSet.json
     // draftHandler->getSynergyHandler()->debugDrops();
     draftHandler->getSynergyHandler()->debugMissingSynergies(true, false);
 }
@@ -5013,11 +5013,12 @@ void MainWindow::testDelay()
     //Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
     //Update AOE que marcan un objetivo principal y le hacen algo diferente que al resto (Swipe) --> MinionGraphicsItem::isAoeWithTarget (Hearthpwn Search: draw from your deck)
 
-//Update synergies.json
+//Update synergies.json --> SynergyHandler::debugSynergiesSet()
 //|-Check synergies in the new set --> New synergy keys
 //|-Check evolveSyn cards
 //|-Check direct links
-//|-Check drops (https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/global.gz.json)
+//|-Check drops --> SynergyHandler::debugDrops()
+//  In AT Dir/Extra (https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/global.gz.json)
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
