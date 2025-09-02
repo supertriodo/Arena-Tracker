@@ -5017,7 +5017,7 @@ void MainWindow::testDelay()
 //|-Check synergies in the new set --> New synergy keys
 //|-Check evolveSyn cards
 //|-Check direct links
-//|-Check drops --> SynergyHandler::debugDrops()
+//|-Check drops (1 semana despues) --> SynergyHandler::debugDrops()
 //  In AT Dir/Extra (https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/global.gz.json)
 
 //Cards changes
@@ -5034,6 +5034,18 @@ void MainWindow::testDelay()
 
 
 //VM funciona en 5.15.0-113-generic
+
+
+//Modelo IA
+//source 1sourceCuda.sh
+//./2datos.sh y Descargar enUS cards.json de https://api.hearthstonejson.com/v1/latest/
+//./3entrenar.sh
+//SynergyHandler::testSynergies() prepara modelo/synergiesSet.json con los codigos a predecir
+//./4predecir.sh
+//|-synergiesSetOutSimple.json --> Sinergias predichas para copiar facilmente a synergies.json mientras las revisamos
+//|-synergiesSetOut.json --> Muestra una fila con las sinergias predichas y otra con las manuales obtenidas de AT con:
+//  |-(--) Aparece en la prediccion
+//  |-(++) No aparece en la prediccion, quizas haya que incluirla.
 
 
 //NUEVA SYNERGY
