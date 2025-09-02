@@ -141,6 +141,7 @@ bool SynergyHandler::initSynergyCodes(const QStringList &arenaCodes, bool all)
     jsonFile.close();
     QJsonObject jsonObject = jsonDoc.object();
     QStringList coreCodes = Utility::getSetCodes("CORE", true, true);
+    coreCodes << Utility::getSetCodes("PLACEHOLDER_202204", true, true);
 
     for(const QString &code: (const QStringList)jsonObject.keys())
     {
@@ -587,14 +588,7 @@ void SynergyHandler::debugMissingSynergies(bool onlyArena, bool showCards)
         bool codeMissing = !synergyCodes.contains(code);
         if(codeMissing)
         {
-            bool subCodeMissing = true;
-            if(code.startsWith("CORE_") && coreCodes.contains(code))
-            {
-                QString subCode = code.mid(5);
-                if(synergyCodes.contains(subCode))  subCodeMissing = false;
-            }
-
-            if(subCodeMissing && shouldBeInSynergies(code))
+            if(shouldBeInSynergies(code))
             {
                 if(num == 0)    qDebug()<<"\n-----Synergies.json-----\n";
                 QStringList mec = debugSynergiesCode(code, ++num);
