@@ -4778,49 +4778,14 @@ void MainWindow::testHearthArenaTL()
 {
     QStringList arenaSets;
     arenaSets <<  "CORE" <<
-        "LEGACY" <<
-        "EXPERT1" <<
-        "DEMON_HUNTER_INITIATE" <<
-        "WONDERS" <<
-        "NAXX" <<
-        "GVG" <<
-        "BRM" <<
-        "TGT" <<
-        "LOE" <<
-        "OG" <<
-        "KARA" <<
-        "GANGS" <<
-        "UNGORO" <<
-        "ICECROWN" <<
-        "LOOTAPALOOZA" <<
-        "GILNEAS" <<
-        "BOOMSDAY" <<
-        "TROLL" <<
-        "DALARAN" <<
-        "ULDUM" <<
-        "DRAGONS" <<
-        "YEAR_OF_THE_DRAGON" <<
-        "BLACK_TEMPLE" <<
-        "SCHOLOMANCE" <<
-        "DARKMOON_FAIRE" <<
-        "THE_BARRENS" <<
-        "STORMWIND" <<
-        "ALTERAC_VALLEY" <<
-        "THE_SUNKEN_CITY" <<
         "REVENDRETH" <<
-        "PATH_OF_ARTHAS" <<
         "RETURN_OF_THE_LICH_KING" <<
         "BATTLE_OF_THE_BANDS" <<
-        "TITANS" <<
-        "WILD_WEST" <<
-        "EVENT" <<
-        "WHIZBANGS_WORKSHOP" <<
         "ISLAND_VACATION" <<
-        "SPACE" <<
-        "EMERALD_DREAM" <<
         "THE_LOST_CITY";
 
     Utility::setArenaSets(arenaSets);
+    Utility::setTrustHA(false);
 
     QStringList arenaCodes = Utility::getAllArenaCodes();
     Utility::checkTierlistsCount(arenaCodes);
@@ -4828,97 +4793,25 @@ void MainWindow::testHearthArenaTL()
 
 /*
  * Core "CORE"
- * Legacy "LEGACY" // Old Basic
- * Expert "EXPERT1"// Old Classic
- * Demon Hunter Initiate "DEMON_HUNTER_INITIATE"
- * Taverns of Time "TAVERNS_OF_TIME"
- * Caverns of Time "WONDERS"
- * Duel Treasures "TREASURES"
- * Curse of Naxxramas "NAXX"
- * Goblins vs Gnomes "GVG"
- * Blackrock Mountain "BRM"
- * The Grand Tournament "TGT"
- * League of Explorer "LOE"
- * Whispers of the Old Gods "OG"
- * One Night in Karazhan "KARA"
- * Mean Streets of Gadgetzan "GANGS"
- * Journey to Un'Goro "UNGORO"
- * Knights of the Frozen Throne "ICECROWN"
- * Kobolds and Catacombs "LOOTAPALOOZA"
- * The Witchwood "GILNEAS"
- * The boomsday Project "BOOMSDAY"
- * Rastakhan's Rumble "TROLL"
- * Rise of Shadows "DALARAN"
- * Saviors of Uldum "ULDUM"
- * Descent of Dragons "DRAGONS"
- * Galakrond's Awakening "YEAR_OF_THE_DRAGON"
- * Ashes of Outland "BLACK_TEMPLE"
- * Scholomance Academy "SCHOLOMANCE"
- * Madness at the Darkmoon Faire "DARKMOON_FAIRE"
- * Forged in the Barrens "THE_BARRENS"
- * United in Stormwind "STORMWIND"
- * Fractured in Alterac Valley "ALTERAC_VALLEY"
- * Voyage to the Sunken City "THE_SUNKEN_CITY"
- * Murder at Castle Nathria "REVENDRETH"
- * Path of Arthas "PATH_OF_ARTHAS"
- * March of the Lick King "RETURN_OF_THE_LICH_KING"
- * Festival of Legends "BATTLE_OF_THE_BANDS"
- * TITANS "TITANS"
- * Showdown in the Badlands "WILD_WEST"
- * 10-year anniversary celebration "EVENT"
- * Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
- * Perils in Paradise "ISLAND_VACATION"
- * The Great Dark Beyond "SPACE"
- * Into the Emerald Dream "EMERALD_DREAM"
+ *  Murder at Castle Nathria "REVENDRETH"
+ *  March of the Lick King "RETURN_OF_THE_LICH_KING"
+ *  Festival of Legends "BATTLE_OF_THE_BANDS"
+ *  Perils in Paradise "ISLAND_VACATION"
+ *  The Lost City of Un’Goro "THE_LOST_CITY"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
     arenaSets <<  "CORE" <<
-        "LEGACY" <<
-        "EXPERT1" <<
-        "DEMON_HUNTER_INITIATE" <<
-        "WONDERS" <<
-        "NAXX" <<
-        "GVG" <<
-        "BRM" <<
-        "TGT" <<
-        "LOE" <<
-        "OG" <<
-        "KARA" <<
-        "GANGS" <<
-        "UNGORO" <<
-        "ICECROWN" <<
-        "LOOTAPALOOZA" <<
-        "GILNEAS" <<
-        "BOOMSDAY" <<
-        "TROLL" <<
-        "DALARAN" <<
-        "ULDUM" <<
-        "DRAGONS" <<
-        "YEAR_OF_THE_DRAGON" <<
-        "BLACK_TEMPLE" <<
-        "SCHOLOMANCE" <<
-        "DARKMOON_FAIRE" <<
-        "THE_BARRENS" <<
-        "STORMWIND" <<
-        "ALTERAC_VALLEY" <<
-        "THE_SUNKEN_CITY" <<
         "REVENDRETH" <<
-        "PATH_OF_ARTHAS" <<
         "RETURN_OF_THE_LICH_KING" <<
         "BATTLE_OF_THE_BANDS" <<
-        "TITANS" <<
-        "WILD_WEST" <<
-        "EVENT" <<
-        "WHIZBANGS_WORKSHOP" <<
         "ISLAND_VACATION" <<
-        "SPACE" <<
-        "EMERALD_DREAM" <<
         "THE_LOST_CITY";
 
     Utility::setArenaSets(arenaSets);
+    Utility::setTrustHA(false);
 
     if(fromHearth)
     {
@@ -4944,24 +4837,24 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testSynergies()
 {
     // draftHandler->getSynergyHandler()->testSynergies(/*"SC_"*/);
-    // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0/*, "SC_"*/);//modelo/synergiesSet.json
+    // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0, "DINO_");//modelo/synergiesSet.json
     // draftHandler->getSynergyHandler()->debugDrops();
-    draftHandler->getSynergyHandler()->debugMissingSynergies(true, false);
+    // draftHandler->getSynergyHandler()->debugMissingSynergies(false, false);
 }
 
 
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
-    testSynergies();
+    // testHeroPortraits();
+    // testSynergies();
 
     // downloadHearthArenaTierlistOriginal();
     // testHearthArenaTL();
     // checkHearthArenaTLCodes(true);//Necesario si trustHA
 
-    // testDownloadCardsJson();///v1/226642
-    // testDownloadRotation(true/*, "SC_"*/);//Force hearthpwn true
+    // testDownloadCardsJson();///v1/226928
+    // testDownloadRotation(true/*, "DINO_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
 
 
@@ -5031,6 +4924,10 @@ void MainWindow::testDelay()
 
 //New leaderboard season
 //|-En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
+
+//1 semana despues
+//checkHearthArenaTLCodes(true);//Necesario si trustHA
+//SynergyHandler::debugDrops()
 
 
 //VM funciona en 5.15.0-113-generic
