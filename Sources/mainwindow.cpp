@@ -4839,15 +4839,15 @@ void MainWindow::testSynergies()
     // draftHandler->getSynergyHandler()->testSynergies(/*"SC_"*/);
     // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0, "DINO_");//modelo/synergiesSet.json
     // draftHandler->getSynergyHandler()->debugDrops();
-    // draftHandler->getSynergyHandler()->debugMissingSynergies(false, false);
+    draftHandler->getSynergyHandler()->debugMissingSynergies(true, false);
 }
 
 
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    // testHeroPortraits();
-    // testSynergies();
+    testHeroPortraits();
+    testSynergies();
 
     // downloadHearthArenaTierlistOriginal();
     // testHearthArenaTL();
