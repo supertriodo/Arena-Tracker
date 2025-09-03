@@ -863,7 +863,7 @@ excavate, libram, libramGen, starship, starshipGen, shuffle
 //New Synergy Step 3
 
 Double check:
-DAMAGE/DESTROY: reach(no atk1), aoe(spellDamageSyn/eggSyn),
+DAMAGE/DESTROY: reach(no atk1), aoe 3+(spellDamageSyn/eggAllSyn),
                 ping(enrageSyn), damageMinions, destroy(8+ damage/no rush)
 BATTLECRY/COMBO/ECHO/DEATHRATTLE: returnsyn(battlecry/choose one/combo/echo),
                 silenceOwnSyn/evolveSyn(deathrattle/malo)

@@ -1039,14 +1039,6 @@ bool KeySynergies::isKeySyn(const QString &key, const QString &code, const QJson
             }
             return false;
         }
-        else if(key == "eggSyn")
-        {
-            if(text.contains("swap") && text.contains("attack") && text.contains("health") && text.contains("minion"))
-            {
-                return true;
-            }
-            return false;
-        }
         else if(key == "handBuffSyn")
         {
             if((text.contains("enchantments")) || (text.contains("of this minion")))
@@ -1198,6 +1190,14 @@ bool KeySynergies::isKeyAllSyn(const QString &key, const QString &code, const QJ
         else if(key == "comboAllSyn")
         {
             if(referencedTags.contains(QJsonValue("COMBO")))
+            {
+                return true;
+            }
+            return false;
+        }
+        else if(key == "eggAllSyn")
+        {
+            if(text.contains("swap") && text.contains("attack") && text.contains("health") && text.contains("minion"))
             {
                 return true;
             }
