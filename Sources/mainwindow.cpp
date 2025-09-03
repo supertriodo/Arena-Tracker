@@ -4836,7 +4836,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 
 void MainWindow::testSynergies()
 {
-    // draftHandler->getSynergyHandler()->testSynergies(/*"SC_"*/);
+    // draftHandler->getSynergyHandler()->testSynergies("DINO_");
     // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0, "DINO_");//modelo/synergiesSet.json
     // draftHandler->getSynergyHandler()->debugDrops();
     draftHandler->getSynergyHandler()->debugMissingSynergies(true, false);
@@ -4901,7 +4901,7 @@ void MainWindow::testDelay()
 //Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
-    //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
+    //Update cartas que en la practica tienen un coste diferente --> Utility::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
     //Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
     //Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
     //Update AOE que marcan un objetivo principal y le hacen algo diferente que al resto (Swipe) --> MinionGraphicsItem::isAoeWithTarget (Hearthpwn Search: draw from your deck)
@@ -4915,19 +4915,19 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 33.2.2 Patch Notes
+//|-Synergy / Code  --> 33.4 Patch Notes
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
     //Prelanzamiento - No quitar antiguo - Incluir nuevo (set "PLACEHOLDER_202204")
     //Json set CORE actualizado - Eliminar CORE_* - Incluir nuevo (set "CORE)
 
-//New leaderboard season
-//|-En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
-
 //1 semana despues
 //checkHearthArenaTLCodes(true);//Necesario si trustHA
 //SynergyHandler::debugDrops()
+//New leaderboard season
+//|-En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
+//Signature cards
 
 
 //VM funciona en 5.15.0-113-generic
