@@ -38,7 +38,6 @@ private:
     static int numToYourHandGen(const QString &code, int cost, const QJsonArray &mechanics, const QString &text);
     static bool isDiscoverDrawGen(const QString &code, int cost, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
     static bool isDiscoverGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
-    static bool isDrawGen(const QString &code, const QString &text);
     static bool isToYourHandGen(const QString &code, int cost, const QJsonArray &mechanics, const QString &text);
     static bool isDeathrattleGoodAll(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const CardType &cardType);
     static bool isDeathrattleGoodAllSyn(const QString &code, const QString &text);
@@ -82,6 +81,7 @@ public:
     static bool isDamageMinionsGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                             const QString &text, const CardType &cardType, int attack);
     static bool isDestroyGen(const QString &code, const QJsonArray &mechanics, const QString &text);
+    static bool isDrawGen(const QString &code, const QString &text);
 };
 
 #endif // MECHANICCOUNTER_H

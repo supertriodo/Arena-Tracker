@@ -406,10 +406,10 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     int num = 0;
 
     // for(QString &code: arenaCodes)
-    // for(QString &code: (QStringList)Utility::getSetCodes("SPACE", true, false))
+    for(QString &code: (QStringList)Utility::getSetCodes("THE_LOST_CITY", true, false))
     // for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
     // for(QString &code: (QStringList)Utility::getStandardCodes())
-    for(QString &code: (QStringList)Utility::getWildCodes())
+    // for(QString &code: (QStringList)Utility::getWildCodes())
     {
         if(code.startsWith("VAN_"))     continue;
         if(code.startsWith("CORE_"))    code = code.mid(5);
@@ -428,9 +428,9 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             bool showImages = false;
             // bool showImages = true;
             if(
-                // KeySynergies::containsAll(text, "<b>deathrattle</b> cost")
+                KeySynergies::containsAll(text, "<b>deathrattle</b> cost")
                 // KeySynergies::containsAll(text, "deathrattle attack")
-                synergyCodes[code].isEmpty() && rarity == LEGENDARY
+                // synergyCodes[code].isEmpty() && rarity == LEGENDARY
                 // KeySynergies::isKey("lifesteal", code, mechanics, referencedTags, text, cardType, attack, cost)
                 // KeySynergies::isKeyGen("lifestealGen", code, mechanics, referencedTags, text, cardType, attack, cost)
                 // KeySynergies::isKeySyn("lifestealSyn", code, mechanics, referencedTags, text, cardType, attack, cost)
@@ -453,11 +453,11 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 ///Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
 // KeySynergies::containsAll(text, "spend all your mana") || text.contains("cost")//cambio 3+ mana / -+ 1 o 2 no molestarse
 ///Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
-// isDrawGen(code, text) || KeySynergies::containsAll(text, "draw")
+// MechanicCounter::isDrawGen(code, text) || KeySynergies::containsAll(text, "draw")
 ///Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 // KeySynergies::containsAll(text, "draw cop")
 ///Update AOE que marcan un objetivo principal y le hacen algo diferente que al resto (Swipe) --> MinionGraphicsItem::isAoeWithTarget
-// isAoeGen(code, text)
+// MechanicCounter::isAoeGen(code, text)
                 )
             {
                 debugSynergiesCode(code, ++num);
