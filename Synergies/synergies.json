@@ -1246,7 +1246,7 @@
 "DINO_406" : [ "damageMinions", "elementalAllSyn", "reach" ],
 "DINO_407" : [  ],
 "DINO_408" : [ "battlecry", "damageMinions", "draw", "reach", "shuffle", "drop2", "damageFriendlyHero" ],
-"DINO_409" : [ "taunt", "discoverSyn", "toYourHandSyn" ],
+"DINO_409" : [ "taunt", "discoverSyn", "toYourHandSyn", "evolveSyn" ],
 "DINO_410" : [ "deathrattle", "egg", "attackBuffSyn", "tauntGiverSyn" ],
 "DINO_411" : [ "battlecry", "tokenCard", "draw", "=SynMinionAttack0", "eggGen", "tauntGiverSyn", "attackBuffSyn" ],
 "DINO_412" : [ "endTurn", "toYourHand2" ],
@@ -5886,10 +5886,12 @@
 
   "TLC_102":["TLC_107", "TLC_223", "TLC_226", "TLC_236", "TLC_243", "TLC_366", "TLC_428",
     "TLC_429", "TLC_432", "TLC_440", "TLC_447", "TLC_454", "TLC_463", "TLC_482", "TLC_519",
-    "TLC_600", "TLC_815", "TLC_816", "TLC_825", "TLC_829", "TLC_903"],
+    "TLC_600", "TLC_815", "TLC_816", "TLC_825", "TLC_829", "TLC_903", "DINO_138",
+    "DINO_404", "DINO_413", "DINO_435"],
   "TLC_251":["TLC_107", "TLC_223", "TLC_226", "TLC_236", "TLC_243", "TLC_366", "TLC_428",
     "TLC_429", "TLC_432", "TLC_440", "TLC_447", "TLC_454", "TLC_463", "TLC_482", "TLC_519",
-    "TLC_600", "TLC_815", "TLC_816", "TLC_825", "TLC_829", "TLC_903"],
+    "TLC_600", "TLC_815", "TLC_816", "TLC_825", "TLC_829", "TLC_903", "DINO_138",
+    "DINO_404", "DINO_413", "DINO_435"],
 
   "ETC_336": ["ETC_336"],
   "TOY_803": ["TOY_803"]
