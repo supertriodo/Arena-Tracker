@@ -4715,17 +4715,36 @@ void MainWindow::checkHearthArenaTLCodes(bool infoOnly)
 
     //Buscamos reemplazos
     QMap<QString, QString> swapCodes;
-    for(const QString &code: qAsConst(arenaCodes))
+    //ha-->hsr
+    if(Utility::getTrustHA())
     {
-        QList<CardClass> heroClassList = Utility::getClassFromCode(code);
-        CardClass heroClass = heroClassList.first();
-        if(heroClass == NEUTRAL)    heroClass = MAGE;
-        QString hsrCode = draftHandler->getHSRFireCode(code, true, heroClass);
-        if(hsrCode != code)
+        for(const QString &code: qAsConst(arenaCodes))
         {
-            swapCodes.insert('"'+code+'"', '"'+hsrCode+'"');
-            qDebug()<<"HATL wrong code:"<<code<<"-->"<<hsrCode;
+            QList<CardClass> heroClassList = Utility::getClassFromCode(code);
+            CardClass heroClass = heroClassList.first();
+            if(heroClass == NEUTRAL)    heroClass = MAGE;
+            QString hsrCode = draftHandler->getHSRFireCode(code, true, heroClass);
+            if(hsrCode != code)
+            {
+                swapCodes.insert('"'+code+'"', '"'+hsrCode+'"');
+                qDebug()<<"HATL wrong code:"<<code<<"-->"<<hsrCode;
+            }
         }
+    }
+    //ha-->sets
+    else
+    {
+        draftHandler->initCheckHearthArena();
+        for(const QString &code: qAsConst(arenaCodes))
+        {
+            QString haCode = draftHandler->getHACode(code);
+            if(haCode != code && !arenaCodes.contains(haCode))
+            {
+                swapCodes.insert('"'+haCode+'"', '"'+code+'"');
+                qDebug()<<"HATL wrong code:"<<haCode<<"-->"<<code;
+            }
+        }
+        draftHandler->clearTierLists();
     }
     qDebug()<<swapCodes.count()<<"needed swaps.";
     if(infoOnly)    return;
@@ -4851,7 +4870,7 @@ void MainWindow::testDelay()
 
     // downloadHearthArenaTierlistOriginal();
     // testHearthArenaTL();
-    // checkHearthArenaTLCodes(true);//Necesario si trustHA
+    // checkHearthArenaTLCodes(true);//Ahora (no trustHA) / 1 semana despues (si trustHA)
 
     // testDownloadCardsJson();///v1/226928
     // testDownloadRotation(true/*, "DINO_"*/);//Force hearthpwn true
@@ -4923,7 +4942,7 @@ void MainWindow::testDelay()
     //Json set CORE actualizado - Eliminar CORE_* - Incluir nuevo (set "CORE)
 
 //1 semana despues
-//checkHearthArenaTLCodes(true);//Necesario si trustHA
+//checkHearthArenaTLCodes(true);//1 semana despues (si trustHA)
 //SynergyHandler::debugDrops()
 //New leaderboard season
 //|-En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")

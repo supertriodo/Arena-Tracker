@@ -235,13 +235,13 @@ private:
     void showFireScores(QString hsrCodes[], QString cardNames[]);
     QString getHSRCode(QString code);
     QString getFireCode(QString code);
-    QString getHACode(QString code);
     bool isEmptyDeck();
     void addLFCode(const QString &code, const CardClass &heroClass, const bool multiClassDraft, bool buildCodesByClass);
     QStringList getBundleCodes(const QString &code);
     int getHAScore(const QString &code);
 
 public:
+    QString getHACode(QString code);
     QString getHSRFireCode(QString code, bool HSR, CardClass heroClass);
     void setDeckScores();
     void buildHeroCodesList();
@@ -272,6 +272,7 @@ public:
     void closeFindScreenRects();
     CardClass getArenaHero();
     void initTierLists(const CardClass &heroClass);
+    void initCheckHearthArena();
     void clearTierLists();
     void getCodeScores(const CardClass &heroClass, const QString &code, int &ha, float &hsr, float &fire);
     void setShowMyWR(bool value);

@@ -677,6 +677,10 @@ QStringList Utility::getStandardCodes()
 
 QStringList Utility::getAllArenaCodes()
 {
+    return getAllArenaCodes(Utility::trustHA);
+}
+QStringList Utility::getAllArenaCodes(bool trustHA)
+{
     QStringList codeList;
 
     if(trustHA)
@@ -723,6 +727,12 @@ QJsonObject Utility::loadHearthArena()
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
     jsonFile.close();
     return jsonDoc.object();
+}
+
+
+bool Utility::getTrustHA()
+{
+    return Utility::trustHA;
 }
 
 

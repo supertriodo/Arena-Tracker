@@ -3564,6 +3564,15 @@ void DraftHandler::initTierLists(const CardClass &heroClass)
 }
 
 
+//Inicia hearthArenaTiers con todos sus codigos para revisarlos en MainWindow::checkHearthArenaTLCodes()
+void DraftHandler::initCheckHearthArena()
+{
+    QStringList haCodes = Utility::getAllArenaCodes(true);
+    initLightForgeTiers(MAGE, true, haCodes, false);
+    initHearthArenaTiers(MAGE, true);
+}
+
+
 void DraftHandler::clearTierLists()
 {
     hearthArenaTiers.clear();

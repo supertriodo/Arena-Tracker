@@ -158,7 +158,9 @@ public:
     static QStringList getWildCodes();
     static QStringList getStandardCodes();
     static QStringList getAllArenaCodes();
+    static QStringList getAllArenaCodes(bool trustHA);
     static QJsonObject loadHearthArena();
+    static bool getTrustHA();
     static void setTrustHA(bool trustHA);
     static void setArenaSets(QStringList arenaSets);
     static void setBundlesMap(QMap<QString, QStringList> bundlesMap[]);
