@@ -3564,10 +3564,10 @@ void DraftHandler::initTierLists(const CardClass &heroClass)
 }
 
 
-//Inicia hearthArenaTiers con todos sus codigos para revisarlos en MainWindow::checkHearthArenaTLCodes()
+//Inicia hearthArenaTiers con todos sus codigos y sin bundles para revisarlos en MainWindow::checkHearthArenaTLCodes()
 void DraftHandler::initCheckHearthArena()
 {
-    QStringList haCodes = Utility::getAllArenaCodes(true);
+    QStringList haCodes = Utility::getAllArenaCodes(true, false);
     initLightForgeTiers(MAGE, true, haCodes, false);
     initHearthArenaTiers(MAGE, true);
 }

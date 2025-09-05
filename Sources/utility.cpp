@@ -679,7 +679,7 @@ QStringList Utility::getAllArenaCodes()
 {
     return getAllArenaCodes(Utility::trustHA);
 }
-QStringList Utility::getAllArenaCodes(bool trustHA)
+QStringList Utility::getAllArenaCodes(bool trustHA, bool includeBundles)
 {
     QStringList codeList;
 
@@ -702,7 +702,7 @@ QStringList Utility::getAllArenaCodes(bool trustHA)
     }
 
     //Bundle codes
-    if(bundlesMap != nullptr)
+    if(includeBundles && bundlesMap != nullptr)
     {
         for(int i=0; i<NUM_HEROS; i++)
         {
