@@ -4436,7 +4436,8 @@ void MainWindow::saveHearthArenaTierlistOriginal(const QByteArray &html)
 
     //Lanza script HATLsed.sh
     QProcess p;
-    p.start("\"/home/triodo/Documentos/ArenaTracker/HearthArena/Json extract/HATLsedCodes.sh\"");
+    p.start("\"/home/triodo/Documentos/ArenaTracker/HearthArena/Json extract/HATLsedNames.sh\"");
+    // p.start("\"/home/triodo/Documentos/ArenaTracker/HearthArena/Json extract/HATLsedCodes.sh\"");
     p.waitForFinished(-1);
 
     //Copy to local and source
@@ -4793,6 +4794,8 @@ void MainWindow::checkHearthArenaTLCodes(bool infoOnly)
 }
 
 
+//Solo tiene sentido hacer la comparacion con !trustHA ya que con trustHA arenaCodes y HA es lo mismo
+//La comparacion se hace con HA de names
 void MainWindow::testHearthArenaTL()
 {
     QStringList arenaSets;
@@ -4804,9 +4807,7 @@ void MainWindow::testHearthArenaTL()
         "THE_LOST_CITY";
 
     Utility::setArenaSets(arenaSets);
-    Utility::setTrustHA(false);
-
-    QStringList arenaCodes = Utility::getAllArenaCodes();
+    QStringList arenaCodes = Utility::getAllArenaCodes(false);
     Utility::checkTierlistsCount(arenaCodes);
 }
 
@@ -4865,11 +4866,12 @@ void MainWindow::testSynergies()
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
-    testSynergies();
+    // testHeroPortraits();
+    // testSynergies();
 
     // downloadHearthArenaTierlistOriginal();
     // testHearthArenaTL();
+
     // checkHearthArenaTLCodes(true);//Ahora (no trustHA) / 1 semana despues (si trustHA)
 
     // testDownloadCardsJson();///v1/226928

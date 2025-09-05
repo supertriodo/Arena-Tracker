@@ -1344,10 +1344,10 @@ void Utility::checkTierlistsCount(const QStringList &arenaCodes)
 
         //HearthArena Codes List
         QJsonObject jsonObj = Utility::loadHearthArena();
-        const QStringList haCodes = jsonObj.value(heroString).toObject().keys();
+        const QStringList haNames = jsonObj.value(heroString).toObject().keys();
 
         qDebug()<<heroString<<"Arena count:"<<arenaMap.count();
-        qDebug()<<heroString<<"HearthArena count:"<<haCodes.count();
+        qDebug()<<heroString<<"HearthArena count:"<<haNames.count();
 
 
         //Check Missing cards
@@ -1355,7 +1355,7 @@ void Utility::checkTierlistsCount(const QStringList &arenaCodes)
         for(const QString &code: arenaCodes)
         {
             QString name = Utility::cardEnNameFromCode(code);
-            if(haCodes.contains(code))
+            if(haNames.contains(name))
             {
                 QStringList arenaNames = arenaMap.values();
                 if(arenaNames.contains(name))
@@ -1381,18 +1381,24 @@ void Utility::checkTierlistsCount(const QStringList &arenaCodes)
         }
         if(!missing)    qDebug()<<"HearthArena OK!";
         missing = false;
-        for(const QString &code: haCodes)
+        QStringList arenaNames = arenaMap.values();
+        for(const QString &name: haNames)
         {
-            if(!arenaCodes.contains(code))
+            if(!arenaNames.contains(name))
             {
-                QString name = Utility::cardEnNameFromCode(code);
-                qDebug()<<"Arena missing:"<<code<<name;
-                missing = true;
-                QString set = getCardAttribute(code, "set").toString();
-                if(!haSets.contains(set))
+                QStringList codes = Utility::cardEnCodesFromName(name);
+                if(codes.isEmpty())  codes = Utility::cardEnCodesFromName(name, false);
+                if(codes.isEmpty())  qDebug()<<"HearthArena WRONG NAME!!!"<<name;
+                else
                 {
-                    haSets << set;
-                    // qDebug()<<"Add SET "<<set<<" for CODE "<<code;
+                    qDebug()<<"Arena missing:"<<codes<<name;
+                    missing = true;
+                    QString set = getCardAttribute(codes.first(), "set").toString();
+                    if(!haSets.contains(set))
+                    {
+                        haSets << set;
+                        // qDebug()<<"Add SET "<<set<<" for CODE "<<codes;
+                    }
                 }
             }
         }
