@@ -1321,6 +1321,7 @@ void Utility::resizeSignatureCards()
 void Utility::checkTierlistsCount(const QStringList &arenaCodes)
 {
     QStringList haSets;
+    QJsonObject haJsonObj = Utility::loadHearthArena();
     for(int i=0; i<NUM_HEROS; i++)
     {
         const QString &heroLog = Utility::classOrder2classLogNumber(i);
@@ -1343,8 +1344,7 @@ void Utility::checkTierlistsCount(const QStringList &arenaCodes)
 
 
         //HearthArena Codes List
-        QJsonObject jsonObj = Utility::loadHearthArena();
-        const QStringList haNames = jsonObj.value(heroString).toObject().keys();
+        const QStringList haNames = haJsonObj.value(heroString).toObject().keys();
 
         qDebug()<<heroString<<"Arena count:"<<arenaMap.count();
         qDebug()<<heroString<<"HearthArena count:"<<haNames.count();

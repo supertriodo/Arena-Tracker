@@ -214,6 +214,10 @@ private:
     void downloadCardsJsonVersion();
     void downloadCardsJson(int version);
     void testDownloadCardsJson();
+    void testHearthArenaTL();
+    void HAnames2codes(bool infoOnly=false);
+    void checkHearthArenaTLCodes(bool infoOnly=false);
+    void HAreplace(const QMap<QString, QString> &swapCodes);
 
 protected:
     //Override events
@@ -262,8 +266,6 @@ private slots:
     void testSynergies();
     void testHeroPortraits();
     void downloadHeroPortrait(QString code);
-    void testHearthArenaTL();
-    void checkHearthArenaTLCodes(bool infoOnly=false);
     void testDownloadRotation(bool fromHearth, const QString &miniSet="");
     void testSecretsHSR(LoadingScreenState loadingScreenState);
     void testPopularList(int i=2);

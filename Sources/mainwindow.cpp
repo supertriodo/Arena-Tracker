@@ -4709,6 +4709,38 @@ void MainWindow::testDraft()
 }
 
 
+void MainWindow::HAnames2codes(bool infoOnly)
+{
+    QJsonObject haJsonObj = Utility::loadHearthArena();
+    QMap<QString, QString> swapCodes;
+    for(int i=0; i<NUM_HEROS; i++)
+    {
+        const QString &heroLog = Utility::classOrder2classLogNumber(i);
+        const QString heroString = Utility::classLogNumber2classUL_ULName(heroLog);
+
+        const QStringList haNames = haJsonObj.value(heroString).toObject().keys();
+        for(const QString &name: haNames)
+        {
+            if(name.contains("_")) continue;
+            if(swapCodes.contains('"'+name+'"'))    continue;
+            QStringList codes = Utility::cardEnCodesFromName(name);
+            if(codes.isEmpty())  codes = Utility::cardEnCodesFromName(name, false);
+            if(codes.isEmpty())  qDebug()<<"HearthArena WRONG NAME!!!"<<name;
+            else
+            {
+                // qDebug()<<name<<"-->"<<codes;
+                QString searchKey = name;
+                if(searchKey.contains('"')) searchKey.replace('"', "\\\"");
+                swapCodes.insert('"'+searchKey+'"', '"'+codes.first()+'"');
+            }
+        }
+        qDebug()<<heroString<<swapCodes.count();
+    }
+    qDebug()<<swapCodes.count()<<"needed swaps.";
+    if(!infoOnly)    HAreplace(swapCodes);
+}
+
+
 //Verifica HATL codes son los correctos (los que aparecen en HS), mirando que esten en HSR winrates.
 void MainWindow::checkHearthArenaTLCodes(bool infoOnly)
 {
@@ -4748,8 +4780,11 @@ void MainWindow::checkHearthArenaTLCodes(bool infoOnly)
         draftHandler->clearTierLists();
     }
     qDebug()<<swapCodes.count()<<"needed swaps.";
-    if(infoOnly)    return;
+    if(!infoOnly)    HAreplace(swapCodes);
+}
 
+void MainWindow::HAreplace(const QMap<QString, QString> &swapCodes)
+{
     //Realizamos reemplazos en hearthArena.json
     QString HAlocal = Utility::extraPath() + "/hearthArena.json";
     QString HAsource = QDir::homePath() + "/Documentos/ArenaTracker/HearthArena/hearthArena.json";
@@ -4790,7 +4825,7 @@ void MainWindow::checkHearthArenaTLCodes(bool infoOnly)
     QFile::remove(HAsource);
     QFile::copy(HAlocal, HAsource);
 
-    qDebug()<<numSwap<<"swaps made." << (swapCodes.count()-numSwap) << "are in bundles.";
+    qDebug() << numSwap << "swaps made." << (swapCodes.count()-numSwap) << "not found (bundles).";
 }
 
 
@@ -4871,7 +4906,8 @@ void MainWindow::testDelay()
 
     // downloadHearthArenaTierlistOriginal();
     // testHearthArenaTL();
-
+    // HAnames2codes(true);
+    // Utility::setTrustHA(false);//Si necesitamos revisar HATL antes de modificar arena.json a no trust en la rotacion nueva
     // checkHearthArenaTLCodes(true);//Ahora (no trustHA) / 1 semana despues (si trustHA)
 
     // testDownloadCardsJson();///v1/226928
