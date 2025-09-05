@@ -5016,7 +5016,7 @@
 "UNG_963" : [ "spellAllSyn", "toYourHand", "drop4" ],
 "VAC_301" : [ "battlecry", "returnSyn", "evolveSyn", "arcaneAllSyn", "felAllSyn", "fireAllSyn", "frostAllSyn", "holyAllSyn", "shadowAllSyn", "natureAllSyn" ],
 "VAC_304" : [ "battlecry", "spellAllSyn", "returnSyn" ],
-"VAC_305" : [ "elementalGen", "armor", "tauntGen", "token", "deathrattleGen" ],
+"VAC_305" : [ "armor", "tauntGen", "token", "deathrattleGen" ],
 "VAC_308" : [ "toYourHand2" ],
 "VAC_321" : [ "battlecry", "returnSyn", "endTurn", "shuffle" ],
 "VAC_323" : [ "aoe", "ping", "spellDamageSyn", "tokenCard", "toYourHand" ],

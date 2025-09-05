@@ -4902,7 +4902,7 @@ void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
     // testHeroPortraits();
-    // testSynergies();
+    testSynergies();
 
     // downloadHearthArenaTierlistOriginal();
     // testHearthArenaTL();
