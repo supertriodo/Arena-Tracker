@@ -214,15 +214,18 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
         for(const QString &code: qAsConst(secretsByPickrate[hero]))
         {
             QString text;
+            bool add = true;
             if(cardsPickratesMap == nullptr)
             {
                 text = "-";
             }
             else
             {
-                text = QString::number((int)round(cardsPickratesMap[hero][update2HSRcode(code, hero)]))+"%";
+                float pickrate = cardsPickratesMap[hero][update2HSRcode(code, hero)];
+                if(pickrate == 0)   add = false;
+                else                text = QString::number((int)round(pickrate))+"%";
             }
-            unknownSecretPlayedAddOption(code, inArena, activeSecret, text);
+            if(add) unknownSecretPlayedAddOption(code, inArena, activeSecret, text);
         }
     }
     //Opciones ordenadas por rareza

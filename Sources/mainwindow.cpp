@@ -317,7 +317,7 @@ QString MainWindow::getHSLanguage()
     }
 
     cardDownloader->setLang(lang);
-   // lang = "enUS";//Test secrets
+    // lang = "enUS";//Test secrets
     return lang;
 }
 
@@ -4878,7 +4878,7 @@ void MainWindow::testDelay()
 
 
     // testDraft();
-    // QTimer::singleShot(20000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";
+    // QTimer::singleShot(5000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";
     // Utility::mergeHSRwithFireCards();
     // Utility::checkMissingGoldenCards();
     // QTimer::singleShot(15000, this, SLOT(testPopularList()));
