@@ -303,6 +303,7 @@ void SynergyHandler::updateCounters(
         QList<SynergyWeightCard> &synergyWeightCardList)
 {
     QString code = deckCard.getCode();
+    QString name = Utility::cardEnNameFromCode(code);
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
     QString text = Utility::cardEnTextFromCode(code).toLower();
@@ -321,7 +322,7 @@ void SynergyHandler::updateCounters(
                                             pingMap, damageMap, destroyMap, reachMap,
                                             synergyWeightCardList,
                                             mechanics, referencedTags, text, cardType, attack, cost);
-    KeySynergies::updateKeySynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
+    KeySynergies::updateKeySynergies(code, mechanics, referencedTags, name, text, cardType, attack, cost);
     StatSynergies::updateStatsSynergies(code, cardType, attack, health, cost);
     LayeredSynergies::updateLayeredSynergies(code);
     updateManaCounter(code, cost);
@@ -338,6 +339,7 @@ void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString
                                   QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor)
 {
     QString code = deckCard.getCode();
+    QString name = Utility::cardEnNameFromCode(code);
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
     QString text = Utility::cardEnTextFromCode(code).toLower();
@@ -354,9 +356,9 @@ void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString
     RaceCounter::getRaceSynergies(code, synergyTagMap, mechanics, text, cardRace);
     SchoolCounter::getSchoolSynergies(code, synergyTagMap, text, cardSchool);
     MechanicCounter::getMechanicSynergies(code, synergyTagMap, mechanicIcons, mechanics, referencedTags, text, cardType, attack, cost);
-    KeySynergies::getKeySynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, attack, cost);
+    KeySynergies::getKeySynergies(code, synergyTagMap, mechanics, referencedTags, name, text, cardType, attack, cost);
     StatSynergies::getStatsSynergies(code, synergyTagMap, cardType, attack, health, cost);
-    LayeredSynergies::getLayeredSynergies(code, synergyTagMap, mechanics, referencedTags, text, cardType, cardRace, cardSchool, attack, health, cost);
+    LayeredSynergies::getLayeredSynergies(code, synergyTagMap, mechanics, referencedTags, name, text, cardType, cardRace, cardSchool, attack, health, cost);
     CardTypeCounter::getDirectLinkSynergies(code, directLinks, synergyTagMap["Extra"]);
 }
 
@@ -428,7 +430,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             bool showImages = false;
             // bool showImages = true;
             if(
-                KeySynergies::containsAll(text, "<b>deathrattle</b> cost")
+                text.contains("imp") || text.contains("Imp")
                 // KeySynergies::containsAll(text, "deathrattle attack")
                 // synergyCodes[code].isEmpty() && rarity == LEGENDARY
                 // KeySynergies::isKey("lifesteal", code, mechanics, referencedTags, text, cardType, attack, cost)
@@ -663,6 +665,7 @@ QStringList SynergyHandler::debugSynergiesCode(QString code, int num)
     }
 
     QStringList mec;
+    QString name = Utility::cardEnNameFromCode(origCode);
     CardType cardType = Utility::getTypeFromCode(code);
     QString text = Utility::cardEnTextFromCode(code).toLower();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
@@ -676,10 +679,9 @@ QStringList SynergyHandler::debugSynergiesCode(QString code, int num)
     mec << RaceCounter::debugRaceSynergies(code, mechanics, text);
     mec << SchoolCounter::debugSchoolSynergies(code, text);
     mec << MechanicCounter::debugMechanicSynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
-    mec << KeySynergies::debugKeySynergies(code, mechanics, referencedTags, text, cardType, attack, cost);
+    mec << KeySynergies::debugKeySynergies(code, mechanics, referencedTags, name, text, cardType, attack, cost);
 
 
-    QString name = Utility::cardEnNameFromCode(origCode);
     qDebug()<<num<<origCode+(origCode==code?"":" COPY of "+code)<<Utility::getCardAttribute(origCode, "set").toString()<<text;
     qDebug()<<origCode<<": ["<<name<<"],";
     if(synergyCodes.contains(code)) qDebug()<<"--MANUAL-- :"<<origCode<<": ["<<synergyCodes[code]<<"],";
@@ -896,6 +898,7 @@ CORPSE: corpse/corpseSyn
 SILVER HAND: silverHand/silverHandSyn
 TREANT: treant/treantSyn
 LACKEY: lackey/lackeySyn
+Imp: imp/impSyn
 
     - Drop2 (Derrota 2/2 --> 3+/1+, 2/1+?, 1/3+?) ? debe hacer algo mas (facilmente) aunque no sea en board
     - Drop3 (Derrota 3/3 --> 3+/2+?, 2/3+?, 1/5+?), no health 1,

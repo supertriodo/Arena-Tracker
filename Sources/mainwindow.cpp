@@ -4891,7 +4891,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 
 void MainWindow::testSynergies()
 {
-    // draftHandler->getSynergyHandler()->testSynergies("DINO_");
+    // draftHandler->getSynergyHandler()->testSynergies(/*"DINO_"*/);
     // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0, "DINO_");//modelo/synergiesSet.json
     // draftHandler->getSynergyHandler()->debugDrops();
     draftHandler->getSynergyHandler()->debugMissingSynergies(true, false);

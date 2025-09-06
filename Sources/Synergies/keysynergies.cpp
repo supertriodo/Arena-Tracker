@@ -122,7 +122,7 @@ bool KeySynergies::containsAll(const QString &text, const QString &words)
 
 
 QStringList KeySynergies::debugKeySynergies(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                                      const QString &text, CardType cardType, int attack, int cost)
+                                            const QString &name, const QString &text, CardType cardType, int attack, int cost)
 {
     QStringList mec;
 
@@ -131,7 +131,7 @@ QStringList KeySynergies::debugKeySynergies(const QString &code, const QJsonArra
     {
         const QString &keyAll = key+"All";
         //Gen
-        if(isKey(key, code, mechanics, referencedTags, text, cardType, attack, cost))
+        if(isKey(key, code, mechanics, referencedTags, name, text, cardType, attack, cost))
         {
             mec << key;
         }
@@ -154,14 +154,14 @@ QStringList KeySynergies::debugKeySynergies(const QString &code, const QJsonArra
 
 
 void KeySynergies::updateKeySynergies(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                                        const QString &text, CardType cardType, int attack, int cost)
+                                        const QString &name, const QString &text, CardType cardType, int attack, int cost)
 {
     const auto keys = getListKeySynergies();
     for(const QString &key: keys)
     {
         const QString &keyAll = key+"All";
         //Gen
-        if(isKey(key, code, mechanics, referencedTags, text, cardType, attack, cost))
+        if(isKey(key, code, mechanics, referencedTags, name, text, cardType, attack, cost))
         {
             keySynergiesMap[key].increase(code);
             keySynergiesMap[keyAll].increase(code);
@@ -185,14 +185,14 @@ void KeySynergies::updateKeySynergies(const QString &code, const QJsonArray &mec
 
 void KeySynergies::getKeySynergies(const QString &code, QMap<QString, QMap<QString, int>> &synergyTagMap,
                                    const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                                   const QString &text, CardType cardType, int attack, int cost)
+                                   const QString &name, const QString &text, CardType cardType, int attack, int cost)
 {
     const auto keys = getListKeySynergies();
     for(const QString &key: keys)
     {
         const QString &keyAll = key+"All";
         //Gen
-        if(isKey(key, code, mechanics, referencedTags, text, cardType, attack, cost))
+        if(isKey(key, code, mechanics, referencedTags, name, text, cardType, attack, cost))
         {
             keySynergiesMap[key].insertSynCards(synergyTagMap);
             keySynergiesMap[keyAll].insertSynCards(synergyTagMap);
@@ -266,7 +266,7 @@ void KeySynergies::getPartKeySynergies(const QString &partSynergy, QMap<QString,
 //Usada por LayeredSynergies para verificar que el code hace sinergia con cada una de las partSynergy
 bool KeySynergies::isPartKey(const QString &partSynergy, const QString &code, QString &partSynergyTag,
                              const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                             const QString &text, CardType cardType, int attack, int cost)
+                             const QString &name, const QString &text, CardType cardType, int attack, int cost)
 {
     if(partSynergy.endsWith("AllSyn"))
     {
@@ -275,7 +275,7 @@ bool KeySynergies::isPartKey(const QString &partSynergy, const QString &code, QS
         partSynergyTag = getSynergyTag(key);
         if(partSynergyTag.isEmpty())    return false;
 
-        return isKey(key, code, mechanics, referencedTags, text, cardType, attack, cost) ||
+        return isKey(key, code, mechanics, referencedTags, name, text, cardType, attack, cost) ||
                isKeyGen(key+"Gen", code, mechanics, referencedTags, text, cardType, attack, cost);
     }
     else if(partSynergy.endsWith("Syn"))
@@ -285,7 +285,7 @@ bool KeySynergies::isPartKey(const QString &partSynergy, const QString &code, QS
         partSynergyTag = getSynergyTag(key);
         if(partSynergyTag.isEmpty())    return false;
 
-        return isKey(key, code, mechanics, referencedTags, text, cardType, attack, cost);
+        return isKey(key, code, mechanics, referencedTags, name, text, cardType, attack, cost);
     }
     else if(partSynergy.endsWith("Gen"))
     {
@@ -386,6 +386,7 @@ QMap<QString, QString> KeySynergies::getMapKeySynergies()
     keys["libram"] = "Libram";
     keys["starship"] = "Starship";
     keys["shuffle"] = "Shuffle";
+    keys["imp"] = "Imp";
 
     //New Synergy Step 1
     return keys;
@@ -394,7 +395,7 @@ QMap<QString, QString> KeySynergies::getMapKeySynergies()
 
 //New Synergy Step 2
 bool KeySynergies::isKey(const QString &key, const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                         const QString &text, CardType cardType, int attack, int cost)
+                         const QString &name, const QString &text, CardType cardType, int attack, int cost)
 {
     if(synergyCodes->contains(code))
     {
@@ -797,6 +798,14 @@ bool KeySynergies::isKey(const QString &key, const QString &code, const QJsonArr
         else if(key == "combo")
         {
             if(mechanics.contains(QJsonValue("COMBO")))
+            {
+                return true;
+            }
+            return false;
+        }
+        else if(key == "imp")
+        {
+            if(text.contains("imp") || text.contains("Imp") || name.contains("imp") || name.contains("Imp"))
             {
                 return true;
             }

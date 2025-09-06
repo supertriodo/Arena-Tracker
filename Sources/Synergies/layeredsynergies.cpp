@@ -105,7 +105,8 @@ void LayeredSynergies::insertCards(const QString &synergyTag, const QMap<QString
 
 
 void LayeredSynergies::getLayeredSynergies(const QString &code, QMap<QString, QMap<QString, int>> &synergyTagMap,
-                                           const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text,
+                                           const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                                           const QString &name, const QString &text,
                                            CardType cardType, const QList<CardRace> &cardRace, CardSchool cardSchool,
                                            int attack, int health, int cost)
 {
@@ -170,7 +171,7 @@ void LayeredSynergies::getLayeredSynergies(const QString &code, QMap<QString, QM
         {
             QString partSynergyTag;
             // qDebug()<<partSynergy;
-            if(!isPartKey(partSynergy, code, partSynergyTag, mechanics, referencedTags, text, cardType, cardRace, cardSchool, attack, health, cost))
+            if(!isPartKey(partSynergy, code, partSynergyTag, mechanics, referencedTags, name, text, cardType, cardRace, cardSchool, attack, health, cost))
             {
                 // qDebug()<<"FALSE";
                 fullSynergy = false;
@@ -221,7 +222,7 @@ void LayeredSynergies::getPartKeySynergies(const QString &partSynergy, const QSt
     }
 }
 bool LayeredSynergies::isPartKey(const QString &partSynergy, const QString &code, QString &partSynergyTag,
-                                 const QJsonArray &mechanics, const QJsonArray &referencedTags,const QString &text,
+                                 const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &name, const QString &text,
                                  CardType cardType, const QList<CardRace> &cardRace, CardSchool cardSchool,
                                  int attack, int health, int cost)
 {
@@ -247,7 +248,7 @@ bool LayeredSynergies::isPartKey(const QString &partSynergy, const QString &code
     }
     if(KeySynergies::getListValidSynergies().contains(partSynergy))
     {
-        return KeySynergies::isPartKey(partSynergy, code, partSynergyTag, mechanics, referencedTags, text, cardType, attack, cost);
+        return KeySynergies::isPartKey(partSynergy, code, partSynergyTag, mechanics, referencedTags, name, text, cardType, attack, cost);
     }
     return false;
 }
