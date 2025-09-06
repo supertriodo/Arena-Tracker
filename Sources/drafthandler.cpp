@@ -813,11 +813,13 @@ void DraftHandler::setDeckScores()
     {
         QString code = deckCard.getCode();
         if(code.isEmpty())    continue;
+        QString hsrCode = getHSRCode(code);
+        QString fireCode = getFireCode(code);
         int scoreHA = getHAScore(code);
-        float scoreHSR = (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][code];
-        int includedDecks = (cardsIncludedDecksMap == nullptr) ? 0 : cardsIncludedDecksMap[this->arenaHero][code];
-        float scoreFire = (fireWRMap == nullptr) ? 0 : fireWRMap[this->arenaHero][code];
-        int samplesFire = (fireSamplesMap == nullptr) ? 0 : fireSamplesMap[this->arenaHero][code];
+        float scoreHSR = (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][hsrCode];
+        int includedDecks = (cardsIncludedDecksMap == nullptr) ? 0 : cardsIncludedDecksMap[this->arenaHero][hsrCode];
+        float scoreFire = (fireWRMap == nullptr) ? 0 : fireWRMap[this->arenaHero][fireCode];
+        int samplesFire = (fireSamplesMap == nullptr) ? 0 : fireSamplesMap[this->arenaHero][fireCode];
         deckCard.setScores(scoreHA, scoreHSR, scoreFire, arenaHero, includedDecks, samplesFire);
         if(scoreHA != 0)    listaHA << qMakePair(scoreHA, &deckCard);
         if(scoreHSR != 0)   listaHSR << qMakePair(scoreHSR, &deckCard);
@@ -1925,29 +1927,38 @@ QString DraftHandler::getFireCode(QString code)
 }
 QString DraftHandler::getHSRFireCode(QString code, bool HSR, CardClass heroClass)
 {
-    auto &wrMap = HSR?cardsPlayedWinratesMap:fireWRMap;
+    // auto &wrMap = HSR?cardsPlayedWinratesMap:fireWRMap;
     auto &samplesMap = HSR?cardsIncludedDecksMap:fireSamplesMap;
-    if(!wrMap[heroClass].contains(code))
+    if(!samplesMap[heroClass].contains(code) || (samplesMap[heroClass][code] == 0))
     {
-        if(code.startsWith("CORE_") && wrMap[heroClass].contains(code.mid(5)))
-            code = code.mid(5);
-        else if(wrMap[heroClass].contains("CORE_" + code))
-            code = "CORE_" + code;
-        else
+        if(code.startsWith("CORE_"))
         {
-            QString name = Utility::cardEnNameFromCode(code);
-            const QStringList altCodes = Utility::cardEnCodesFromName(name);
-            int maxIncluded = 0;
-            for(const QString &altCode: altCodes)
+            QString noCoreCode = code.mid(5);
+            if(samplesMap[heroClass].contains(noCoreCode) && (samplesMap[heroClass][noCoreCode] != 0))
             {
-                if(samplesMap[heroClass].contains(altCode) && samplesMap[heroClass][altCode]>maxIncluded)
-                {
-                    emit pDebug(QStringLiteral("%1 - %2 - not found on %3 data. Swap to %4 - %5")
-                                    .arg(code, name, HSR?"HSR":"Fire", altCode, name));
+                return noCoreCode;
+            }
+        }
+        {
+            QString coreCode = "CORE_" + code;
+            if(samplesMap[heroClass].contains(coreCode) && (samplesMap[heroClass][coreCode] != 0))
+            {
+                return coreCode;
+            }
+        }
 
-                    maxIncluded = samplesMap[heroClass][altCode];
-                    code = altCode;
-                }
+        QString name = Utility::cardEnNameFromCode(code);
+        const QStringList altCodes = Utility::cardEnCodesFromName(name);
+        int maxIncluded = 0;
+        for(const QString &altCode: altCodes)
+        {
+            if(samplesMap[heroClass].contains(altCode) && samplesMap[heroClass][altCode]>maxIncluded)
+            {
+                emit pDebug(QStringLiteral("%1 - %2 - not found on %3 data. Swap to %4 - %5")
+                                .arg(code, name, HSR?"HSR":"Fire", altCode, name));
+
+                maxIncluded = samplesMap[heroClass][altCode];
+                code = altCode;
             }
         }
     }
