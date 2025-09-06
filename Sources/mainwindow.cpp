@@ -2167,7 +2167,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 deckWindow->move(1920-deckWindow->width(), 0);
 
                 if(this->enemyWindow == nullptr)    createDetachWindow(ui->tabEnemy);
-                enemyWindow->resize(QSize(enemyWindow->width(), 700));
+                enemyWindow->resize(QSize(enemyWindow->width(), 750));
                 enemyWindow->move(0, 120);
 
                 if(this->graveyardWindow == nullptr)    createDetachWindow(ui->tabGraveyard);
