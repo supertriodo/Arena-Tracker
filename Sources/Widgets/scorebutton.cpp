@@ -100,11 +100,11 @@ float ScoreButton::getPlayerRun(int classOrder)
 }
 float ScoreButton::getPlayerWinrate(int classOrder)
 {
-    if(classOrder == -1)    return 0;
+    if(classOrder == -1)    return -1;
     int wins = ScoreButton::playerWins[classOrder];
     int lost = ScoreButton::playerLost[classOrder];
     if((wins+lost) > 0) return (wins*100/static_cast<float>(wins+lost));
-    return 0;
+    return -1;
 }
 
 
@@ -292,7 +292,7 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
 
         //Draw Score
         QString text;
-        if(scoreSource == Score_Heroes_Player && drawScore == 0)    text = "--";
+        if(scoreSource == Score_Heroes_Player && drawScore == -1)   text = "--";
         else                                                        text = QString::number(drawScore, 'g', 3);
         Utility::drawShadowText(painter, font, text, this->width()/2, this->height()/2, true);
 
