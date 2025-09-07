@@ -29,9 +29,7 @@ void ScoreButton::mousePressEvent(QMouseEvent *event)
     }
     else if(scoreSource == Score_Fire)
     {
-        QDesktopServices::openUrl(QUrl(
-            "https://www.firestoneapp.com"
-            ));
+        emit showFirewebPicks();
     }
     else if(scoreSource == Score_HSReplay)
     {

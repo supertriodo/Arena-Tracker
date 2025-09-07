@@ -3113,6 +3113,8 @@ void DraftHandler::createDraftWindows()
                 this, SIGNAL(overlayCardLeave()));
         connect(draftScoreWindow, SIGNAL(showHSRwebPicks()),
                 this, SLOT(showHSRwebPicks()));
+        connect(draftScoreWindow, SIGNAL(showFirewebPicks()),
+                this, SLOT(showFirewebPicks()));
         connect(draftScoreWindow, SIGNAL(pDebug(QString,DebugLevel,QString)),
                 this, SIGNAL(pDebug(QString,DebugLevel,QString)));
 
@@ -3176,6 +3178,17 @@ void DraftHandler::showHSRwebPicks()
     url += Utility::classEnum2classUName(this->arenaHero);
     url += "&gameType=UNDERGROUND_ARENA&timeRange=LAST_14_DAYS&text=";
     url += draftCards[0].getName() + ',' + draftCards[1].getName() + ',' + draftCards[2].getName();
+
+    QDesktopServices::openUrl(QUrl(url));
+}
+
+
+void DraftHandler::showFirewebPicks()
+{
+    QString url = "https://www.firestoneapp.com/arena/cards?arenaCardSearch=";
+    url += draftCards[0].getCode() + ',' + draftCards[1].getCode() + ',' + draftCards[2].getCode();
+    url += "&arenaActiveClassFilter=";
+    url += Utility::classOrder2classLName(this->arenaHero);
 
     QDesktopServices::openUrl(QUrl(url));
 }

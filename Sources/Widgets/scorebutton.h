@@ -59,6 +59,7 @@ public:
 signals:
     void spreadHoverScore(bool value);
     void showHSRwebPicks();
+    void showFirewebPicks();
 };
 
 #endif // SCOREBUTTON_H

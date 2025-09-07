@@ -328,6 +328,7 @@ private slots:
     void twitchHandlerConnectionOk(bool ok);
     void twitchHandlerVoteUpdate(int vote1, int vote2, int vote3, QString username);
     void showHSRwebPicks();
+    void showFirewebPicks();
     void newFindScreenLoop(bool skipScreenSettings=false);
     void comboBoxHighLight(int index);
     void editCardName(const QString &text);
