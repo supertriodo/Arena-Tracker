@@ -20,7 +20,7 @@ WinratesDownloader::WinratesDownloader(QObject *parent) : QObject(parent)
     fireWRMap = new QMap<QString, float>[NUM_HEROS];
     fireSamplesMap = new QMap<QString, int>[NUM_HEROS];
 
-    dbfIdMap = new QMap<int, QString>;
+    // dbfIdMap = new QMap<int, QString>;
 
     match = new QRegularExpressionMatch();
 
@@ -45,7 +45,7 @@ WinratesDownloader::~WinratesDownloader()
     if(fireWRMap != nullptr)        delete[] fireWRMap;
     if(fireSamplesMap != nullptr)   delete[] fireSamplesMap;
 
-    deleteDbfIdMap();//Ya deberia estar borrado, solo por seguridad.
+    // deleteDbfIdMap();//Ya deberia estar borrado, solo por seguridad.
 }
 
 
@@ -92,17 +92,7 @@ void WinratesDownloader::replyFinished(QNetworkReply *reply)
             if(classOrder == -1)    emit pDebug("ERROR: Fail retrieving class from url:" + fullUrl);
             else                    localFireCards(classOrder);
         }
-        else if(fullUrl == HSR_CARDS_14DAYS_URL)
-        {
-            emit pDebug("HSR cards --> Download from: " + QString(HSR_CARDS_EXP_URL));
-            networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_EXP_URL)));
-        }
-        else if(fullUrl == HSR_CARDS_EXP_URL)
-        {
-            emit pDebug("HSR cards --> Download from: " + QString(HSR_CARDS_PATCH_URL));
-            networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_PATCH_URL)));
-        }
-        else if(fullUrl == HSR_CARDS_PATCH_URL)
+        else if(fullUrl == HSR_CARDS)
         {
             localHSRCards();
         }
@@ -148,7 +138,7 @@ void WinratesDownloader::replyFinished(QNetworkReply *reply)
             processHSRHeroesWinrate(QJsonDocument::fromJson(jsonData).object());
         }
         //HSR Cards Pickrate/Winrate
-        else if(fullUrl == HSR_CARDS_PATCH_URL || fullUrl == HSR_CARDS_EXP_URL || fullUrl == HSR_CARDS_14DAYS_URL)
+        else if(fullUrl == HSR_CARDS)
         {
             emit pDebug("HSR cards --> Download Success from: " + fullUrl);
             QByteArray jsonData = reply->readAll();
@@ -182,7 +172,7 @@ void WinratesDownloader::showDataProgressBar()
     if(numThreads == 0)
     {
         emit showMessageProgressBar("WR data ready");
-        deleteDbfIdMap();
+        // deleteDbfIdMap();
     }
 }
 
@@ -243,7 +233,7 @@ void WinratesDownloader::initWRCards()
     initHSRBundles();
     initFireCards();
 
-    Utility::buildDbfIdMap(dbfIdMap);
+    // Utility::buildDbfIdMap(dbfIdMap);
     initHSRCards();
 }
 
@@ -330,14 +320,14 @@ void WinratesDownloader::startProcessHSRBundles(const QJsonObject &jsonObject)
 }
 
 
-void WinratesDownloader::deleteDbfIdMap()
-{
-    if(dbfIdMap != nullptr)
-    {
-        delete dbfIdMap;
-        dbfIdMap = nullptr;
-    }
-}
+// void WinratesDownloader::deleteDbfIdMap()
+// {
+//     if(dbfIdMap != nullptr)
+//     {
+//         delete dbfIdMap;
+//         dbfIdMap = nullptr;
+//     }
+// }
 
 
 void WinratesDownloader::initHSRCards()
@@ -409,8 +399,8 @@ void WinratesDownloader::initHSRCards()
     }
     else
     {
-        emit pDebug("HSR cards --> Download from: " + QString(HSR_CARDS_14DAYS_URL));
-        networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_14DAYS_URL)));
+        emit pDebug("HSR cards --> Download from: " + QString(HSR_CARDS));
+        networkManager->get(QNetworkRequest(QUrl(HSR_CARDS)));
     }
 }
 
@@ -436,8 +426,7 @@ void WinratesDownloader::processHSRCardClassDouble(const QJsonArray &jsonArray, 
     for(const QJsonValue &card: jsonArray)
     {
         QJsonObject cardObject = card.toObject();
-        int dbfId = cardObject.value("dbf_id").toInt();
-        QString code = dbfIdMap->value(dbfId);
+        QString code = cardObject.value("card_id").toString();
         double value = cardObject.value(tag).toDouble();
         if(trunk)   value = round(value * 10)/10.0;
         cardsMap.insert(code, static_cast<float>(value));
@@ -450,8 +439,7 @@ void WinratesDownloader::processHSRCardClassInt(const QJsonArray &jsonArray, con
     for(const QJsonValue &card: jsonArray)
     {
         QJsonObject cardObject = card.toObject();
-        int dbfId = cardObject.value("dbf_id").toInt();
-        QString code = dbfIdMap->value(dbfId);
+        QString code = cardObject.value("card_id").toString();
         int value = cardObject.value(tag).toInt();
         cardsMap.insert(code, value);
     }
@@ -466,29 +454,29 @@ void WinratesDownloader::startProcessHSRCards(const QJsonObject &jsonObject)
             futureHSRSamples[i].isRunning() || futureHSRPlayedWR[i].isRunning())   return;
 
         const QString hero = Utility::classEnum2classUName((CardClass)i);
-        const QJsonArray &data = jsonObject.value("series").toObject().value("data").toObject().value(hero).toArray();
+        const QJsonArray &data = jsonObject.value("data").toObject().value(hero).toArray();
 
         QFuture<QMap<QString, float>> future1 = QtConcurrent::run([this,data]()->QMap<QString, float>{
             QMap<QString, float> map;
-            processHSRCardClassDouble(data, "included_popularity", map);
+            processHSRCardClassDouble(data, "popularity", map);
             return map;
         });
         futureHSRPickrates[i].setFuture(future1);
         QFuture<QMap<QString, float>> future2 = QtConcurrent::run([this,data]()->QMap<QString, float>{
             QMap<QString, float> map;
-            processHSRCardClassDouble(data, "included_winrate", map, true);
+            processHSRCardClassDouble(data, "win_rate", map, true);
             return map;
         });
         futureHSRWR[i].setFuture(future2);
         QFuture<QMap<QString, int>> future3 = QtConcurrent::run([this,data]()->QMap<QString, int>{
             QMap<QString, int> map;
-            processHSRCardClassInt(data, "times_played", map);
+            processHSRCardClassInt(data, "num_games", map);
             return map;
             });
         futureHSRSamples[i].setFuture(future3);
         QFuture<QMap<QString, float>> future4 = QtConcurrent::run([this,data]()->QMap<QString, float>{
             QMap<QString, float> map;
-            processHSRCardClassDouble(data, "winrate_when_played", map, true);
+            processHSRCardClassDouble(data, "played_win_rate", map, true);
             return map;
         });
         futureHSRPlayedWR[i].setFuture(future4);

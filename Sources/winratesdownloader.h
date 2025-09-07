@@ -7,9 +7,7 @@
 #include <QNetworkAccessManager>
 
 #define HSR_HEROES_WINRATE_URL "https://hsreplay.net/api/v1/arena/classes_stats/"
-#define HSR_CARDS_PATCH_URL "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=UNDERGROUND_ARENA&TimeRange=CURRENT_PATCH"
-#define HSR_CARDS_EXP_URL "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=UNDERGROUND_ARENA&TimeRange=CURRENT_EXPANSION"
-#define HSR_CARDS_14DAYS_URL "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=UNDERGROUND_ARENA&TimeRange=LAST_14_DAYS"
+#define HSR_CARDS "https://hsreplay.net/api/v1/arena/card_stats/free/?format=json"
 #define HSR_BUNDLES_URL "https://hsreplay.net/api/v1/arena/card_packages/free/?format=json"
 #define FIRE_CARDS_URL "https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/"
 
@@ -51,7 +49,7 @@ private:
     QMap<QString, QStringList> *hsrBundlesMap;
     QMap<QString, float> *fireWRMap;
     QMap<QString, int> *fireSamplesMap;
-    QMap<int, QString> *dbfIdMap;
+    // QMap<int, QString> *dbfIdMap;
 
 
 //Metodos
@@ -72,7 +70,7 @@ private:
     void showDataProgressBar();
     int url2classOrder(QString url);
     int runningThreads();
-    void deleteDbfIdMap();
+    // void deleteDbfIdMap();
 
 public:
     void initWRCards();

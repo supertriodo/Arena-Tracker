@@ -3174,9 +3174,9 @@ void DraftHandler::createDraftWindows()
 
 void DraftHandler::showHSRwebPicks()
 {
-    QString url = "https://hsreplay.net/cards/#playerClass=";
+    QString url = "https://hsreplay.net/arena/cards/#playerClass=";
     url += Utility::classEnum2classUName(this->arenaHero);
-    url += "&gameType=UNDERGROUND_ARENA&timeRange=LAST_14_DAYS&text=";
+    url += "&view=advanced&text=";
     url += draftCards[0].getName() + ',' + draftCards[1].getName() + ',' + draftCards[2].getName();
 
     QDesktopServices::openUrl(QUrl(url));
@@ -3186,7 +3186,7 @@ void DraftHandler::showHSRwebPicks()
 void DraftHandler::showFirewebPicks()
 {
     QString url = "https://www.firestoneapp.com/arena/cards?arenaCardSearch=";
-    url += draftCards[0].getCode() + ',' + draftCards[1].getCode() + ',' + draftCards[2].getCode();
+    url += draftCards[0].getName() + ',' + draftCards[1].getName() + ',' + draftCards[2].getName();
     url += "&arenaActiveClassFilter=";
     url += Utility::classOrder2classLName(this->arenaHero);
 
