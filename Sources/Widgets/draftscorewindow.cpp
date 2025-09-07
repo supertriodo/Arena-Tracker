@@ -98,6 +98,8 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         scoresPushButton[i]->hide();
         connect(scoresPushButton[i], SIGNAL(spreadHoverScore(bool)),
                 this, SLOT(spreadHoverScore(bool)));
+        connect(scoresPushButton[i], SIGNAL(showFirewebPicks()),
+                this, SIGNAL(showFirewebPicks()));
 
         scoresPushButton2[i] = new ScoreButton(centralWidget, Score_HearthArena, -1);
         scoresPushButton2[i]->setFixedHeight(scoreWidth);
@@ -114,8 +116,6 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
                 this, SLOT(spreadHoverScore(bool)));
         connect(scoresPushButton3[i], SIGNAL(showHSRwebPicks()),
                 this, SIGNAL(showHSRwebPicks()));
-        connect(scoresPushButton3[i], SIGNAL(showFirewebPicks()),
-                this, SIGNAL(showFirewebPicks()));
 
         twitchButton[i] = new TwitchButton(centralWidget, 0, 1);
         twitchButton[i]->setFixedHeight(scoreWidth);
