@@ -127,6 +127,7 @@ public:
     static QPropertyAnimation *fadeOutWidget(QWidget *widget, bool force=false);
     static QString getLoadingScreenToString(LoadingScreenState loadingScreen);
     static LoadingScreenState getLoadingScreenFromString(const QString &loadingScreenString);
+    static QImage getScreenshot(QScreen *screen);
     static std::vector<Point2f> findTemplateOnScreen(const QString &templateImage, QScreen *screen, const std::vector<Point2f> &templatePoints,
                                                      QPointF &screenScale, int &screenHeight, int &goodMatches);
     static ulong findTemplateOnMat(const QString &templateImage, cv::Mat &mat, bool showMatches=false);

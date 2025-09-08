@@ -4068,13 +4068,8 @@ cv::Mat DraftHandler::getScreenMat()
     QList<QScreen *> screens = QGuiApplication::screens();
     if(screenIndex >= screens.count() || screenIndex < 0)  return cv::Mat();
     QScreen *screen = screens[screenIndex];
-    if(!screen) return cv::Mat();
-
-    QScreen *primaryScreen = QGuiApplication::primaryScreen();
-    if(!primaryScreen)  return cv::Mat();
-
-    QRect rect = screen->geometry();
-    QImage image = primaryScreen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+    QImage image = Utility::getScreenshot(screen);//primaryScreen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+    if(image.isNull())  return cv::Mat();
     cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<ulong>(image.bytesPerLine()));
     return mat.clone();
 }

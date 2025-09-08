@@ -4081,16 +4081,13 @@ void MainWindow::createDebugPack()
     QDir dir(dirPath);
     dir.mkpath(dirPath);
 
-    QScreen *primaryScreen = QGuiApplication::primaryScreen();
-    if(!primaryScreen)  return;
     QList<QScreen *> screens = QGuiApplication::screens();
     for(int screenIndex=0; screenIndex<screens.count(); screenIndex++)
     {
         QScreen *screen = screens[screenIndex];
-        if(!screen)     continue;
+        QImage image = Utility::getScreenshot(screen);//primaryScreen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+        if(image.isNull())  continue;
 
-        QRect rect = screen->geometry();
-        QImage image = primaryScreen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
         image.save(dirPath + "/screenshot" + QString::number(screenIndex) + ".png");
 
         // cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
