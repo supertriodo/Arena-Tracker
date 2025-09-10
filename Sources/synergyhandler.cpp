@@ -747,8 +747,8 @@ void SynergyHandler::debugDrops()
         //>0.2 drop
         //0.2 - 0.15 duda
         //<0.15 no drop
-        if(cost == 1)
-        // if(cost == 2)
+        // if(cost == 1)
+        if(cost == 2)
         // if(cost == 3)
         // if(cost == 4)
         {
@@ -757,6 +757,24 @@ void SynergyHandler::debugDrops()
             bool drop3 = DraftDropCounter::isDrop3(code);
             bool drop4 = DraftDropCounter::isDrop4(code);
             bool drop = drop2 || drop3 || drop4;
+
+            if(dropRatio < 0.2 && drop)//Drop bajos, por debajo de 0.15 solo dejar drops perfectos (buenos stats) a no ser que su efecto sea tan potente que se desperdiciaria en drop.
+            // if(dropRatio > 0.15 && !drop)//Drop altos
+            {
+                if((num%50 == 0))   qDebug()<<"\n";
+
+                num++;
+                if(num>0 && num<=50)
+                // if(num>50 && num<=100)
+                // if(num>100 && num<=150)
+                {
+                    // QDesktopServices::openUrl(QUrl(
+                    //     "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+                    //     ));
+                    // QThread::msleep(100);
+                }
+            }
+
             if(played>10000)
             {
                 qDebug()<<(drop?"\t":"")<<pair<<(drop2?"YES":"-----")<<
@@ -769,21 +787,6 @@ void SynergyHandler::debugDrops()
                     (drop3?"YES":"-----")<<
                     (drop4?"YES":"-----")<<
                     "PLAYED:"<<played;
-            }
-
-            if(dropRatio > 0.15 && !drop)//Drop altos
-            // if(dropRatio < 0.2 && drop)//Drop bajos, por debajo de 0.15 solo dejar drops perfectos (buenos stats) a no ser que su efecto sea tan potente que se desperdiciaria en drop.
-            {
-                num++;
-                if(num>0 && num<=50)
-                // if(num>50 && num<=100)
-                // if(num>100 && num<=150)
-                {
-                    QDesktopServices::openUrl(QUrl(
-                        "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
-                        ));
-                    QThread::msleep(100);
-                }
             }
         }
     }
