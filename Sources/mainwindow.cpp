@@ -2638,6 +2638,7 @@ void MainWindow::downloadExtraFiles()
     downloadExtraFile("redraftTemplate.png");
     downloadExtraFile("MANA.dat");
     downloadExtraFile("RARITY.dat");
+    downloadExtraFile("captureHelper");
 
     QFileInfo file = QFileInfo(Utility::extraPath() + "/icon.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(IMAGES_URL + QString("/icon.png"))));

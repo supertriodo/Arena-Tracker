@@ -68,7 +68,7 @@ void CaptureManager::startCaptureService()
     connect(m_process, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(onProcessError(QProcess::ProcessError)));
     connect(m_process, &QProcess::readyReadStandardOutput, this, &CaptureManager::printProcessOutput);
     connect(m_process, &QProcess::readyReadStandardError, this, &CaptureManager::printProcessError);
-    connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(onProcessFinished(int, QProcess::ExitStatus)));
+    connect(m_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(onProcessFinished(int,QProcess::ExitStatus)));
 
     QString program = Utility::extraPath() + "/captureHelper";
 
