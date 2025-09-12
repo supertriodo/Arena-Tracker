@@ -475,7 +475,10 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         {
             pDebug("Extra: " + endUrl + " --> Download Success.");
             QByteArray data = reply->readAll();
-            Utility::dumpOnFile(data, Utility::extraPath() + "/" + endUrl);
+            QString targetPath = Utility::extraPath() + "/" + endUrl;
+            Utility::dumpOnFile(data, targetPath);
+
+            if(endUrl == "captureHelper")   Utility::setExecutablePermissions(targetPath);
         }
     }
 }

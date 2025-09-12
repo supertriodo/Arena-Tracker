@@ -1110,6 +1110,17 @@ void Utility::dumpOnFile(const QByteArray &data, const QString &path)
 }
 
 
+bool Utility::setExecutablePermissions(const QString &filePath)
+{
+    QFile file(filePath);
+    if(!file.exists())  return false;
+
+    QFileDevice::Permissions permissions = file.permissions();
+    permissions |= (QFileDevice::ExeUser | QFileDevice::ExeGroup | QFileDevice::ExeOther);
+    return file.setPermissions(permissions);
+}
+
+
 void Utility::drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter, bool isCardText)
 {
     //Gran parte de los textos pintados usan el offset (que solo deberia ser usado para el texto de cartas),
