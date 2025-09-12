@@ -172,6 +172,8 @@ RESOURCES += \
 
 linux{
     QMAKE_LFLAGS += -no-pie
+    SOURCES += Sources/Utils/capturemanager.cpp
+    HEADERS  += Sources/Utils/capturemanager.h
 }
 win32: RC_ICONS = ArenaTracker.ico
 macx{

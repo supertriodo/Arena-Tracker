@@ -1,6 +1,7 @@
 #ifndef CAPTUREMANAGER_H
 #define CAPTUREMANAGER_H
 
+#include "qmainwindow.h"
 #include <QObject>
 #include <QImage>
 #include <QProcess>
@@ -11,21 +12,14 @@ class QSharedMemory;
 
 const long SHM_SYSV_KEY = 123456;
 
-/**
- * @brief Estructura del encabezado (Header).
- * DEBE coincidir con el struct.pack("qqq40s") de Python.
- * qlonglong (8 bytes) * 3 = 24 bytes.
- * char[40] (40 bytes).
- * Total = 64 bytes.
- */
 struct ShmHeader {
     qlonglong status;   // 0 = Idle, 1 = Capturing
     qlonglong width;
     qlonglong height;
-    char screen_name[40]; // Para un nombre de hasta 39 chars + terminador NUL
+    qlonglong screen_index; // Para un nombre de hasta 39 chars + terminador NUL
 };
 
-const int HEADER_OFFSET = 64; // Los datos del frame empiezan DESPUES de estos 64 bytes.
+const int HEADER_OFFSET = 32; // Los datos del frame empiezan DESPUES de estos 64 bytes.
 
 
 // --- Declaracion de la Clase ---
@@ -48,6 +42,9 @@ public:
 //Variables
 private:
     static bool m_isWayland;
+    static QMainWindow *mainWindow;
+
+    bool m_isCleanedUp;
 
     QProcess* m_process;
     QSharedMemory* m_shm;
@@ -58,20 +55,18 @@ private:
 private:
     void startCaptureService();
     void cleanupCaptureService();
-    void triggerDraftStart();
-    void triggerDraftEnd();
-    bool isCapturing() const;
-    QString getActiveScreenName() const;
-    int getActiveScreenIndex() const;
 
 public:
     static bool isWaylandSession();
-    static void init();
-
+    static void init(QMainWindow *mainWindow);
+    int getActiveScreenIndex(bool heroDrafting) const;
+    void triggerDraftStart();
+    void triggerDraftEnd();
     QImage getLatestFrame();
 
 private slots:
     void onProcessStarted();
+    void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
     bool attachToShm();
     void onProcessError(QProcess::ProcessError error);
     void printProcessOutput();

@@ -5,6 +5,10 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
+#ifdef Q_OS_LINUX
+#include "Utils/capturemanager.h"
+#endif
+
 DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckHandler) : QObject(parent)
 {
     this->ui = ui;
@@ -747,6 +751,13 @@ void DraftHandler::leaveArena()
     emit pDebug("Leave arena.");
     stopLoops = true;
 
+#ifdef Q_OS_LINUX
+    if(CaptureManager::isWaylandSession())
+    {
+        CaptureManager::instance().triggerDraftEnd();
+    }
+#endif
+
     if(draftScoreWindow != nullptr)        draftScoreWindow->hide();
     if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->hide();
 
@@ -895,6 +906,13 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     scoreButtonHSR->setClassOrder(arenaHero);
 
     for(int i=0; i<3; i++)  prevCodes[i] = "";
+
+#ifdef Q_OS_LINUX
+    if(CaptureManager::isWaylandSession())
+    {
+        CaptureManager::instance().triggerDraftStart();
+    }
+#endif
 
     initCodesAndHistMaps(deckCardList, skipScreenSettings);
     resetTab(alreadyDrafting);
@@ -1179,6 +1197,13 @@ void DraftHandler::endDraftShowMechanicsWindow()
 void DraftHandler::endDraftHideMechanicsWindow()
 {
     stopLoops = true;
+
+#ifdef Q_OS_LINUX
+    if(CaptureManager::isWaylandSession())
+    {
+        CaptureManager::instance().triggerDraftEnd();
+    }
+#endif
 
     if(redrafting)  endRedraftReview();
     if(drafting)
@@ -2862,22 +2887,32 @@ ScreenDetection DraftHandler::findScreenRects()
     QList<QScreen *> screens = QGuiApplication::screens();
 
     QScreen *screen = nullptr;
+    QImage image;
     int screenIndex=0;
 
     auto findTemplate = [&](const QString& arenaTemplate) {
         futureList.append(QtConcurrent::run([=]() { // <-- [=] captura por valor
             SDBasic sdb;
-            sdb.screenPoints = Utility::findTemplateOnScreen(arenaTemplate, screen, templatePoints,
+            sdb.screenPoints = Utility::findTemplateOnScreen(arenaTemplate, screen, image, templatePoints,
                                                              sdb.screenScale, sdb.screenHeight, sdb.goodMatches);
             sdb.screenIndex = screenIndex;
             return sdb;
         }));
     };
 
-    for(screenIndex=0; screenIndex<screens.count(); screenIndex++)
+    bool inWayland = false;
+#ifdef Q_OS_LINUX
+    if(CaptureManager::isWaylandSession())
+    {
+        inWayland = true;
+        screenIndex = CaptureManager::instance().getActiveScreenIndex(heroDrafting);
+    }
+#endif
+
+    if(inWayland)
     {
         screen = screens[screenIndex];
-        if (!screen)    continue;
+        image = Utility::getScreenshot(screen);
 
         if(redraftingReview)
         {
@@ -2892,6 +2927,31 @@ ScreenDetection DraftHandler::findScreenRects()
         {
             findTemplate("arenaTemplate.png");
             findTemplate("arenaTemplate2.png");
+        }
+    }
+    else
+    {
+        for(screenIndex=0; screenIndex<screens.count(); screenIndex++)
+        {
+            screen = screens[screenIndex];
+            if (!screen)    continue;
+            image = Utility::getScreenshot(screen);
+            if(image.isNull())  continue;
+
+            if(redraftingReview)
+            {
+                findTemplate("redraftTemplate.png");
+            }
+            else if(heroDrafting)
+            {
+                findTemplate("heroesTemplate.png");
+                findTemplate("heroesTemplate2.png");
+            }
+            else /*if(drafting)*/
+            {
+                findTemplate("arenaTemplate.png");
+                findTemplate("arenaTemplate2.png");
+            }
         }
     }
 
@@ -3000,6 +3060,13 @@ void DraftHandler::beginHeroDraft()
     deleteDraftMechanicsWindow();
     clearLists(false);
     this->heroDrafting = true;
+
+#ifdef Q_OS_LINUX
+    if(CaptureManager::isWaylandSession())
+    {
+        CaptureManager::instance().triggerDraftStart();
+    }
+#endif
 
     QList<DeckCard> deckCardList;
     initCodesAndHistMaps(deckCardList, true);
@@ -4068,7 +4135,7 @@ cv::Mat DraftHandler::getScreenMat()
     QList<QScreen *> screens = QGuiApplication::screens();
     if(screenIndex >= screens.count() || screenIndex < 0)  return cv::Mat();
     QScreen *screen = screens[screenIndex];
-    QImage image = Utility::getScreenshot(screen);//primaryScreen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+    QImage image = Utility::getScreenshot(screen);
     if(image.isNull())  return cv::Mat();
     cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<ulong>(image.bytesPerLine()));
     return mat.clone();

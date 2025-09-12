@@ -7,6 +7,10 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
+#ifdef Q_OS_LINUX
+    #include "Utils/capturemanager.h"
+#endif
+
 using namespace cv;
 
 
@@ -140,6 +144,7 @@ void MainWindow::init()
 
 #ifdef Q_OS_LINUX
     checkLinuxShortcut();
+    CaptureManager::init(this);
 #endif
 
 #ifdef QT_DEBUG
@@ -4085,10 +4090,17 @@ void MainWindow::createDebugPack()
     for(int screenIndex=0; screenIndex<screens.count(); screenIndex++)
     {
         QScreen *screen = screens[screenIndex];
-        QImage image = Utility::getScreenshot(screen);//primaryScreen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+        QImage image = Utility::getScreenshot(screen);
         if(image.isNull())  continue;
 
         image.save(dirPath + "/screenshot" + QString::number(screenIndex) + ".png");
+
+#ifdef Q_OS_LINUX
+        if(CaptureManager::isWaylandSession())
+        {
+            break;
+        }
+#endif
 
         // cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
         // cv::resize(mat, mat, cv::Size(1280, 720));

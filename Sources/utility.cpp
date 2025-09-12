@@ -7,6 +7,10 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/nonfree/features2d.hpp"
 
+#ifdef Q_OS_LINUX
+    #include "Utils/capturemanager.h"
+#endif
+
 using namespace libzippp;
 using namespace std;
 
@@ -863,6 +867,13 @@ QString Utility::removeAccents(const QString &s)
 
 QImage Utility::getScreenshot(QScreen *screen)
 {
+#ifdef Q_OS_LINUX
+    if(CaptureManager::isWaylandSession())
+    {
+        return CaptureManager::instance().getLatestFrame();
+    }
+#endif
+
     QScreen *primaryScreen = QGuiApplication::primaryScreen();
     if(!primaryScreen || !screen)   return QImage();
 
@@ -871,13 +882,12 @@ QImage Utility::getScreenshot(QScreen *screen)
 }
 
 
-std::vector<Point2f> Utility::findTemplateOnScreen(const QString &templateImage, QScreen *screen,
+std::vector<Point2f> Utility::findTemplateOnScreen(const QString &templateImage, QScreen *screen, QImage image,
                                                    const std::vector<Point2f> &templatePoints,
                                                    QPointF &screenScale, int &screenHeight, int &goodMatches)
 {
     std::vector<Point2f> screenPoints;
-    QImage image = Utility::getScreenshot(screen);
-    if(image.isNull())  return screenPoints;
+    if(!screen || image.isNull())   return screenPoints;
 
     //Bug Fix: When using a resolution scale in you OS, draft scores will be postioned outside the screen. Now it's fixed.
     //Screen scale
