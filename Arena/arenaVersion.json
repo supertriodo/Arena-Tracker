@@ -1,9 +1,9 @@
 {
-  "arenaVersion": 80,
+  "arenaVersion": 81,
   "arenaSets": ["CORE", "REVENDRETH", "RETURN_OF_THE_LICH_KING", "BATTLE_OF_THE_BANDS", "ISLAND_VACATION", "THE_LOST_CITY"],
   "multiclassArena": false,
   "trustHA": false,
-  "resetCards": 73,
+  "resetCards": 81,
   "resetHeroes": 76,
-  "seasonId": 2
+  "seasonId": 3
 }
