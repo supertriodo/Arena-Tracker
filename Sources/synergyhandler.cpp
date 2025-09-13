@@ -726,7 +726,7 @@ void SynergyHandler::debugDrops()
         if(!Utility::getCardAttribute(code, "collectible").toBool())    continue;
         QJsonObject cardStatsObject = cardObject.value("stats").toObject();
         int played = cardStatsObject.value("played").toInt();
-        if(played == 0) continue;
+        if(played < 100) continue;
         int onCurve = cardStatsObject.value("playedOnCurve").toInt();
         float dropRatio = onCurve/(float)played;
         dropRatioList << qMakePair(code, dropRatio);
@@ -744,9 +744,9 @@ void SynergyHandler::debugDrops()
         const auto &dropRatio = pair.second;
         int cost = Utility::getCardAttribute(code, "cost").toInt();
 
-        //>0.2 drop
-        //0.2 - 0.15 duda
         //<0.15 no drop
+        //0.15 - 0.2 duda
+        //>0.2 drop
         // if(cost == 1)
         if(cost == 2)
         // if(cost == 3)
@@ -768,10 +768,10 @@ void SynergyHandler::debugDrops()
                 // if(num>50 && num<=100)
                 // if(num>100 && num<=150)
                 {
-                    // QDesktopServices::openUrl(QUrl(
-                    //     "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
-                    //     ));
-                    // QThread::msleep(100);
+                    QDesktopServices::openUrl(QUrl(
+                        "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+                        ));
+                    QThread::msleep(100);
                 }
             }
 
