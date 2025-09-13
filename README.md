@@ -15,7 +15,7 @@ Join our community at the [Arena Tracker subreddit](https://www.reddit.com/r/Are
 
 * Tested on Windows 7/8/10
 * Tested on Mac OS X 10.11
-* Tested on Ubuntu/Linux Mint
+* Tested on Linux Mint/CachyOS
   * You can downloading **Arena.Tracker.X.Linux.zip** or **ArenaTracker.Linux.AppImage**.
   * For Arch Linux users there's a package in [AUR](https://aur.archlinux.org/packages/arenatracker-bin/) maintained by [Strit](https://github.com/Strit).
   * If you're having problems running HS with AT on linux, HS dont accept mouse clicks, try Windowed (virtual desktop) option and it will work perfectly. You can do it easily with lutris.
@@ -26,6 +26,11 @@ Extract the zip wherever you want and double click the executable, no installati
 Data used by Arena Tracker will be stored in `USER/Arena Tracker` (Windows/Mac) or `USER/.local/share/Arena Tracker` (Linux) with [this](https://triodo.gitbook.io/arena-tracker-documentation/en/installation#ATdir) structure
   
 Arena Tracker will need to download all Hearthstone card images onto Hearthstone Cards dir. This is done in the background while you use it. You don't need to wait, start your draft or your next game, AT will know what to do.
+
+## Linux Wayland dependencies
+The Linux version works on both X11 and Wayland.
+On Wayland, screen access is handled by a small binary called `captureHelper`, which is downloaded on first run to your `USER/.local/share/Arena Tracker/Extra` directory.
+This binary requires `qt6-base` and `qt6-multimedia` to run. If AT doesn’t detect cards on Wayland, try running `captureHelper` from your terminal to check if any libraries are missing.
 
 
 ##  First Run
