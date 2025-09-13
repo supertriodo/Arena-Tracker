@@ -101,6 +101,4 @@ Thanks to all these projects ArenaTracker is possible.
 
 [![PayPal](https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-rect-paypal-44px.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=triodo%40gmail%2ecom&lc=GB&item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
 
-[![HumblePartner-320w](https://user-images.githubusercontent.com/8259393/233829125-6763862b-5c71-419d-a1f7-dc56f3e28c2c.png)](https://www.humblebundle.com/?partner=arenatracker)
-
 
