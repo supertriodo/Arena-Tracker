@@ -134,6 +134,10 @@ void MainWindow::initVariables()
     trackobotUploader = nullptr;
     premiumHandler = nullptr;
     twitchTester = nullptr;
+
+#ifdef Q_OS_LINUX
+    CaptureManager::init(this);
+#endif
 }
 
 
@@ -144,7 +148,6 @@ void MainWindow::init()
 
 #ifdef Q_OS_LINUX
     checkLinuxShortcut();
-    CaptureManager::init(this);
 #endif
 
 #ifdef QT_DEBUG
@@ -2641,7 +2644,13 @@ void MainWindow::downloadExtraFiles()
     downloadExtraFile("redraftTemplate.png");
     downloadExtraFile("MANA.dat");
     downloadExtraFile("RARITY.dat");
-    downloadExtraFile("captureHelper");
+
+#ifdef Q_OS_LINUX
+    if(CaptureManager::isWaylandSession())
+    {
+        downloadExtraFile("captureHelper");
+    }
+#endif
 
     QFileInfo file = QFileInfo(Utility::extraPath() + "/icon.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(IMAGES_URL + QString("/icon.png"))));
