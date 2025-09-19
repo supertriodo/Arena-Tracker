@@ -4923,14 +4923,15 @@ void MainWindow::testSynergies()
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    // testHeroPortraits();
+    testHeroPortraits();
     testSynergies();
 
+    //HA en orden
     // downloadHearthArenaTierlistOriginal();
     // testHearthArenaTL();
-    // HAnames2codes(true);
+    // HAnames2codes(false);
     // Utility::setTrustHA(false);//Si necesitamos revisar HATL antes de modificar arena.json a no trust en la rotacion nueva
-    // checkHearthArenaTLCodes(true);//Ahora (no trustHA) / 1 semana despues (si trustHA)
+    // checkHearthArenaTLCodes(false);//Ahora (no trustHA) / 1 semana despues (si trustHA)
 
     // testDownloadCardsJson();///v1/226928
     // testDownloadRotation(true/*, "DINO_"*/);//Force hearthpwn true
