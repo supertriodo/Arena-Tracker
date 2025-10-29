@@ -4271,6 +4271,7 @@
 "TOY_652" : [ "discover2", "battlecry", "returnSyn", "tokenCard", "corpse" ],
 "TOY_670" : [ "mechGen", "deathrattle", "token", "tauntGen", "divineShieldGen", "corpse", "drop4" ],
 "TOY_700" : [ "drop4" ],
+"TOY_700t9t2" : [ "tokenCard", "toYourHand" ],
 "TOY_703" : [ "draw", "battlecry", "returnSyn", "tokenSyn", "evolveSyn" ],
 "TOY_714" : [ "dragonAllSyn", "aoe", "ping", "spellDamageSyn" ],
 "TOY_716" : [ "mechGen", "attackBuff", "healthBuff", "tauntGen", "divineShieldGen", "tokenSyn" ],
