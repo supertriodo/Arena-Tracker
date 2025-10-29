@@ -4933,7 +4933,7 @@ void MainWindow::testDelay()
     // Utility::setTrustHA(false);//Si necesitamos revisar HATL antes de modificar arena.json a no trust en la rotacion nueva
     // checkHearthArenaTLCodes(false);//Ahora (no trustHA) / 1 semana despues (si trustHA)
 
-    // testDownloadCardsJson();///v1/226928
+    // testDownloadCardsJson();///v1/229984
     // testDownloadRotation(true/*, "DINO_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
 
