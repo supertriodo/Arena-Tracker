@@ -4914,16 +4914,16 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testSynergies()
 {
     // draftHandler->getSynergyHandler()->testSynergies(/*"DINO_"*/);
-    // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0, "DINO_");//modelo/synergiesSet.json
+    draftHandler->getSynergyHandler()->debugSynergiesSet("TIME_TRAVEL", 0, 0/*, "DINO_"*/);//modelo/synergiesSet.json
     // draftHandler->getSynergyHandler()->debugDrops();
-    draftHandler->getSynergyHandler()->debugMissingSynergies(true, false);
+    // draftHandler->getSynergyHandler()->debugMissingSynergies(true, false);
 }
 
 
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
+    // testHeroPortraits();
     testSynergies();
 
     //HA en orden
@@ -5015,7 +5015,8 @@ void MainWindow::testDelay()
 
 //Modelo IA
 //source 1sourceCuda.sh
-//./2datos.sh y Descargar enUS cards.json de https://api.hearthstonejson.com/v1/latest/
+//./2datos.sh
+//|-Descargar enUS cards.json de https://api.hearthstonejson.com/v1/latest/ en ~/modelo
 //./3entrenar.sh
 //SynergyHandler::testSynergies() prepara modelo/synergiesSet.json con los codigos a predecir
 //./4predecir.sh
@@ -5153,6 +5154,7 @@ void MainWindow::testDelay()
 //Cartas a mano sin code, arreglado obteniendo el code del nombre:
 //id=10 local=False [name=Clériga de Villanorte id=55 zone=HAND zonePos=1 cardId= player=2] zone from OPPOSING PLAY -> OPPOSING HAND
 //Comadreja aprece como OUTSIDER y OUTSIDER BY en tu deck, se debe a que va a tu deck 2 veces una como conocida y otra como desconocida.
+//UNTIMELY_DEATH secret deberia descartarse solo si el minion muerto fue jugado el turno pasado, pero se descarta incluso si fue jugado anteriormente.
 
 
 

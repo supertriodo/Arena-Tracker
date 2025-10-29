@@ -63,6 +63,7 @@
 #define HIDDEN_MEANING QString("JAM_003")
 #define BAIT_AND_SWITCH QString("TTN_504")
 #define BARGAIN_BIN QString("MIS_105")
+#define UNTIMELY_DEATH QString("TIME_620")
 
 //MAGE
 #define FROZEN_CLONE QString("ICC_082")

@@ -270,6 +270,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(MOTION_DENIED, inArena, activeSecret);
                 unknownSecretPlayedAddOption(BARGAIN_BIN, inArena, activeSecret);
                 //RARE
+                unknownSecretPlayedAddOption(UNTIMELY_DEATH, inArena, activeSecret);
                 unknownSecretPlayedAddOption(PACK_TACTICS, inArena, activeSecret);
                 unknownSecretPlayedAddOption(WANDERING_MONSTER, inArena, activeSecret);
                 unknownSecretPlayedAddOption(VENOMSTRIKE_TRAP, inArena, activeSecret);
@@ -800,6 +801,7 @@ void SecretsHandler::enemyMinionGraveyard(int id, QString code, bool isPlayerTur
     discardSecretOptionNow(CHEAT_DEATH);
 
     discardSecretOptionNow(EMERGENCY_MANEUVERS);
+    discardSecretOptionNow(UNTIMELY_DEATH);
 }
 
 
@@ -1049,7 +1051,7 @@ void SecretsHandler::createSecretsByPickrate()
     secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << SNIPE2 << PRESSURE_PLATE << DART_TRAP
                               << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
                               << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES << ICE_TRAP << EMERGENCY_MANEUVERS << MOTION_DENIED
-                              << ZOMBEEEES << HIDDEN_MEANING << BAIT_AND_SWITCH << BARGAIN_BIN;
+                              << ZOMBEEEES << HIDDEN_MEANING << BAIT_AND_SWITCH << BARGAIN_BIN << UNTIMELY_DEATH;
 
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND
