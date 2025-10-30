@@ -3004,7 +3004,7 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
     {
         missiles = 3;
     }
-    else if(Utility::codeEqConstant(code, TRIPLEWICK_TRICKSTER))
+    else if(Utility::codeEqConstant(code, TRIPLEWICK_TRICKSTER) || Utility::codeEqConstant(code, CHRONO_DAGGERS))
     {
         missiles = 3;
         missileDamage = 2;
@@ -3027,7 +3027,7 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
     {
         missiles = 5;
     }
-    else if(Utility::codeEqConstant(code, PRIESTESS_OF_FURY) || Utility::codeEqConstant(code, SOUL_BARRAGE))
+    else if(Utility::codeEqConstant(code, PRIESTESS_OF_FURY) || Utility::codeEqConstant(code, SOUL_BARRAGE) || Utility::codeEqConstant(code, TACHYON_BARRAGE))
     {
         missiles = 6;
     }

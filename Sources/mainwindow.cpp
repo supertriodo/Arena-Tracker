@@ -4978,7 +4978,7 @@ void MainWindow::testDelay()
     //-(https://blizzard.gamespress.com/Hearthstone)
     //-Update DraftHandler::isSignatureCard
 ///Update secrets
-//Cartas especiales --> SynergyHandler::testSynergies()
+///Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
     //Update cartas que en la practica tienen un coste diferente --> Utility::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)

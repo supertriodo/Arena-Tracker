@@ -408,7 +408,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     int num = 0;
 
     // for(QString &code: arenaCodes)
-    for(QString &code: (QStringList)Utility::getSetCodes("THE_LOST_CITY", true, false))
+    for(QString &code: (QStringList)Utility::getSetCodes("TIME_TRAVEL", true, false))
     // for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
     // for(QString &code: (QStringList)Utility::getStandardCodes())
     // for(QString &code: (QStringList)Utility::getWildCodes())
@@ -452,7 +452,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 // KeySynergies::containsAll(text, "damage random") || KeySynergies::containsAll(text, "damage split")
 ///Update cartas que dan mana inmediato (monedas) --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
 // KeySynergies::containsAll(text, "gain mana this turn only") || KeySynergies::containsAll(text, "refresh mana")
-///Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
+///Update cartas que en la practica tienen un coste diferente --> Utility::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
 // KeySynergies::containsAll(text, "spend all your mana") || text.contains("cost")//cambio 3+ mana / -+ 1 o 2 no molestarse
 ///Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
 // MechanicCounter::isDrawGen(code, text) || KeySynergies::containsAll(text, "draw")
@@ -468,8 +468,8 @@ void SynergyHandler::testSynergies(const QString &miniSet)
                 // qDebug()<<code;
                 // qDebug()<<mechanics<<endl<<referencedTags;
 
-                if(showImages && num>0 && num<=50)
-                // if(showImages && num>50 && num<=100)
+                if(showImages && num>0 && num<=100)
+                // if(showImages && num>100 && num<=200)
                 {
                     QDesktopServices::openUrl(QUrl(
                         "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
