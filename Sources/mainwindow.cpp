@@ -4964,21 +4964,21 @@ void MainWindow::testDelay()
  */
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
-///Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
+//Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-///Update Json cards --> testDownloadCardsJson();
-///Update Utility::isFromStandardSet(QString code) --> TIME_TRAVEL
-///Subir cartas al github.
+//Update Json cards --> testDownloadCardsJson();
+//Update Utility::isFromStandardSet(QString code) --> TIME_TRAVEL
+//Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
-///Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
+//Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
-//Crear new signature cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
+///Crear new signature cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
     //-(https://blizzard.gamespress.com/Hearthstone)
     //-Update DraftHandler::isSignatureCard
-///Update secrets
-///Cartas especiales --> SynergyHandler::testSynergies()
+//Update secrets
+//Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
     //Update cartas que en la practica tienen un coste diferente --> Utility::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
@@ -4987,15 +4987,15 @@ void MainWindow::testDelay()
     //Update AOE que marcan un objetivo principal y le hacen algo diferente que al resto (Swipe) --> MinionGraphicsItem::isAoeWithTarget (Hearthpwn Search: draw from your deck)
 
 //Update synergies.json --> SynergyHandler::debugSynergiesSet()
-///|-Check synergies in the new set --> New synergy keys
-///|-Check evolveSyn cards
-///|-Check direct links
-//|-Check drops (1 semana despues) --> SynergyHandler::debugDrops()
+//|-Check synergies in the new set --> New synergy keys
+//|-Check evolveSyn cards
+//|-Check direct links
+///|-Check drops (1 semana despues) --> SynergyHandler::debugDrops()
 //  In AT Dir/Extra (https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/global.gz.json)
 
 //Cards changes
-///|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-///|-Synergy / Code  --> 34.0 Patch Notes
+//|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
+//|-Synergy / Code  --> 34.0 Patch Notes
 
 //Rotacion CORE
 //|-Revisar cartas github CORE

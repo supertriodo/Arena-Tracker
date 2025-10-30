@@ -1,9 +1,9 @@
 {
-  "arenaVersion": 81,
-  "arenaSets": ["CORE", "REVENDRETH", "RETURN_OF_THE_LICH_KING", "BATTLE_OF_THE_BANDS", "ISLAND_VACATION", "THE_LOST_CITY"],
+  "arenaVersion": 82,
+  "arenaSets": ["WHIZBANGS_WORKSHOP", "ISLAND_VACATION", "SPACE", "EMERALD_DREAM", "THE_LOST_CITY", "TIME_TRAVEL"],
   "multiclassArena": false,
   "trustHA": false,
-  "resetCards": 81,
+  "resetCards": 82,
   "resetHeroes": 76,
-  "seasonId": 3
+  "seasonId": 4
 }
