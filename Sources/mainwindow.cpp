@@ -4856,12 +4856,12 @@ void MainWindow::HAreplace(const QMap<QString, QString> &swapCodes)
 void MainWindow::testHearthArenaTL()
 {
     QStringList arenaSets;
-    arenaSets <<  "CORE" <<
-        "REVENDRETH" <<
-        "RETURN_OF_THE_LICH_KING" <<
-        "BATTLE_OF_THE_BANDS" <<
+    arenaSets <<  "WHIZBANGS_WORKSHOP" <<
         "ISLAND_VACATION" <<
-        "THE_LOST_CITY";
+        "SPACE" <<
+        "EMERALD_DREAM" <<
+        "THE_LOST_CITY" <<
+        "TIME_TRAVEL";
 
     Utility::setArenaSets(arenaSets);
     QStringList arenaCodes = Utility::getAllArenaCodes(false);
@@ -4869,23 +4869,23 @@ void MainWindow::testHearthArenaTL()
 }
 
 /*
- * Core "CORE"
- *  Murder at Castle Nathria "REVENDRETH"
- *  March of the Lick King "RETURN_OF_THE_LICH_KING"
- *  Festival of Legends "BATTLE_OF_THE_BANDS"
+ *  Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
  *  Perils in Paradise "ISLAND_VACATION"
+ *  The Great Dark Beyond "SPACE"
+ *  Into the Emerald Dream "EMERALD_DREAM"
  *  The Lost City of Un’Goro "THE_LOST_CITY"
+ *  Across the Timeways "TIME_TRAVEL"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets <<  "CORE" <<
-        "REVENDRETH" <<
-        "RETURN_OF_THE_LICH_KING" <<
-        "BATTLE_OF_THE_BANDS" <<
+    arenaSets << "WHIZBANGS_WORKSHOP" <<
         "ISLAND_VACATION" <<
-        "THE_LOST_CITY";
+        "SPACE" <<
+        "EMERALD_DREAM" <<
+        "THE_LOST_CITY" <<
+        "TIME_TRAVEL";
 
     Utility::setArenaSets(arenaSets);
     Utility::setTrustHA(false);
@@ -4914,9 +4914,9 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testSynergies()
 {
     // draftHandler->getSynergyHandler()->testSynergies(/*"DINO_"*/);
-    draftHandler->getSynergyHandler()->debugSynergiesSet("TIME_TRAVEL", 0, 0/*, "DINO_"*/);//modelo/synergiesSet.json
+    // draftHandler->getSynergyHandler()->debugSynergiesSet("TIME_TRAVEL", 120, 150/*, "DINO_"*/);//modelo/synergiesSet.json
     // draftHandler->getSynergyHandler()->debugDrops();
-    // draftHandler->getSynergyHandler()->debugMissingSynergies(true, false);
+    draftHandler->getSynergyHandler()->debugMissingSynergies(true, false);
 }
 
 
@@ -4966,18 +4966,18 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Json cards --> testDownloadCardsJson();
-//Update Utility::isFromStandardSet(QString code) --> THE_LOST_CITY
-//Subir cartas al github.
+///Update Json cards --> testDownloadCardsJson();
+///Update Utility::isFromStandardSet(QString code) --> TIME_TRAVEL
+///Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
-//Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
+///Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
 //Crear new signature cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
     //-(https://blizzard.gamespress.com/Hearthstone)
     //-Update DraftHandler::isSignatureCard
-//Update secrets
+///Update secrets
 //Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
@@ -4987,15 +4987,15 @@ void MainWindow::testDelay()
     //Update AOE que marcan un objetivo principal y le hacen algo diferente que al resto (Swipe) --> MinionGraphicsItem::isAoeWithTarget (Hearthpwn Search: draw from your deck)
 
 //Update synergies.json --> SynergyHandler::debugSynergiesSet()
-//|-Check synergies in the new set --> New synergy keys
-//|-Check evolveSyn cards
+///|-Check synergies in the new set --> New synergy keys
+///|-Check evolveSyn cards
 //|-Check direct links
 //|-Check drops (1 semana despues) --> SynergyHandler::debugDrops()
 //  In AT Dir/Extra (https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/global.gz.json)
 
 //Cards changes
-//|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 34.0 Patch Notes
+///|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
+///|-Synergy / Code  --> 34.0 Patch Notes
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
@@ -5022,8 +5022,9 @@ void MainWindow::testDelay()
 //./4predecir.sh
 //|-synergiesSetOutSimple.json --> Sinergias predichas para copiar facilmente a synergies.json mientras las revisamos
 //|-synergiesSetOut.json --> Muestra una fila con las sinergias predichas y otra con las manuales obtenidas de AT con:
-//  |-(--) Aparece en la prediccion
+//  |-(--) Aparece en las dos.
 //  |-(++) No aparece en la prediccion, quizas haya que incluirla.
+//  |-(!!) No apare en el manual, quizas haya que quitarla.
 
 
 //NUEVA SYNERGY

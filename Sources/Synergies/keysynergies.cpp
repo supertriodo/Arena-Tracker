@@ -387,6 +387,7 @@ QMap<QString, QString> KeySynergies::getMapKeySynergies()
     keys["starship"] = "Starship";
     keys["shuffle"] = "Shuffle";
     keys["imp"] = "Imp";
+    keys["aura"] = "Aura";
 
     //New Synergy Step 1
     return keys;
@@ -811,6 +812,14 @@ bool KeySynergies::isKey(const QString &key, const QString &code, const QJsonArr
             }
             return false;
         }
+        else if(key == "aura")
+        {
+            if(name.contains("aura") || name.contains("Aura"))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 
     return false;
@@ -1207,6 +1216,14 @@ bool KeySynergies::isKeyAllSyn(const QString &key, const QString &code, const QJ
         else if(key == "eggAllSyn")
         {
             if(text.contains("swap") && text.contains("attack") && text.contains("health") && text.contains("minion"))
+            {
+                return true;
+            }
+            return false;
+        }
+        else if(key == "auraAllSyn")
+        {
+            if(text.contains("aura") || text.contains("Aura"))
             {
                 return true;
             }

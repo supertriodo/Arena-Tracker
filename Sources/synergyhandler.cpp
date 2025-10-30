@@ -902,6 +902,7 @@ SILVER HAND: silverHand/silverHandSyn
 TREANT: treant/treantSyn
 LACKEY: lackey/lackeySyn
 Imp: imp/impSyn
+Aura: aura/auraGen/auraSyn/auraAllSyn
 
     - Drop2 (Derrota 2/2 --> 3+/1+, 2/1+?, 1/3+?) ? debe hacer algo mas (facilmente) aunque no sea en board
     - Drop3 (Derrota 3/3 --> 3+/2+?, 2/3+?, 1/5+?), no health 1,
