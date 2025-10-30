@@ -4974,7 +4974,7 @@ void MainWindow::testDelay()
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
-///Crear new signature cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
+//Crear new signature cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
     //-(https://blizzard.gamespress.com/Hearthstone)
     //-Update DraftHandler::isSignatureCard
 //Update secrets
@@ -4990,7 +4990,7 @@ void MainWindow::testDelay()
 //|-Check synergies in the new set --> New synergy keys
 //|-Check evolveSyn cards
 //|-Check direct links
-///|-Check drops (1 semana despues) --> SynergyHandler::debugDrops()
+//|-Check drops (1 semana despues) --> SynergyHandler::debugDrops()
 //  In AT Dir/Extra (https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/global.gz.json)
 
 //Cards changes
