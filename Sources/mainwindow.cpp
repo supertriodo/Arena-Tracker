@@ -4989,7 +4989,7 @@ void MainWindow::testDelay()
 //Update synergies.json --> SynergyHandler::debugSynergiesSet()
 ///|-Check synergies in the new set --> New synergy keys
 ///|-Check evolveSyn cards
-//|-Check direct links
+///|-Check direct links
 //|-Check drops (1 semana despues) --> SynergyHandler::debugDrops()
 //  In AT Dir/Extra (https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/global.gz.json)
 

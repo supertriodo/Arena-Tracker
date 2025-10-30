@@ -6205,6 +6205,12 @@
     "TLC_903 Silithid Queen", "DINO_138 Diabolus Rex", "DINO_404 Firegill", "DINO_413 Chillspine Stegodon",
     "DINO_435 Crater Experiment"],
 
+  "-----SHRED OF TIME-----": "",
+  "TIME_028 Fatebreaker":["TIME_025 Twilight Timehopper", "TIME_026 Entropic Continuity",
+    "TIME_027 Tachyon Barrage"],
+  "TIME_029 Ruinous Velocidrake":["TIME_025 Twilight Timehopper", "TIME_026 Entropic Continuity",
+    "TIME_027 Tachyon Barrage"],
+
   "-----SELF-----": "",
   "ETC_336 Freebird": ["ETC_336 Freebird"],
   "TOY_803 Jade Display": ["TOY_803 Jade Display"]
