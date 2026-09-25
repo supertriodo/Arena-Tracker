@@ -44,7 +44,7 @@ QList<QStringList> LayeredSynergies::getLayeredSynergiesFromJson(const QString &
     {
         if(synergy.startsWith('&'))
         {
-            QStringList layeredSynergy = synergy.split('&', QString::SkipEmptyParts);
+            QStringList layeredSynergy = synergy.split('&', Qt::SkipEmptyParts);
             std::sort(layeredSynergy.begin(), layeredSynergy.end());
             layeredSynergyList << layeredSynergy;
         }
@@ -133,7 +133,7 @@ void LayeredSynergies::getLayeredSynergies(const QString &code, QMap<QString, QM
         for(const QString &partSynergyTag: partSynergyTagList)
         {
             const auto &keys = partSynergyTagMap[partSynergyTag].keys();
-            QSet<QString> codes = QSet<QString>::fromList(keys);
+            QSet<QString> codes = QSet<QString>(keys.begin(), keys.end());
             if(first)
             {
                 intersectionCodes = codes;

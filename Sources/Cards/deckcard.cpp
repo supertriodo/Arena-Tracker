@@ -398,13 +398,13 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
             font.setPixelSize(fontSize);
 
             QFontMetrics fm(font);
-            int textWide = fm.width(name);
+            int textWide = fm.horizontalAdvance(name);
             while(textWide>maxNameLong)
             {
                 fontSize--;
                 font.setPixelSize(fontSize);
                 fm = QFontMetrics(font);
-                textWide = fm.width(name);
+                textWide = fm.horizontalAdvance(name);
             }
             //Utility::shrinkText(font, name, 15*scale, maxNameLong);//Equivale a lo de arriba
 
@@ -640,20 +640,20 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         int fontSize = 15*scale;
         font.setPixelSize(fontSize);
         QFontMetrics fm(font);
-        int customTextWide = fm.width(customText);
+        int customTextWide = fm.horizontalAdvance(customText);
         painter.setBrush(BLACK);
         painter.setPen(QPen(WHITE));
         Utility::drawShadowText(painter, font, customText, 10*scale, (20*scale) - offsetY, false);
 
         //Name
-        int nameWide = fm.width(name);
+        int nameWide = fm.horizontalAdvance(name);
         int maxNameLong = ((total==1?194:175)*scale) - customTextWide;
         while(nameWide>maxNameLong)
         {
             fontSize--;
             font.setPixelSize(fontSize);
             fm = QFontMetrics(font);
-            nameWide = fm.width(name);
+            nameWide = fm.horizontalAdvance(name);
         }
         //Utility::shrinkText(font, name, 15*scale, ((total==1?194:175)*scale) - customTextWide);//Equivale a lo de arriba
 

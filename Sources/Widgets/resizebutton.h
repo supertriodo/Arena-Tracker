@@ -24,7 +24,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
-    void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
+    void enterEvent(QEnterEvent *e) Q_DECL_OVERRIDE;
 
 signals:
     void newSize(QSize size);

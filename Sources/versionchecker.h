@@ -6,7 +6,7 @@
 #include <QFutureWatcher>
 
 #define VERSION QString("v25.10")
-#define VERSION_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Version/version.json"
+#define VERSION_URL AT_REPO_RAW_URL "/Version/version.json"
 
 
 class VersionChecker : public QObject

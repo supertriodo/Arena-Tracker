@@ -30,20 +30,20 @@ public:
     void debugDrops();
     bool isValidSynergyCode(const QString &mechanic, QRegularExpressionMatch *match);
     void testSynergies(const QString &miniSet="");
-    int getCounters(QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
-                    QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
-                    QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
-                    QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
-                    QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
-                    QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
+    int getCounters(QMultiMap<QString, QString> &spellMap, QMultiMap<QString, QString> &minionMap, QMultiMap<QString, QString> &weaponMap,
+                    QMultiMap<QString, QString> &drop2Map, QMultiMap<QString, QString> &drop3Map, QMultiMap<QString, QString> &drop4Map,
+                    QMultiMap<QString, QString> &aoeMap, QMultiMap<QString, QString> &tauntMap,
+                    QMultiMap<QString, QString> &survivabilityMap, QMultiMap<QString, QString> &drawMap,
+                    QMultiMap<QString, QString> &pingMap, QMultiMap<QString, QString> &damageMap,
+                    QMultiMap<QString, QString> &destroyMap, QMultiMap<QString, QString> &reachMap,
                     QList<SynergyWeightCard> &synergyWeightCardList);
     void updateCounters(DeckCard &deckCard,
-                        QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
-                        QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
-                        QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
-                        QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
-                        QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
-                        QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
+                        QMultiMap<QString, QString> &spellMap, QMultiMap<QString, QString> &minionMap, QMultiMap<QString, QString> &weaponMap,
+                        QMultiMap<QString, QString> &drop2Map, QMultiMap<QString, QString> &drop3Map, QMultiMap<QString, QString> &drop4Map,
+                        QMultiMap<QString, QString> &aoeMap, QMultiMap<QString, QString> &tauntMap,
+                        QMultiMap<QString, QString> &survivabilityMap, QMultiMap<QString, QString> &drawMap,
+                        QMultiMap<QString, QString> &pingMap, QMultiMap<QString, QString> &damageMap,
+                        QMultiMap<QString, QString> &destroyMap, QMultiMap<QString, QString> &reachMap,
                         QList<SynergyWeightCard> &synergyWeightCardList);
     void getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergies,
                       QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);

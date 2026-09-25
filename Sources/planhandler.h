@@ -68,7 +68,7 @@ public:
 //Variables
 private:
     Ui::Extended *ui;
-    QMap<int,TagChange> pendingTagChanges;
+    QMultiMap<int,TagChange> pendingTagChanges;
     Board *nowBoard;
     Board *viewBoard;
     Board *futureBoard;

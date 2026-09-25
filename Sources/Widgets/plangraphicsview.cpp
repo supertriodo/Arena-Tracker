@@ -92,9 +92,9 @@ void PlanGraphicsView::progressiveZoom()
     if(std::abs(targetZoom - zoom) < ZOOM_SPEED)    zoom = targetZoom;
     else                QTimer::singleShot(20, this, SLOT(progressiveZoom()));
 
-    QMatrix mtx;
+    QTransform mtx;
     mtx.scale(static_cast<double>(zoom), static_cast<double>(zoom));
-    this->setMatrix(mtx);
+    this->setTransform(mtx);
 }
 
 
@@ -107,9 +107,9 @@ void PlanGraphicsView::resizeEvent(QResizeEvent *event)
     float zoomHeight = static_cast<float>(this->height()/boardRect.height());
     zoom = targetZoom = std::min(zoomWidth, zoomHeight);
 
-    QMatrix mtx;
+    QTransform mtx;
     mtx.scale(static_cast<double>(zoom), static_cast<double>(zoom));
-    this->setMatrix(mtx);
+    this->setTransform(mtx);
 
     emit sizeChanged();
 }

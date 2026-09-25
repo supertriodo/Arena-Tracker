@@ -213,8 +213,8 @@ bool LogLoader::readLogsDirPath()
             }
 
             QTextStream stream(&file);
-            stream << "[Log]" << endl;
-            stream << "FileSizeLimit.Int=-1" << endl;
+            stream << "[Log]" << Qt::endl;
+            stream << "FileSizeLimit.Int=-1" << Qt::endl;
 
             QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("Hearthstone restart"),
                                      tr("Restart Hearthstone if it's already running."));
@@ -346,10 +346,10 @@ bool LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
     if(!data.contains(option))
     {
         emit pDebug("Setting log.config");
-        stream << endl << option << endl;
-        stream << "LogLevel=1" << endl;
-        stream << "FilePrinting=true" << endl;
-        if(option == "[Power]") stream << "Verbose=1" << endl;
+        stream << Qt::endl << option << Qt::endl;
+        stream << "LogLevel=1" << Qt::endl;
+        stream << "FilePrinting=true" << Qt::endl;
+        if(option == "[Power]") stream << "Verbose=1" << Qt::endl;
 
         return true;
     }
@@ -391,7 +391,7 @@ void LogLoader::processDataLogs()
     if(dataLogs.isEmpty())  return;
 
     QList<qint64> timeStamps = dataLogs.keys();
-    qSort(timeStamps);
+    std::sort(timeStamps.begin(), timeStamps.end());
 
     for(qint64 timeStamp: qAsConst(timeStamps))
     {

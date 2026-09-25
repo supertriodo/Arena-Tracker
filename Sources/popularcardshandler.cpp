@@ -205,7 +205,7 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
     {
         for(int j=0; j<NUM_HEROS; j++)
         {
-            qSort(cardsByPickrate[i][j].begin(), cardsByPickrate[i][j].end(), [=](const QString &code1, const QString &code2)
+            std::sort(cardsByPickrate[i][j].begin(), cardsByPickrate[i][j].end(), [=](const QString &code1, const QString &code2)
             {
                 return cardsPickratesMap[i][code1] > cardsPickratesMap[i][code2];
             });

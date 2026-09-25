@@ -200,7 +200,7 @@ void DetachWindow::leaveEvent(QEvent * e)
 }
 
 
-void DetachWindow::enterEvent(QEvent * e)
+void DetachWindow::enterEvent(QEnterEvent * e)
 {
     QMainWindow::enterEvent(e);
 

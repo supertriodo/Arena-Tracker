@@ -916,7 +916,7 @@ void DeckHandler::updateTransparency()
 {
     if(transparency==Transparent || (!mouseInApp && inGame && transparency==AutoTransparent))
     {
-        ui->tabDeck->setAttribute(Qt::WA_NoBackground);
+        ui->tabDeck->setAttribute(Qt::WA_OpaquePaintEvent);
         ui->tabDeck->repaint();
 
         if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabDeck)
@@ -926,7 +926,7 @@ void DeckHandler::updateTransparency()
     }
     else
     {
-        ui->tabDeck->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabDeck->setAttribute(Qt::WA_OpaquePaintEvent, false);
         ui->tabDeck->repaint();
 
         if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabDeck)

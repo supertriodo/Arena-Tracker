@@ -60,7 +60,7 @@ void ResizeButton::leaveEvent(QEvent * e)
 }
 
 
-void ResizeButton::enterEvent(QEvent * e)
+void ResizeButton::enterEvent(QEnterEvent * e)
 {
     QPushButton::enterEvent(e);
     QApplication::setOverrideCursor(QCursor(Qt::SizeFDiagCursor));

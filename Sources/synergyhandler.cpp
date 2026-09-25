@@ -4,6 +4,7 @@
 #include "themehandler.h"
 #include "QDesktopServices"
 #include <QDebug>
+#include <QFile>
 #include "Synergies/keysynergies.h"
 #include "Synergies/layeredsynergies.h"
 #include "Synergies/cardtypecounter.h"
@@ -268,12 +269,12 @@ void SynergyHandler::setTransparency(Transparency transparency, bool mouseInApp)
 
 
 int SynergyHandler::getCounters(
-        QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
-        QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
-        QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
-        QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
-        QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
-        QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
+        QMultiMap<QString, QString> &spellMap, QMultiMap<QString, QString> &minionMap, QMultiMap<QString, QString> &weaponMap,
+        QMultiMap<QString, QString> &drop2Map, QMultiMap<QString, QString> &drop3Map, QMultiMap<QString, QString> &drop4Map,
+        QMultiMap<QString, QString> &aoeMap, QMultiMap<QString, QString> &tauntMap,
+        QMultiMap<QString, QString> &survivabilityMap, QMultiMap<QString, QString> &drawMap,
+        QMultiMap<QString, QString> &pingMap, QMultiMap<QString, QString> &damageMap,
+        QMultiMap<QString, QString> &destroyMap, QMultiMap<QString, QString> &reachMap,
         QList<SynergyWeightCard> &synergyWeightCardList)
 {
     CardTypeCounter::getCardTypeCounters(spellMap, minionMap, weaponMap);
@@ -294,12 +295,12 @@ int SynergyHandler::getManaCounterCount()
 
 void SynergyHandler::updateCounters(
         DeckCard &deckCard,
-        QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
-        QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
-        QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
-        QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
-        QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
-        QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
+        QMultiMap<QString, QString> &spellMap, QMultiMap<QString, QString> &minionMap, QMultiMap<QString, QString> &weaponMap,
+        QMultiMap<QString, QString> &drop2Map, QMultiMap<QString, QString> &drop3Map, QMultiMap<QString, QString> &drop4Map,
+        QMultiMap<QString, QString> &aoeMap, QMultiMap<QString, QString> &tauntMap,
+        QMultiMap<QString, QString> &survivabilityMap, QMultiMap<QString, QString> &drawMap,
+        QMultiMap<QString, QString> &pingMap, QMultiMap<QString, QString> &damageMap,
+        QMultiMap<QString, QString> &destroyMap, QMultiMap<QString, QString> &reachMap,
         QList<SynergyWeightCard> &synergyWeightCardList)
 {
     QString code = deckCard.getCode();
@@ -377,7 +378,7 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic, QRegularExpress
     }
     if(mechanic.startsWith('&'))
     {
-        const QStringList layeredSynergy = mechanic.split('&', QString::SkipEmptyParts);
+        const QStringList layeredSynergy = mechanic.split('&', Qt::SkipEmptyParts);
         bool allValid = true;
         for(const auto &partSynergy: layeredSynergy)
         {
@@ -547,7 +548,6 @@ void SynergyHandler::saveSynergiesSetJson(QMap<QString, QStringList> &synergiesM
     }
 
     QTextStream out(&file);
-    out.setCodec("UTF-8");
 
     bool first = true;
     for(const auto &code: synergiesMap.keys())

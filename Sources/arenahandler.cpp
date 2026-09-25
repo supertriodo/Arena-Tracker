@@ -873,12 +873,12 @@ void ArenaHandler::setTransparency(Transparency value)
 
     if(!mouseInApp && transparency==Transparent)
     {
-        ui->tabArena->setAttribute(Qt::WA_NoBackground);
+        ui->tabArena->setAttribute(Qt::WA_OpaquePaintEvent);
         ui->tabArena->repaint();
     }
     else
     {
-        ui->tabArena->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabArena->setAttribute(Qt::WA_OpaquePaintEvent, false);
         ui->tabArena->repaint();
     }
 }
@@ -1043,7 +1043,7 @@ QString ArenaHandler::getUniqueDate(QString date)
     //Add random hh:mm
     do
     {
-        date = (dateD.addSecs(qrand()%86400)).toString("yyyy.MM.dd hh:mm");
+        date = (dateD.addSecs(QRandomGenerator::global()->bounded(86400))).toString("yyyy.MM.dd hh:mm");
     }
     while(statsJson.contains(date));
 
@@ -1506,7 +1506,7 @@ void ArenaHandler::startProcessArenas2Stats()
 {
     if(!futureProcessArenas2Stats.isRunning())
     {
-        futureProcessArenas2Stats.setFuture(QtConcurrent::run(this, &ArenaHandler::processArenas2Stats));
+        futureProcessArenas2Stats.setFuture(QtConcurrent::run(&ArenaHandler::processArenas2Stats, this));
     }
 }
 

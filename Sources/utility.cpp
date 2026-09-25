@@ -2,10 +2,9 @@
 #include "constants.h"
 #include "themehandler.h"
 #include <QtWidgets>
-#include "opencv2/core/core.hpp"
-#include "opencv2/features2d/features2d.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/nonfree/features2d.hpp"
+#include "opencv2/features2d.hpp"
+#include "opencv2/calib3d.hpp"
+#include "opencv2/highgui.hpp"
 
 #ifdef Q_OS_LINUX
     #include "Utils/capturemanager.h"
@@ -765,6 +764,20 @@ QMap<QString, QStringList> * Utility::getBundlesMap()
 }
 
 
+//Los .dat (MANA, RARITY, Histograms) guardan el tipo de cv::Mat con la codificacion de OpenCV <= 4 (CV_CN_SHIFT 3).
+//OpenCV 5 cambio CV_CN_SHIFT a 5, asi que traducimos al leer/escribir para mantener el formato de los ficheros.
+int Utility::cvTypeFromFile(int fileType)
+{
+    return CV_MAKETYPE(fileType & 7, (fileType >> 3) + 1);
+}
+
+
+int Utility::cvTypeToFile(int type)
+{
+    return CV_MAT_DEPTH(type) + ((CV_MAT_CN(type) - 1) << 3);
+}
+
+
 QString Utility::appPath()
 {
     QString dirPath = QCoreApplication::applicationDirPath();
@@ -916,59 +929,45 @@ ulong Utility::findTemplateOnMat(const QString &templateImage, cv::Mat &mat, con
 {
     cv::Mat screenCapture = mat.clone();
 
-    Mat img_object = imread((Utility::extraPath() + "/" + templateImage).toStdString(), CV_LOAD_IMAGE_GRAYSCALE );
+    Mat img_object = imread((Utility::extraPath() + "/" + templateImage).toStdString(), cv::IMREAD_GRAYSCALE );
     if(!img_object.data)
     {
         qDebug() << "Utility: Cannot find" << templateImage;
         return 0;
     }
     Mat img_scene;
-    cv::cvtColor(screenCapture, img_scene, CV_BGR2GRAY);
+    cv::cvtColor(screenCapture, img_scene, cv::COLOR_BGR2GRAY);
 
-    //-- Step 1: Detect the keypoints using SURF Detector
-    int minHessian = 400;
-
-    SurfFeatureDetector detector( minHessian );
+    //-- Step 1/2: Detect keypoints and compute descriptors using SIFT
+    //SURF (nonfree) is not available in current OpenCV builds, SIFT is in the main module since OpenCV 4.4.
+    cv::Ptr<cv::SIFT> sift = cv::SIFT::create();
 
     std::vector<KeyPoint> keypoints_object, keypoints_scene;
+    Mat descriptors_object, descriptors_scene;
 
-    detector.detect( img_object, keypoints_object );
-    detector.detect( img_scene, keypoints_scene );
-    if(keypoints_scene.empty())
+    sift->detectAndCompute( img_object, cv::noArray(), keypoints_object, descriptors_object );
+    sift->detectAndCompute( img_scene, cv::noArray(), keypoints_scene, descriptors_scene );
+    if(keypoints_object.empty() || keypoints_scene.size() < 2)
     {
         qDebug() << "Utility: Bad screen for opencv flan.";
         return 0;
     }
 
-    //-- Step 2: Calculate descriptors (feature vectors)
-    SurfDescriptorExtractor extractor;
-
-    Mat descriptors_object, descriptors_scene;
-
-    extractor.compute( img_object, keypoints_object, descriptors_object );
-    extractor.compute( img_scene, keypoints_scene, descriptors_scene );
-
     //-- Step 3: Matching descriptor vectors using FLANN matcher
     FlannBasedMatcher matcher;
-    std::vector< DMatch > matches;
-    matcher.match( descriptors_object, descriptors_scene, matches );
+    std::vector< std::vector<DMatch> > knnMatches;
+    matcher.knnMatch( descriptors_object, descriptors_scene, knnMatches, 2 );
 
-    double min_dist = 100;
-
-    //-- Quick calculation of max and min distances between keypoints
-    for( int i = 0; i < descriptors_object.rows; i++ )
-    { double dist = static_cast<double>(matches[static_cast<ulong>(i)].distance);
-      if( dist < min_dist ) min_dist = dist;
-    }
-
-    qDebug()<< "Utility: FLANN min dist:" <<min_dist;
-
-    //-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist )
+    //-- Keep only distinctive matches (Lowe's ratio test). The old SURF code used an absolute distance
+    //-- threshold (0.04) that doesn't translate to SIFT descriptor distances.
+    const float ratioThresh = 0.75f;
     std::vector< DMatch > good_matches;
-
-    for( int i = 0; i < descriptors_object.rows; i++ )
-    { if( static_cast<double>(matches[static_cast<ulong>(i)].distance) < /*min(0.05,max(2*min_dist, 0.02))*/0.04 )
-       { good_matches.push_back( matches[static_cast<ulong>(i)]); }
+    for(const std::vector<DMatch> &knn: knnMatches)
+    {
+        if(knn.size() == 2 && knn[0].distance < ratioThresh * knn[1].distance)
+        {
+            good_matches.push_back(knn[0]);
+        }
     }
     qDebug()<< "Utility: FLANN Keypoints buenos:" <<good_matches.size();
     ulong goodMatches = good_matches.size();
@@ -985,7 +984,7 @@ ulong Utility::findTemplateOnMat(const QString &templateImage, cv::Mat &mat, con
       scene.push_back( keypoints_scene[ static_cast<ulong>(good_matches[i].trainIdx) ].pt );
     }
 
-    Mat H = findHomography( obj, scene, CV_RANSAC );
+    Mat H = findHomography( obj, scene, cv::RANSAC );
 
     //-- Get the corners from the image_1 ( the object to be "detected" )
     perspectiveTransform(templatePoints, targetPoints, H);
@@ -1128,7 +1127,7 @@ void Utility::drawShadowText(QPainter &painter, const QFont &font, const QString
     //Eso hace que en los diferentes temas muestren el texto diferente donde no deberian (Ej Vida/Atk cartas replay)
     QFontMetrics fm(font);
 
-    int textWide = fm.width(text);
+    int textWide = fm.horizontalAdvance(text);
     int textHigh = fm.height();
 
     double offsetY = 0.25 - (isCardText?ThemeHandler::cardsFontOffsetY():0)/100.0;
@@ -1150,12 +1149,12 @@ void Utility::drawShadowText(QPainter &painter, const QFont &font, const QString
 void Utility::drawTagText(QPainter &painter, const QFont &font, const QString &text, int x, int y, int xBorder, int yBorder, float scale, bool alignCenter)
 {
     QFontMetrics fm(font);
-    int textWide = fm.width(text);
+    int textWide = fm.horizontalAdvance(text);
 
     QColor synergyTagColor = QColor(ThemeHandler::synergyTagColor());
     painter.setPen(QPen(BLACK));
     painter.setBrush(synergyTagColor.isValid()?synergyTagColor:BLACK);
-    painter.drawRoundRect((x-xBorder)*scale - (alignCenter?textWide/2:0), (y-yBorder)*scale, ((xBorder*2)*scale)+textWide, ((yBorder*2)-1)*scale, 15, 80);
+    painter.drawRoundedRect((x-xBorder)*scale - (alignCenter?textWide/2:0), (y-yBorder)*scale, ((xBorder*2)*scale)+textWide, ((yBorder*2)-1)*scale, 15, 80, Qt::RelativeSize);
 
     painter.setPen(QPen(BLACK));
     painter.setBrush(WHITE);
@@ -1228,13 +1227,13 @@ void Utility::shrinkText(QFont &font, const QString &text, int startFontSize, in
     font.setPixelSize(fontSize);
 
     QFontMetrics fm(font);
-    int textWide = fm.width(text);
+    int textWide = fm.horizontalAdvance(text);
     while(textWide > maxLong)
     {
         fontSize--;
         font.setPixelSize(fontSize);
         fm = QFontMetrics(font);
-        textWide = fm.width(text);
+        textWide = fm.horizontalAdvance(text);
     }
 }
 
@@ -1358,7 +1357,7 @@ void Utility::checkTierlistsCount(const QStringList &arenaCodes)
         const QString heroString = Utility::classLogNumber2classUL_ULName(heroLog);
         const CardClass heroClass = (CardClass)i;
 
-        qDebug()<<endl<<"--------------------"<<heroString<<"--------------------";
+        qDebug()<<Qt::endl<<"--------------------"<<heroString<<"--------------------";
         QMap<QString, QString> arenaMap;
 
         //Arena Codes List
@@ -1437,12 +1436,12 @@ void Utility::checkTierlistsCount(const QStringList &arenaCodes)
 
     arenaSets.sort();
     haSets.sort();
-    qDebug()<<endl<<"---------------------------------------------------------------------------"
+    qDebug()<<Qt::endl<<"---------------------------------------------------------------------------"
                 "SETS ---------------------------------------------------------------------------";
     qDebug()<<"Arena Sets:"<<arenaSets;
     qDebug()<<"HA    Sets:"<<haSets;
     qDebug()<<"---------------------------------------------------------------------------"
-                "SETS ---------------------------------------------------------------------------"<<endl;
+                "SETS ---------------------------------------------------------------------------"<<Qt::endl;
 }
 
 
@@ -1558,20 +1557,20 @@ void Utility::mergeHSRwithFireCards()
 
     QJsonArray hsrArray = QJsonDocument::fromJson(hsrData).array();
     qDebug()<<"Before HSR cards:" << hsrArray.count();
-    for(QJsonArray::iterator it = hsrArray.begin(); it != hsrArray.end(); it++)
+    for(qsizetype i = 0; i < hsrArray.count(); i++)
     {
-        QJsonObject hsrObject = it->toObject();
+        QJsonObject hsrObject = hsrArray[i].toObject();
         QString id = hsrObject.value("id").toString();
         QJsonValue races = fireMap[id].value("races");
         if(!races.isUndefined())
         {
             hsrObject["races"] = races;
-            it.a->replace(it.i, hsrObject);
-            qDebug()<<"Replace item" << it.i << "id =" << id << "with races =" << races;
+            hsrArray.replace(i, hsrObject);
+            qDebug()<<"Replace item" << i << "id =" << id << "with races =" << races;
         }
         else
         {
-            qDebug()<<"Item" << it.i << "id =" << id << "no races";
+            qDebug()<<"Item" << i << "id =" << id << "no races";
         }
     }
     qDebug()<<"After HSR cards:" << hsrArray.count();

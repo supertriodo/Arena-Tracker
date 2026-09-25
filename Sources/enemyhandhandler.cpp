@@ -372,7 +372,7 @@ void EnemyHandHandler::updateTransparency()
 
     if(transparency==Transparent || (!mouseInApp && inGame && transparency==AutoTransparent))
     {
-        ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
+        ui->tabEnemy->setAttribute(Qt::WA_OpaquePaintEvent);
         ui->tabEnemy->repaint();
 
         //Tambien nos hacemos cargo en transparency==Transparent para que se llame a MainWindowFade al empezar y terminar un juego
@@ -384,7 +384,7 @@ void EnemyHandHandler::updateTransparency()
     }
     else
     {
-        ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabEnemy->setAttribute(Qt::WA_OpaquePaintEvent, false);
         ui->tabEnemy->repaint();
 
         //transparency==Transparent nunca llegara hasta aqui
@@ -474,7 +474,7 @@ void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int t
     QString text;
     if(totalAttack == totalMaxAttack)   text = QString::number(totalAttack);
     else                                text = QString::number(totalAttack) + "/" + QString::number(totalMaxAttack);
-    int textWide = fm.width(text);
+    int textWide = fm.horizontalAdvance(text);
 
 
     int widthCanvas = std::max(tamAtkHero, textWide);

@@ -33,7 +33,7 @@ private:
     void drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont=false);
 
 protected:
-    void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
+    void enterEvent(QEnterEvent *e) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;

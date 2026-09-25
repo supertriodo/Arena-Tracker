@@ -293,20 +293,20 @@ QMap<QString, int> &DraftItemCounter::getCodeSynMap()
 }
 
 
-QMap<QString, QString> DraftItemCounter::getCodeTagMap()
+QMultiMap<QString, QString> DraftItemCounter::getCodeTagMap()
 {
-    QMap<QString, QString> codeTagMap;
+    QMultiMap<QString, QString> codeTagMap;
     for(SynergyCard &synergyCard: synergyCardList)
     {
         QString code = synergyCard.getCode();
-        for(int i=0; i<synergyCard.total; i++)  codeTagMap.insertMulti(code, "");
+        for(int i=0; i<synergyCard.total; i++)  codeTagMap.insert(code, "");
     }
     for(SynergyCard &synergyCard: extraCardList)
     {
         QString code = synergyCard.getCode();
         QString tag = synergyCard.getSynergyTag();
         if(tag.isEmpty())  tag = ".";
-        for(int i=0; i<synergyCard.total; i++)  codeTagMap.insertMulti(code, tag);
+        for(int i=0; i<synergyCard.total; i++)  codeTagMap.insert(code, tag);
     }
     return codeTagMap;
 }
@@ -320,17 +320,17 @@ void DraftItemCounter::sendIconEnter()
     QRect labelRect = QRect(topLeft, bottomRight);
 
     //synergyCardList
-    QMap<int,SynergyCard> synergyCardMap;
-    for(SynergyCard &synergyCard: synergyCardList)  synergyCardMap.insertMulti(synergyCard.getCost(), synergyCard);
+    QMultiMap<int,SynergyCard> synergyCardMap;
+    for(SynergyCard &synergyCard: synergyCardList)  synergyCardMap.insert(synergyCard.getCost(), synergyCard);
     QList<SynergyCard> synergyCardOrderedList = synergyCardMap.values();
     if(!synergyCardOrderedList.isEmpty())   synergyCardOrderedList.first().setSynergyTag(synergyTag);
 
     //extraCardList
-    QMap<int,SynergyCard> extraCardMap, extraCardMapWithTag;
+    QMultiMap<int,SynergyCard> extraCardMap, extraCardMapWithTag;
     for(SynergyCard &synergyCard: extraCardList)
     {
-        if(synergyCard.getSynergyTag().isEmpty())   extraCardMap.insertMulti(synergyCard.getCost(), synergyCard);
-        else                                        extraCardMapWithTag.insertMulti(synergyCard.getCost(), synergyCard);
+        if(synergyCard.getSynergyTag().isEmpty())   extraCardMap.insert(synergyCard.getCost(), synergyCard);
+        else                                        extraCardMapWithTag.insert(synergyCard.getCost(), synergyCard);
     }
     QList<SynergyCard> extraCardOrderedList = extraCardMap.values();
     if(!extraCardOrderedList.isEmpty()) extraCardOrderedList.first().setSynergyTag(synergyTagExtra);

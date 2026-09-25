@@ -50,7 +50,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 //    void changeEvent(QEvent *event) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
-    void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
+    void enterEvent(QEnterEvent *e) Q_DECL_OVERRIDE;
 
 public:
 

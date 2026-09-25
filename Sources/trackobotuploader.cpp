@@ -144,7 +144,7 @@ QString TrackobotUploader::getRandomString(int rslength)
    QString randomString;
    for(int i=0; i<rslength; i++)
    {
-       int index = qrand() % possibleCharacters.length();
+       int index = QRandomGenerator::global()->bounded(possibleCharacters.length());
        QChar nextChar = possibleCharacters.at(index);
        randomString.append(nextChar);
    }

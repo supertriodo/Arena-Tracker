@@ -34,7 +34,7 @@ void DraftDropCounter::setTheme(QPixmap pixmap, int iconWidth, bool inDraftMecha
 
 void DraftDropCounter::drawBorder(bool greenBorder)
 {
-    QPixmap pixmap(*labelIcon->pixmap());
+    QPixmap pixmap(labelIcon->pixmap());
     QRect targetAll(0, 0, pixmap.width(), pixmap.height());
     QPainter painter;
 
@@ -194,7 +194,7 @@ QStringList DraftDropCounter::debugDropSynergies(const QString &code, int attack
 }
 
 
-void DraftDropCounter::getDropCounters(QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map)
+void DraftDropCounter::getDropCounters(QMultiMap<QString, QString> &drop2Map, QMultiMap<QString, QString> &drop3Map, QMultiMap<QString, QString> &drop4Map)
 {
     drop2Map = keySynergiesMap["drop2"]->getCodeTagMap();
     drop3Map = keySynergiesMap["drop3"]->getCodeTagMap();
@@ -227,52 +227,52 @@ void DraftDropCounter::getDropMechanicIcons(const QString &code, QMap<MechanicIc
 }
 
 
-void DraftDropCounter::updateDropCounters(const QString &code, QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
+void DraftDropCounter::updateDropCounters(const QString &code, QMultiMap<QString, QString> &drop2Map, QMultiMap<QString, QString> &drop3Map, QMultiMap<QString, QString> &drop4Map,
                                           int attack, int health, int cost)
 {
     if(isDrop2(code, cost, attack, health))
     {
         keySynergiesMap["drop2"]->increase(code);
-        drop2Map.insertMulti(code, "");
+        drop2Map.insert(code, "");
         if(cost == 3)
         {
             keySynergiesMap["drop3"]->increaseExtra(code, "2 Drop");
-            drop3Map.insertMulti(code, "2 Drop");
+            drop3Map.insert(code, "2 Drop");
         }
         else if(cost == 4)
         {
             keySynergiesMap["drop4"]->increaseExtra(code, "2 Drop");
-            drop4Map.insertMulti(code, "2 Drop");
+            drop4Map.insert(code, "2 Drop");
         }
     }
     else if(isDrop3(code, cost, attack, health))
     {
         keySynergiesMap["drop3"]->increase(code);
-        drop3Map.insertMulti(code, "");
+        drop3Map.insert(code, "");
         if(cost == 2)
         {
             keySynergiesMap["drop2"]->increaseExtra(code, "3 Drop");
-            drop2Map.insertMulti(code, "3 Drop");
+            drop2Map.insert(code, "3 Drop");
         }
         else if(cost == 4)
         {
             keySynergiesMap["drop4"]->increaseExtra(code, "3 Drop");
-            drop4Map.insertMulti(code, "3 Drop");
+            drop4Map.insert(code, "3 Drop");
         }
     }
     else if(isDrop4(code, cost, attack, health))
     {
         keySynergiesMap["drop4"]->increase(code);
-        drop4Map.insertMulti(code, "");
+        drop4Map.insert(code, "");
         if(cost == 2)
         {
             keySynergiesMap["drop2"]->increaseExtra(code, "4 Drop");
-            drop2Map.insertMulti(code, "4 Drop");
+            drop2Map.insert(code, "4 Drop");
         }
         else if(cost == 3)
         {
             keySynergiesMap["drop3"]->increaseExtra(code, "4 Drop");
-            drop3Map.insertMulti(code, "4 Drop");
+            drop3Map.insert(code, "4 Drop");
         }
     }
     else
@@ -280,17 +280,17 @@ void DraftDropCounter::updateDropCounters(const QString &code, QMap<QString, QSt
         if(cost == 2)
         {
             keySynergiesMap["drop2"]->increaseExtra(code);
-            drop2Map.insertMulti(code, ".");
+            drop2Map.insert(code, ".");
         }
         else if(cost == 3)
         {
             keySynergiesMap["drop3"]->increaseExtra(code);
-            drop3Map.insertMulti(code, ".");
+            drop3Map.insert(code, ".");
         }
         else if(cost == 4)
         {
             keySynergiesMap["drop4"]->increaseExtra(code);
-            drop4Map.insertMulti(code, ".");
+            drop4Map.insert(code, ".");
         }
     }
 

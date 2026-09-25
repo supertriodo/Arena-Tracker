@@ -147,7 +147,7 @@ void LavaButton::paintEvent(QPaintEvent *event)
 
     QString text = QString::number(int(value)) + "." + QString::number(int(value*10)%10);
     QFontMetrics fm = QFontMetrics(font);
-    int textWide = fm.width(text);
+    int textWide = fm.horizontalAdvance(text);
     int textHigh = fm.height();
 
     QPainterPath path;

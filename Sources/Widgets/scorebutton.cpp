@@ -47,7 +47,7 @@ void ScoreButton::leaveEvent(QEvent * e)
 }
 
 
-void ScoreButton::enterEvent(QEvent * e)
+void ScoreButton::enterEvent(QEnterEvent * e)
 {
     emit spreadHoverScore(true);
     QLabel::enterEvent(e);

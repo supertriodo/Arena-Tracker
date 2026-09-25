@@ -52,10 +52,10 @@ public:
     static void setTransparency(Transparency transparency, bool mouseInApp);
     static void setSynergyCodes(QMap<QString, QList<QString> > *synergyCodes);
     static QStringList debugDropSynergies(const QString &code, int attack, int health, int cost);
-    static void getDropCounters(QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map);
+    static void getDropCounters(QMultiMap<QString, QString> &drop2Map, QMultiMap<QString, QString> &drop3Map, QMultiMap<QString, QString> &drop4Map);
     static void getDropMechanicIcons(const QString &code, QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor,
                                      int attack, int health, int cost);
-    static void updateDropCounters(const QString &code, QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
+    static void updateDropCounters(const QString &code, QMultiMap<QString, QString> &drop2Map, QMultiMap<QString, QString> &drop3Map, QMultiMap<QString, QString> &drop4Map,
                                    int attack, int health, int cost);
 
     static bool isDrop2(const QString &code);
