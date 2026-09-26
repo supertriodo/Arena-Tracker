@@ -123,6 +123,7 @@ private:
     TwitchHandler *twitchHandler;
     bool multiclassArena;
     bool needSaveCardHist;
+    int cardsJsonWaits;
     //Usado en busqueda manual (name -> code)
     QMap<QString, QString> cardsNameMap;
     int editComboBoxNum;//Numero de combo box que estamos editando

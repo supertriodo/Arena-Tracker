@@ -88,6 +88,7 @@ private:
     static QString diacriticLetters;
     static QStringList noDiacriticLetters;
     static bool trustHA;
+    static bool cardsJsonUpToDate;
     static QStringList arenaSets;
     static QMap<QString, QStringList> *bundlesMap;
 
@@ -167,6 +168,8 @@ public:
     static QJsonObject loadHearthArena();
     static bool getTrustHA();
     static void setTrustHA(bool trustHA);
+    static bool isCardsJsonUpToDate();
+    static void setCardsJsonUpToDate(bool upToDate);
     static void setArenaSets(QStringList arenaSets);
     static void setBundlesMap(QMap<QString, QStringList> bundlesMap[]);
     static QMap<QString, QStringList> * getBundlesMap();

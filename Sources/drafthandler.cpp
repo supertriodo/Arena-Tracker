@@ -49,6 +49,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->screenIndex = -1;
     this->screenScale = QPointF(1,1);
     this->needSaveCardHist = false;
+    this->cardsJsonWaits = 0;
     this->prevCodesTime = 0;
 
     for(int i=0; i<3; i++)
@@ -561,6 +562,18 @@ void DraftHandler::initLightForgeTiers(const CardClass heroClass, const bool mul
 //continueDraft y heroDrafts esperan a buscar el template ya que hay una pantalla pasillo.
 void DraftHandler::initCodesAndHistMaps(QList<DeckCard> &deckCardList, bool skipScreenSettings)
 {
+    //Si continuamos un draft al arrancar, cards.json nuevo puede no haber llegado todavia y el pool de arena
+    //se calcularia sin las cartas nuevas. Esperamos (max 30s, por si no hay conexion).
+    if(!heroDrafting && !Utility::isCardsJsonUpToDate() && cardsJsonWaits < 30)
+    {
+        if(cardsJsonWaits == 0)  emit pDebug("Waiting for cards.json update before building arena hists.");
+        cardsJsonWaits++;
+        QList<DeckCard> deckCardListCopy = deckCardList;
+        QTimer::singleShot(1000, this, [=]() mutable {initCodesAndHistMaps(deckCardListCopy, skipScreenSettings);});
+        return;
+    }
+    cardsJsonWaits = 0;
+
     cardsDownloading.clear();
     cardsHist.clear();
     cardsNameMap.clear();

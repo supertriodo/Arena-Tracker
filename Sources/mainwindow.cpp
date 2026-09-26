@@ -397,6 +397,11 @@ void MainWindow::replyFinished(QNetworkReply *reply)
                 QString cardsJsonLocal = Utility::extraPath() + "/cards.json";
                 Utility::dumpOnFile(jsonData, cardsJsonLocal);
 
+                //Histograms/arena cards could have been built with the old cards.json (new sets missing).
+                removeHistograms();
+                Utility::createDir(Utility::histogramsPath());
+                allCardsDownloadNeeded = true;
+                Utility::setCardsJsonUpToDate(true);
                 createCardsJsonMap(jsonData);
                 initWRCards();
             }
@@ -2764,6 +2769,8 @@ void MainWindow::downloadCardsJson(int version)
     }
     else
     {
+        Utility::setCardsJsonUpToDate(true);
+        checkArenaCards();
         initWRCards();
     }
 }
@@ -4291,7 +4298,8 @@ void MainWindow::checkFirstRunNewVersion()
 //Solo baja las cartas si arenaVersion ha cambiado de version o HSCards se ha borrado
 void MainWindow::checkArenaCards()
 {
-    if(draftHandler == nullptr || !cardsJsonLoaded || !arenaSetsLoaded)    return;
+    if(draftHandler == nullptr || !cardsJsonLoaded || !arenaSetsLoaded ||
+        !Utility::isCardsJsonUpToDate())    return;
 
     QSettings settings("Arena Tracker", "Arena Tracker");
 

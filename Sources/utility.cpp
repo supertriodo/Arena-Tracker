@@ -19,6 +19,7 @@ QString Utility::localLang = "enUS";
 QString Utility::diacriticLetters;
 QStringList Utility::noDiacriticLetters;
 bool Utility::trustHA;
+bool Utility::cardsJsonUpToDate = false;
 QStringList Utility::arenaSets;
 QMap<QString, QStringList> * Utility::bundlesMap = nullptr;
 
@@ -737,6 +738,19 @@ QJsonObject Utility::loadHearthArena()
 bool Utility::getTrustHA()
 {
     return Utility::trustHA;
+}
+
+
+//Cards.json local puede estar desactualizado hasta que comprobamos cardsVersion.json (y bajamos el nuevo).
+bool Utility::isCardsJsonUpToDate()
+{
+    return Utility::cardsJsonUpToDate;
+}
+
+
+void Utility::setCardsJsonUpToDate(bool upToDate)
+{
+    Utility::cardsJsonUpToDate = upToDate;
 }
 
 
