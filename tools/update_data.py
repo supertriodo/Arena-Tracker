@@ -6,6 +6,8 @@
                                  (bumps arenaVersion when the set list changes)
 - HearthstoneCards/<id>.png   <- HearthstoneJSON 256x renders, cropped/scaled to AT's 200x304 format,
                                  for arena-pool cards that have no image yet
+- HearthstoneCards/<id>_premium.png <- first frame of the hearthpwn golden animation, same format
+                                 (falls back to a copy of the plain image)
 
 Usage:  python3 tools/update_data.py [--dry-run] [--sets SET1,SET2,...]
 Requires Pillow (pip install pillow).
@@ -24,6 +26,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 HSJ_CARDS_URL = "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 HSJ_RENDER_URL = "https://art.hearthstonejson.com/v1/render/latest/enUS/256x/{}.png"
+HEARTHPWN_GOLDEN_URL = "https://cards.hearthpwn.com/enUS/anims/{}_premium_000.png"
 FIRE_GLOBAL_URL = "https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/global.gz.json"
 USER_AGENT = "ArenaTracker-data-updater (+https://github.com/Inoooooor/Arena-Tracker)"
 
@@ -37,6 +40,10 @@ ARENA_SET_MIN_COVERAGE = 0.5
 # Same idea as the commented-out "Old cut for all hearthsim plain cards" in hscarddownloader.cpp.
 CROP_X, CROP_Y, CROP_W = 5, -8, 245
 OUT_W, OUT_H = 200, 304
+
+# Same fit for the 600x830 hearthpwn golden frames against existing *_premium.png images.
+# Legendary frames are bigger, so they get their own cut (like hscarddownloader.cpp does).
+GOLDEN_CROP = {"default": (-8, -65, 618), "legendary_minion": (10, -20, 584), "legendary": (-10, -40, 596)}
 
 
 def fetch(url, timeout=120):
@@ -119,34 +126,57 @@ def update_arena_version(cards, forced_sets, dry_run):
     return ordered
 
 
-def render_card(code):
-    src = Image.open(io.BytesIO(fetch(HSJ_RENDER_URL.format(code)))).convert("RGBA")
-    crop_h = round(CROP_W * OUT_H / OUT_W)
-    canvas = Image.new("RGBA", (CROP_W, crop_h), (0, 0, 0, 0))
-    canvas.paste(src, (-CROP_X, -CROP_Y))
+def crop_card(data, x, y, w):
+    src = Image.open(io.BytesIO(data)).convert("RGBA")
+    canvas = Image.new("RGBA", (w, round(w * OUT_H / OUT_W)), (0, 0, 0, 0))
+    canvas.paste(src, (-x, -y))
     return canvas.resize((OUT_W, OUT_H), Image.LANCZOS)
+
+
+def render_card(code):
+    return crop_card(fetch(HSJ_RENDER_URL.format(code)), CROP_X, CROP_Y, CROP_W)
+
+
+def render_golden(card):
+    if card.get("rarity") == "LEGENDARY":
+        key = "legendary_minion" if card.get("type") == "MINION" else "legendary"
+    else:
+        key = "default"
+    return crop_card(fetch(HEARTHPWN_GOLDEN_URL.format(card["id"])), *GOLDEN_CROP[key])
 
 
 def update_card_images(cards, sets, dry_run):
     print("HearthstoneCards")
     out_dir = ROOT / "HearthstoneCards"
-    missing = [code for code in arena_pool_codes(cards, sets) if not (out_dir / f"{code}.png").exists()]
-    print(f"  {len(missing)} arena cards without image")
+    by_id = {c["id"]: c for c in cards}
     failed = []
-    for code in missing:
-        try:
-            image = render_card(code)
-        except Exception as e:
-            print(f"  {code}: {e}")
-            failed.append(code)
-            continue
-        print(f"  {code}")
-        if dry_run:
-            continue
-        image.save(out_dir / f"{code}.png")
-        # No golden renders on HearthstoneJSON: reuse the plain one so golden picks still get a histogram.
+    for code in arena_pool_codes(cards, sets):
+        plain = out_dir / f"{code}.png"
         premium = out_dir / f"{code}_premium.png"
-        if not premium.exists():
+        if not plain.exists():
+            try:
+                image = render_card(code)
+            except Exception as e:
+                print(f"  {code}: {e}")
+                failed.append(code)
+                continue
+            print(f"  {code}")
+            if not dry_run:
+                image.save(plain)
+
+        # Missing golden, or a stand-in copy of the plain image from an earlier run.
+        if premium.exists() and (not plain.exists() or premium.read_bytes() != plain.read_bytes()):
+            continue
+        try:
+            image = render_golden(by_id[code])
+            print(f"  {code}_premium")
+        except Exception as e:
+            if premium.exists() or not plain.exists():
+                continue
+            # No golden available: reuse the plain one so golden picks still get a histogram.
+            print(f"  {code}_premium: {e}, using plain image")
+            image = Image.open(plain)
+        if not dry_run:
             image.save(premium)
     if failed:
         print(f"  failed: {', '.join(failed)}")
