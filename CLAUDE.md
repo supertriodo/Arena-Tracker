@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Language
+
+Communicate with the user in Russian.
+
+Write all new code comments in English (existing Spanish comments can stay as they are).
+
+## Git
+
+**Never push to any remote** (`git push` in any form, including `--force`, tags, or pushing via `gh`). The user pushes personally. Committing locally is fine when asked.
+
 ## Project
 
 Arena Tracker (AT) is a Qt 6 / C++ desktop deck tracker for Hearthstone, focused on Arena drafting. Single qmake project, no test suite, no linter. Code comments are frequently in Spanish.
@@ -49,3 +59,5 @@ The installed app downloads data directly from this repo's `master` branch via `
 - `HearthArena/hearthArena.json` + `haVersion.json`, `LightForge/`, `CardsJson/`, `Themes/`, `Extra/`, `Images/`, `HearthstoneCards/`, `HearthstoneSignatureCards/`, `Premium/premium.json`.
 
 Clients only re-download a JSON when its companion `*Version.json` number increases — bump the version number whenever the data file changes.
+
+

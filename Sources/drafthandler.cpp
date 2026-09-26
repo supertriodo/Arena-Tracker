@@ -329,7 +329,7 @@ void DraftHandler::loadCardHist(QString classUName)
     while(!in.atEnd())
     {
         in >> code >> type >> rows >> cols >> continuous;
-        cardsHist[code] = cv::Mat(rows, cols, type);
+        cardsHist[code] = cv::Mat(rows, cols, Utility::cvTypeFromFile(type));
         cv::Mat &mat = cardsHist[code];
 
         if(continuous)
@@ -385,7 +385,7 @@ void DraftHandler::saveCardHist()
                     }
 
                     cv::Mat &mat = cardsHist[code];
-                    type = mat.type();
+                    type = Utility::cvTypeToFile(mat.type());
                     rows = mat.rows;
                     cols = mat.cols;
                     continuous = mat.isContinuous();
@@ -1032,7 +1032,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
         lavaButton->setEnabled(true);
     }
 
-    QMap<QString, QString> spellMap, minionMap, weaponMap,
+    QMultiMap<QString, QString> spellMap, minionMap, weaponMap,
                 drop2Map, drop3Map, drop4Map,
                 aoeMap, tauntMap, survivabilityMap, drawMap,
                 pingMap, damageMap, destroyMap, reachMap;
@@ -1500,12 +1500,12 @@ void DraftHandler::buildBestMatchesMaps()
     {
         for(int i=0; i<3; i++)
         {
-            QMap<double, QString> bestMatchesDups;
+            QMultiMap<double, QString> bestMatchesDups;
             const QList<QString> codeList = draftCardMaps[i].keys();
             for(const QString &code: codeList)
             {
                 double match = draftCardMaps[i][code].getBestQualityMatches();
-                bestMatchesDups.insertMulti(match, code);
+                bestMatchesDups.insert(match, code);
             }
 
             comboBoxCard[i]->clear();
@@ -1516,7 +1516,7 @@ void DraftHandler::buildBestMatchesMaps()
                 if(!insertedCodes.contains(degoldCode(code)))
                 {
                     double match = draftCardMaps[i][code].getBestQualityMatches();
-                    bestMatchesMaps[i].insertMulti(match, code);
+                    bestMatchesMaps[i].insert(match, code);
                     draftCardMaps[i][code].draw(comboBoxCard[i]);
                     insertedCodes.append(degoldCode(code));
                 }
@@ -1531,7 +1531,7 @@ void DraftHandler::buildBestMatchesMaps()
             for(const QString &code: codeList)
             {
                 double match = draftCardMaps[i][code].getBestQualityMatches();
-                bestMatchesMaps[i].insertMulti(match, code);
+                bestMatchesMaps[i].insert(match, code);
             }
         }
     }
@@ -1685,7 +1685,7 @@ void DraftHandler::pickCard(QString code)
 
         if(cardIndex > 2)   draftCard = DraftCard(code);
 
-        QMap<QString, QString> spellMap, minionMap, weaponMap,
+        QMultiMap<QString, QString> spellMap, minionMap, weaponMap,
                     drop2Map, drop3Map, drop4Map,
                     aoeMap, tauntMap, survivabilityMap, drawMap,
                     pingMap, damageMap, destroyMap, reachMap;
@@ -1845,6 +1845,10 @@ bool DraftHandler::isEmptyDeck()
 QStringList DraftHandler::getBundleCodes(const QString &code)
 {
     QMap<QString, QStringList> * bundlesMap = Utility::getBundlesMap();
+
+    //Bug Fix: HSR bundles map is never created when HSReplay download fails and there is no
+    //local HSRbundles.json (fresh install). It crashed on the first draft pick. No bundles then.
+    if(bundlesMap == nullptr || arenaHero < 0 || arenaHero >= NUM_HEROS)    return QStringList();
 
     if(multiclassArena)
     {
@@ -2412,7 +2416,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 
     for(int i=0; i<3; i++)
     {
-        QMap<double, QString> bestMatchesMap;
+        QMultiMap<double, QString> bestMatchesMap;
         for(QMap<QString, cv::MatND>::const_iterator it=cardsHist.constBegin(); it!=cardsHist.constEnd(); it++)
         {
             QString code = it.key();
@@ -2425,7 +2429,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
             }
 
             double match = compareHist(screenCardsHist[i], it.value(), 3);
-            bestMatchesMap.insertMulti(match, code);
+            bestMatchesMap.insert(match, code);
 
             //Actualizamos DraftCardMaps con los nuevos resultados
             if((numCaptured != 0) && draftCardMaps[i].contains(code))
@@ -2439,7 +2443,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
         for(int j=0; j<numCandidates && j<bestMatchesList.count(); j++)
         {
             double match = bestMatchesList.at(j);
-            QString code = bestMatchesMap[match];
+            QString code = bestMatchesMap.value(match);
 
             if(!draftCardMaps[i].contains(code))
             {
@@ -2492,7 +2496,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 
 cv::MatND DraftHandler::getHist(const QString &code)
 {
-    cv::Mat fullCard = cv::imread((Utility::hscardsPath() + "/" + code + ".png").toStdString(), CV_LOAD_IMAGE_COLOR);
+    cv::Mat fullCard = cv::imread((Utility::hscardsPath() + "/" + code + ".png").toStdString(), cv::IMREAD_COLOR);
     cv::Mat srcBase;
     if(drafting || redraftingReview)
     {
@@ -2769,7 +2773,7 @@ void DraftHandler::startFindScreenRects()
     }
     if(!futureFindScreenRects.isRunning())
     {
-        futureFindScreenRects.setFuture(QtConcurrent::run(this, &DraftHandler::findScreenRects));
+        futureFindScreenRects.setFuture(QtConcurrent::run(&DraftHandler::findScreenRects, this));
     }
 }
 
@@ -2837,9 +2841,9 @@ ScreenDetection DraftHandler::findScreenRects()
     if(heroDrafting)
     {
         templatePoints.resize(6);
-        templatePoints[0] = cvPoint(207,340); templatePoints[1] = cvPoint(207+166,340+166);
-        templatePoints[2] = cvPoint(487,340); templatePoints[3] = cvPoint(487+166,340+166);
-        templatePoints[4] = cvPoint(766,340); templatePoints[5] = cvPoint(766+166,340+166);
+        templatePoints[0] = cv::Point(207,340); templatePoints[1] = cv::Point(207+166,340+166);
+        templatePoints[2] = cv::Point(487,340); templatePoints[3] = cv::Point(487+166,340+166);
+        templatePoints[4] = cv::Point(766,340); templatePoints[5] = cv::Point(766+166,340+166);
     }
     else if(redraftingReview)
     {
@@ -2847,39 +2851,39 @@ ScreenDetection DraftHandler::findScreenRects()
         //  3
         //2     5
         templatePoints.resize(10);
-        templatePoints[0] = cvPoint(142,241); templatePoints[1] = cvPoint(142+117,241+117);
-        templatePoints[2] = cvPoint(146,671); templatePoints[3] = cvPoint(146+117,671+117);
-        templatePoints[4] = cvPoint(480,378); templatePoints[5] = cvPoint(480+117,378+117);
-        templatePoints[6] = cvPoint(819,241); templatePoints[7] = cvPoint(819+117,241+117);
-        templatePoints[8] = cvPoint(819,671); templatePoints[9] = cvPoint(819+117,671+117);
+        templatePoints[0] = cv::Point(142,241); templatePoints[1] = cv::Point(142+117,241+117);
+        templatePoints[2] = cv::Point(146,671); templatePoints[3] = cv::Point(146+117,671+117);
+        templatePoints[4] = cv::Point(480,378); templatePoints[5] = cv::Point(480+117,378+117);
+        templatePoints[6] = cv::Point(819,241); templatePoints[7] = cv::Point(819+117,241+117);
+        templatePoints[8] = cv::Point(819,671); templatePoints[9] = cv::Point(819+117,671+117);
 
         //Por ahora no hacemos comprobacion mana/rarity
-        // templatePoints[10] = cvPoint(80,204); templatePoints[11] = cvPoint(80+34,204+45);
-        // templatePoints[12] = cvPoint(83,637); templatePoints[13] = cvPoint(83+34,637+45);
-        // templatePoints[14] = cvPoint(420,341); templatePoints[15] = cvPoint(420+34,341+45);
-        // templatePoints[16] = cvPoint(762,204); templatePoints[17] = cvPoint(762+34,204+45);
-        // templatePoints[18] = cvPoint(762,637); templatePoints[19] = cvPoint(762+34,637+45);
+        // templatePoints[10] = cv::Point(80,204); templatePoints[11] = cv::Point(80+34,204+45);
+        // templatePoints[12] = cv::Point(83,637); templatePoints[13] = cv::Point(83+34,637+45);
+        // templatePoints[14] = cv::Point(420,341); templatePoints[15] = cv::Point(420+34,341+45);
+        // templatePoints[16] = cv::Point(762,204); templatePoints[17] = cv::Point(762+34,204+45);
+        // templatePoints[18] = cv::Point(762,637); templatePoints[19] = cv::Point(762+34,637+45);
 
-        // templatePoints[20] = cvPoint(197,403); templatePoints[21] = cvPoint(197+11,403+17);
-        // templatePoints[22] = cvPoint(201,834); templatePoints[23] = cvPoint(201+11,834+17);
-        // templatePoints[24] = cvPoint(537,540); templatePoints[25] = cvPoint(537+11,540+17);
-        // templatePoints[26] = cvPoint(877,403); templatePoints[27] = cvPoint(877+11,403+17);
-        // templatePoints[28] = cvPoint(877,834); templatePoints[29] = cvPoint(877+11,834+17);
+        // templatePoints[20] = cv::Point(197,403); templatePoints[21] = cv::Point(197+11,403+17);
+        // templatePoints[22] = cv::Point(201,834); templatePoints[23] = cv::Point(201+11,834+17);
+        // templatePoints[24] = cv::Point(537,540); templatePoints[25] = cv::Point(537+11,540+17);
+        // templatePoints[26] = cv::Point(877,403); templatePoints[27] = cv::Point(877+11,403+17);
+        // templatePoints[28] = cv::Point(877,834); templatePoints[29] = cv::Point(877+11,834+17);
     }
     else// if(drafting)
     {
         templatePoints.resize(18);
-        templatePoints[0] = cvPoint(234,263); templatePoints[1] = cvPoint(234+114,263+114);
-        templatePoints[2] = cvPoint(512,263); templatePoints[3] = cvPoint(512+114,263+114);
-        templatePoints[4] = cvPoint(789,263); templatePoints[5] = cvPoint(789+114,263+114);
+        templatePoints[0] = cv::Point(234,263); templatePoints[1] = cv::Point(234+114,263+114);
+        templatePoints[2] = cv::Point(512,263); templatePoints[3] = cv::Point(512+114,263+114);
+        templatePoints[4] = cv::Point(789,263); templatePoints[5] = cv::Point(789+114,263+114);
 
-        templatePoints[6] = cvPoint(175,227); templatePoints[7] = cvPoint(175+33,227+44);
-        templatePoints[8] = cvPoint(454,227); templatePoints[9] = cvPoint(454+33,227+44);
-        templatePoints[10] = cvPoint(733,227); templatePoints[11] = cvPoint(733+33,227+44);
+        templatePoints[6] = cv::Point(175,227); templatePoints[7] = cv::Point(175+33,227+44);
+        templatePoints[8] = cv::Point(454,227); templatePoints[9] = cv::Point(454+33,227+44);
+        templatePoints[10] = cv::Point(733,227); templatePoints[11] = cv::Point(733+33,227+44);
 
-        templatePoints[12] = cvPoint(288,420); templatePoints[13] = cvPoint(288+11,420+17);
-        templatePoints[14] = cvPoint(566,420); templatePoints[15] = cvPoint(566+11,420+17);
-        templatePoints[16] = cvPoint(844,420); templatePoints[17] = cvPoint(844+11,420+17);
+        templatePoints[12] = cv::Point(288,420); templatePoints[13] = cv::Point(288+11,420+17);
+        templatePoints[14] = cv::Point(566,420); templatePoints[15] = cv::Point(566+11,420+17);
+        templatePoints[16] = cv::Point(844,420); templatePoints[17] = cv::Point(844+11,420+17);
     }
 
 
@@ -3127,7 +3131,7 @@ void DraftHandler::initDraftMechanicsWindowCounters()
 
     if(numCards == 0 || !patreonVersion || draftMechanicsWindow == nullptr)    return;
 
-    QMap<QString, QString> spellMap, minionMap, weaponMap,
+    QMultiMap<QString, QString> spellMap, minionMap, weaponMap,
                 drop2Map, drop3Map, drop4Map,
                 aoeMap, tauntMap, survivabilityMap, drawMap,
                 pingMap, damageMap, destroyMap, reachMap;
@@ -3332,14 +3336,14 @@ void DraftHandler::setTransparency(Transparency value)
 
     if(!mouseInApp && transparency==Transparent)
     {
-        ui->tabDraft->setAttribute(Qt::WA_NoBackground);
+        ui->tabDraft->setAttribute(Qt::WA_OpaquePaintEvent);
         ui->tabDraft->repaint();
 
         ui->labelDeckScore->setStyleSheet("QLabel {background-color: transparent; color: white;}");
     }
     else
     {
-        ui->tabDraft->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabDraft->setAttribute(Qt::WA_OpaquePaintEvent, false);
         ui->tabDraft->repaint();
 
         ui->labelDeckScore->setStyleSheet("");
@@ -3707,7 +3711,7 @@ void DraftHandler::startFindCodeFromText(const QString &text)
     if(!futureFindCodeFromText.isRunning())
     {
         lastThreadText = text;
-        futureFindCodeFromText.setFuture(QtConcurrent::run(this, &DraftHandler::findCodeFromText, text));
+        futureFindCodeFromText.setFuture(QtConcurrent::run(&DraftHandler::findCodeFromText, this, text));
     }
 }
 void DraftHandler::finishFindCodeFromText()
@@ -3716,7 +3720,7 @@ void DraftHandler::finishFindCodeFromText()
     if(!code.isEmpty())
     {
         bestMatchesMaps[editComboBoxNum].clear();
-        bestMatchesMaps[editComboBoxNum][0] = code;
+        bestMatchesMaps[editComboBoxNum].insert(0, code);
         draftCardMaps[editComboBoxNum].clear();
         draftCardMaps[editComboBoxNum][code] = DraftCard(code);
         comboBoxCard[editComboBoxNum]->clear();
@@ -3824,7 +3828,7 @@ void DraftHandler::comboBoxActivated()
 //Review Best Cards hebra
 void DraftHandler::startReviewBestCards()
 {
-    if(!futureReviewBestCards.isRunning()) futureReviewBestCards.setFuture(QtConcurrent::run(this, &DraftHandler::reviewBestCards));
+    if(!futureReviewBestCards.isRunning()) futureReviewBestCards.setFuture(QtConcurrent::run(&DraftHandler::reviewBestCards, this));
     else    emit pDebug("reviewBestCards: Avoid new run, already running.");
 }
 void DraftHandler::finishReviewBestCards()
@@ -3881,7 +3885,7 @@ QString * DraftHandler::reviewBestCards()
     double fx = 24.0/manaRects[1].width;
     double fy = 32.0/manaRects[1].height;
     cv::Mat screenSmall;
-    resize(screenBig, screenSmall, Size(), fx, fy, CV_INTER_AREA);
+    resize(screenBig, screenSmall, Size(), fx, fy, cv::INTER_AREA);
 
     DraftCard bestCards[3];
     for(int i=0; i<3; i++)
@@ -3954,7 +3958,7 @@ DraftCard DraftHandler::getBestMatchManaRarity(const int pos, const cv::Mat &scr
     DraftCard draftCard = getBestAllMatchManaRarity(screenCardHist, imgMana, imgRarity);
     QString code = draftCard.getCode();
     draftCard.setBestQualityMatch(1, true);
-    bestMatchesMaps[pos].insertMulti(1, code);
+    bestMatchesMaps[pos].insert(1, code);
     draftCardMaps[pos].insert(code, draftCard);
     draftCard.draw(comboBoxCard[pos]);
     comboBoxCard[pos]->setCurrentIndex(i);
@@ -4126,7 +4130,7 @@ void DraftHandler::getBestNOnRect(const cv::Rect &rect, const int xOff, const in
 
 double DraftHandler::getL2Mat(const cv::Mat &matSample, const cv::Mat &matTemplate)
 {
-    return (norm(matSample, matTemplate, CV_L2) / (matSample.rows * matSample.cols));
+    return (norm(matSample, matTemplate, cv::NORM_L2) / (matSample.rows * matSample.cols));
 }
 
 
@@ -4160,7 +4164,7 @@ void DraftHandler::loadImgTemplates(QList<cv::Mat> &imgTemplates, const QString 
     while(!in.atEnd())
     {
         in >> num >> type >> rows >> cols >> continuous;
-        cv::Mat mat = cv::Mat(rows, cols, type);
+        cv::Mat mat = cv::Mat(rows, cols, Utility::cvTypeFromFile(type));
 
         if(continuous)
         {
@@ -4256,8 +4260,8 @@ void DraftHandler::testSave()
     for(int num=0; num<10; num++)
     {
         cv::Mat mat = cv::imread(("/home/triodo/Documentos/ArenaTracker/Extra/mana" +
-                                   QString::number(num) + ".png").toStdString(), CV_LOAD_IMAGE_UNCHANGED);
-        type = mat.type();
+                                   QString::number(num) + ".png").toStdString(), cv::IMREAD_UNCHANGED);
+        type = Utility::cvTypeToFile(mat.type());
         rows = mat.rows;
         cols = mat.cols;
         continuous = mat.isContinuous();

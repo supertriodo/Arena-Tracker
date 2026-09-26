@@ -1077,28 +1077,28 @@ QString SecretsHandler::update2HSRcode(QString code, CardClass cardClass)
 
 void SecretsHandler::sortSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[])
 {
-    qSort(secretsByPickrate[PALADIN].begin(), secretsByPickrate[PALADIN].end(), [=](const QString &code1, const QString &code2)
+    std::sort(secretsByPickrate[PALADIN].begin(), secretsByPickrate[PALADIN].end(), [=](const QString &code1, const QString &code2)
     {
         QString code1m = update2HSRcode(code1, PALADIN);
         QString code2m = update2HSRcode(code2, PALADIN);
         return cardsPickratesMap[PALADIN][code1m] > cardsPickratesMap[PALADIN][code2m];
     });
 
-    qSort(secretsByPickrate[HUNTER].begin(), secretsByPickrate[HUNTER].end(), [=](const QString &code1, const QString &code2)
+    std::sort(secretsByPickrate[HUNTER].begin(), secretsByPickrate[HUNTER].end(), [=](const QString &code1, const QString &code2)
     {
         QString code1m = update2HSRcode(code1, HUNTER);
         QString code2m = update2HSRcode(code2, HUNTER);
         return cardsPickratesMap[HUNTER][code1m] > cardsPickratesMap[HUNTER][code2m];
     });
 
-    qSort(secretsByPickrate[MAGE].begin(), secretsByPickrate[MAGE].end(), [=](const QString &code1, const QString &code2)
+    std::sort(secretsByPickrate[MAGE].begin(), secretsByPickrate[MAGE].end(), [=](const QString &code1, const QString &code2)
     {
         QString code1m = update2HSRcode(code1, MAGE);
         QString code2m = update2HSRcode(code2, MAGE);
         return cardsPickratesMap[MAGE][code1m] > cardsPickratesMap[MAGE][code2m];
     });
 
-    qSort(secretsByPickrate[ROGUE].begin(), secretsByPickrate[ROGUE].end(), [=](const QString &code1, const QString &code2)
+    std::sort(secretsByPickrate[ROGUE].begin(), secretsByPickrate[ROGUE].end(), [=](const QString &code1, const QString &code2)
     {
         QString code1m = update2HSRcode(code1, ROGUE);
         QString code2m = update2HSRcode(code2, ROGUE);

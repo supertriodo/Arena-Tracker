@@ -228,7 +228,7 @@ void HeroGraphicsItem::wheelEvent(QGraphicsSceneWheelEvent *event)
 void HeroGraphicsItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
     QPointF posMouse = event->pos();
-    for(int i=std::min(3, addons.count()-1); i>=0; i--)
+    for(int i=std::min<int>(3, addons.count()-1); i>=0; i--)
     {
         QString addonCode = this->addons[i].code;
         QPoint posAddon;
@@ -258,7 +258,7 @@ void HeroGraphicsItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
         }
     }
 
-    for(int i=std::min(4, secretsList.count()-1); i>=0; i--)
+    for(int i=std::min<int>(4, secretsList.count()-1); i>=0; i--)
     {
         QString secretCode = this->secretsList[i].code;
         QPoint posSecret;

@@ -173,7 +173,7 @@ void CardListWindow::loadDraftOverlayItem(QList<SynergyCard> &synergyCardList, Q
 }
 
 
-void CardListWindow::enterEvent(QEvent * e)
+void CardListWindow::enterEvent(QEnterEvent * e)
 {
     QMainWindow::enterEvent(e);
     hide();

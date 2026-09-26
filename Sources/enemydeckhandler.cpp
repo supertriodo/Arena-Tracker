@@ -208,7 +208,7 @@ void EnemyDeckHandler::updateTransparency()
 {
     if(transparency==Transparent || (!mouseInApp && inGame && transparency==AutoTransparent))
     {
-        ui->tabEnemyDeck->setAttribute(Qt::WA_NoBackground);
+        ui->tabEnemyDeck->setAttribute(Qt::WA_OpaquePaintEvent);
         ui->tabEnemyDeck->repaint();
 
         if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabEnemyDeck)
@@ -218,7 +218,7 @@ void EnemyDeckHandler::updateTransparency()
     }
     else
     {
-        ui->tabEnemyDeck->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabEnemyDeck->setAttribute(Qt::WA_OpaquePaintEvent, false);
         ui->tabEnemyDeck->repaint();
 
         if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabEnemyDeck)

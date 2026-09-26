@@ -146,7 +146,7 @@ void CardTypeCounter::getDirectLinkSynergies(const QString &code, const QMap<QSt
 }
 
 
-void CardTypeCounter::getCardTypeCounters(QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap)
+void CardTypeCounter::getCardTypeCounters(QMultiMap<QString, QString> &spellMap, QMultiMap<QString, QString> &minionMap, QMultiMap<QString, QString> &weaponMap)
 {
     spellMap = keySynergiesMap["spell"]->getCodeTagMap();
     minionMap = keySynergiesMap["minion"]->getCodeTagMap();
@@ -154,7 +154,7 @@ void CardTypeCounter::getCardTypeCounters(QMap<QString, QString> &spellMap, QMap
 }
 
 
-void CardTypeCounter::updateCardTypeCounters(const QString &code, QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
+void CardTypeCounter::updateCardTypeCounters(const QString &code, QMultiMap<QString, QString> &spellMap, QMultiMap<QString, QString> &minionMap, QMultiMap<QString, QString> &weaponMap,
                                              const QString &text, CardType cardType)
 {
     const auto keys = getListKeySynergies();
@@ -167,9 +167,9 @@ void CardTypeCounter::updateCardTypeCounters(const QString &code, QMap<QString, 
             keySynergiesMap[key]->increase(code);
             keySynergiesMap[keyAll]->increase(code);
 
-            if(key == "spell")  spellMap.insertMulti(code, "");
-            if(key == "minion") minionMap.insertMulti(code, "");
-            if(key == "weapon") weaponMap.insertMulti(code, "");
+            if(key == "spell")  spellMap.insert(code, "");
+            if(key == "minion") minionMap.insert(code, "");
+            if(key == "weapon") weaponMap.insert(code, "");
         }
         else if(isKeyGen(key+"Gen", code, text))
         {
@@ -178,17 +178,17 @@ void CardTypeCounter::updateCardTypeCounters(const QString &code, QMap<QString, 
             if(key == "spell")
             {
                 keySynergiesMap[key]->increaseExtra(code);
-                spellMap.insertMulti(code, ".");
+                spellMap.insert(code, ".");
             }
             if(key == "minion")
             {
                 keySynergiesMap[key]->increaseExtra(code);
-                minionMap.insertMulti(code, ".");
+                minionMap.insert(code, ".");
             }
             if(key == "weapon")
             {
                 keySynergiesMap[key]->increaseExtra(code);
-                weaponMap.insertMulti(code, ".");
+                weaponMap.insert(code, ".");
             }
         }
         //Syn

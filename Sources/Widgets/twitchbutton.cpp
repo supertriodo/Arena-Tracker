@@ -48,7 +48,7 @@ void TwitchButton::setValue(float value, int votes, bool isBestScore, QString us
         ft.username = username;
         ft.birth = QDateTime::currentMSecsSinceEpoch();
         ft.pixelSize = 1;
-        if(ftList.isEmpty())    ft.up = qrand()%2;
+        if(ftList.isEmpty())    ft.up = QRandomGenerator::global()->bounded(2);
         else                    ft.up = !ftList.last().up;
         chopUsername(ft);
         ftList.append(ft);
@@ -65,11 +65,11 @@ void TwitchButton::chopUsername(FloatingText &ft)
     int ftSize = std::max(1,static_cast<int>(width()*FT_MIN_SIZE));
     font.setPixelSize(ftSize);
     QFontMetrics fm(font);
-    int textWide = fm.width(ft.username);
+    int textWide = fm.horizontalAdvance(ft.username);
     while(textWide>this->width())
     {
         ft.username.chop(1);
-        textWide = fm.width(ft.username);
+        textWide = fm.horizontalAdvance(ft.username);
     }
     ft.pixelSize = ftSize;
 }
@@ -140,13 +140,13 @@ void TwitchButton::paintEvent(QPaintEvent *event)
         int ftSize = std::max(1,static_cast<int>(width()*ftSizeK));
         font.setPixelSize(ftSize);
         QFontMetrics fm(font);
-        int textWide = fm.width(ft.username);
+        int textWide = fm.horizontalAdvance(ft.username);
         int textHigh = fm.height();
         if(textWide>this->width())
         {
             font.setPixelSize(ft.pixelSize);
             QFontMetrics fm(font);
-            textWide = fm.width(ft.username);
+            textWide = fm.horizontalAdvance(ft.username);
             textHigh = fm.height();
         }
         else if(ftSize>ft.pixelSize)    ft.pixelSize = ftSize;

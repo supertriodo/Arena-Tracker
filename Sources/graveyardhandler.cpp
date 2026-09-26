@@ -332,7 +332,7 @@ void GraveyardHandler::updateTransparency()
 {
     if(transparency==Transparent || (!mouseInApp && inGame && transparency==AutoTransparent))
     {
-        ui->tabGraveyard->setAttribute(Qt::WA_NoBackground);
+        ui->tabGraveyard->setAttribute(Qt::WA_OpaquePaintEvent);
         ui->tabGraveyard->repaint();
 
         if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabGraveyard)
@@ -342,7 +342,7 @@ void GraveyardHandler::updateTransparency()
     }
     else
     {
-        ui->tabGraveyard->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabGraveyard->setAttribute(Qt::WA_OpaquePaintEvent, false);
         ui->tabGraveyard->repaint();
 
         if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabGraveyard)
@@ -529,11 +529,11 @@ QPixmap GraveyardHandler::drawNumberedIcon(QString iconFile, int numberPlayer, i
     #endif
             font.setPixelSize(12*scale);
             QFontMetrics fm(font);
-            int textWide = fm.width(text);
+            int textWide = fm.horizontalAdvance(text);
 
             painter.setPen(QPen(BLACK));
             painter.setBrush(SOFT_RED);
-            painter.drawRoundRect(canvas.width() - textWide - 3*scale, 0, 3*scale + textWide, 11*scale, 50, 50);
+            painter.drawRoundedRect(canvas.width() - textWide - 3*scale, 0, 3*scale + textWide, 11*scale, 50, 50, Qt::RelativeSize);
 
             painter.setPen(QPen(BLACK));
             painter.setBrush(WHITE);
@@ -554,12 +554,12 @@ QPixmap GraveyardHandler::drawNumberedIcon(QString iconFile, int numberPlayer, i
     #endif
             font.setPixelSize(12*scale);
             QFontMetrics fm(font);
-            int textWide = fm.width(text);
+            int textWide = fm.horizontalAdvance(text);
 
             QColor synergyTagColor = QColor(ThemeHandler::synergyTagColor());
             painter.setPen(QPen(BLACK));
             painter.setBrush(synergyTagColor.isValid()?synergyTagColor:BLACK);
-            painter.drawRoundRect(0, canvas.height() - 11*scale, 3*scale + textWide, 11*scale, 50, 50);
+            painter.drawRoundedRect(0, canvas.height() - 11*scale, 3*scale + textWide, 11*scale, 50, 50, Qt::RelativeSize);
 
             painter.setPen(QPen(BLACK));
             painter.setBrush(WHITE);

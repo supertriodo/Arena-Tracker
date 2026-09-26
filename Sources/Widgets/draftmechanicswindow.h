@@ -43,19 +43,19 @@ private:
 private:
     void deleteDraftItemCounters();
     void updateManaCounter(int manaIncrease, int numCards);
-    void updateItemCounter(QMap<QString, QString> &codeTagMap, DraftItemCounter *counter);
-    void updateDropCounter(QMap<QString, QString> &codeTagMap, DraftDropCounter *counter);
+    void updateItemCounter(QMultiMap<QString, QString> &codeTagMap, DraftItemCounter *counter);
+    void updateDropCounter(QMultiMap<QString, QString> &codeTagMap, DraftDropCounter *counter);
 
 public:
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
     void setShowDrops(bool value);
     void setScores(int deckScoreHA, float deckScoreFire, float deckScoreHSR);
-    void updateCounters(QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
-                        QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
-                        QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
-                        QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
-                        QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
-                        QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
+    void updateCounters(QMultiMap<QString, QString> &spellMap, QMultiMap<QString, QString> &minionMap, QMultiMap<QString, QString> &weaponMap,
+                        QMultiMap<QString, QString> &drop2Map, QMultiMap<QString, QString> &drop3Map, QMultiMap<QString, QString> &drop4Map,
+                        QMultiMap<QString, QString> &aoeMap, QMultiMap<QString, QString> &tauntMap,
+                        QMultiMap<QString, QString> &survivabilityMap, QMultiMap<QString, QString> &drawMap,
+                        QMultiMap<QString, QString> &pingMap, QMultiMap<QString, QString> &damageMap,
+                        QMultiMap<QString, QString> &destroyMap, QMultiMap<QString, QString> &reachMap,
                         int manaIncrease, int numCards);
     void updateDeckWeight(QList<SynergyWeightCard> &synergyWeightCardList, int numCards);
     void setTheme();

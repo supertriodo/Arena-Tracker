@@ -12,7 +12,10 @@ TEMPLATE = app
 QT_CONFIG -= no-pkg-config
 
 CONFIG += link_pkgconfig
-PKGCONFIG += opencv libzip
+packagesExist(opencv5): PKGCONFIG += opencv5
+else: packagesExist(opencv4): PKGCONFIG += opencv4
+else: PKGCONFIG += opencv
+PKGCONFIG += libzip
 LIBS += -lz
 
 SOURCES += Sources/main.cpp\

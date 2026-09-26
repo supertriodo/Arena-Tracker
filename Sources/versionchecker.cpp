@@ -388,7 +388,7 @@ void VersionChecker::newAppReplace()
 
 void VersionChecker::startNewAppReplace()
 {
-    if(!futureNewAppReplace.isRunning()) futureNewAppReplace.setFuture(QtConcurrent::run(this, &VersionChecker::newAppReplace));
+    if(!futureNewAppReplace.isRunning()) futureNewAppReplace.setFuture(QtConcurrent::run(&VersionChecker::newAppReplace, this));
 }
 void VersionChecker::finishNewAppReplace()
 {

@@ -22,7 +22,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
     QFontDatabase::addApplicationFont(":Fonts/LuckiestGuy.ttf");
 
-    qsrand((uint)QTime::currentTime().msec());
 
     ui->setupUi(this);
 
@@ -2190,9 +2189,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             }
 #endif
 #ifdef QT_DEBUG
-            else if(event->key() == Qt::Key_8)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 0);
-            else if(event->key() == Qt::Key_9)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 1);
-            else if(event->key() == Qt::Key_0)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 2);
+            else if(event->key() == Qt::Key_8)  QtConcurrent::run(&DraftHandler::craftGoldenCopy, this->draftHandler, 0);
+            else if(event->key() == Qt::Key_9)  QtConcurrent::run(&DraftHandler::craftGoldenCopy, this->draftHandler, 1);
+            else if(event->key() == Qt::Key_0)  QtConcurrent::run(&DraftHandler::craftGoldenCopy, this->draftHandler, 2);
             else if(event->key() == Qt::Key_6)  draftHandler->beginHeroDraft();
             else if(event->key() == Qt::Key_7)
                 draftHandler->beginDraft(Utility::classEnum2classLogNumber(WARLOCK), deckHandler->getDeckCardList(), true);
@@ -2277,7 +2276,7 @@ void MainWindow::leaveEvent(QEvent * e)
 }
 
 
-void MainWindow::enterEvent(QEvent * e)
+void MainWindow::enterEvent(QEnterEvent * e)
 {
     QMainWindow::enterEvent(e);
 
@@ -2497,7 +2496,7 @@ void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QSt
     if(atLogFile != nullptr)
     {
         QTextStream stream(atLogFile);
-        stream << logLine << endl;
+        stream << logLine << Qt::endl;
     }
 }
 
@@ -2908,13 +2907,13 @@ void MainWindow::createLinuxShortcut()
 
     QTextStream out(&shortcutFile);
 
-    out << "[Desktop Entry]" << endl;
-    out << "Type=Application" << endl;
-    out << "Name=ArenaTracker" << endl;
-    out << "Comment=Hearthstone Arena Assistant" << endl;
-    out << "Exec=\"" + appImagePath + "\"" << endl;
-    out << "Icon=" + Utility::extraPath() + "/icon.png" << endl;
-    out << "Categories=Game;StrategyGame;" << endl;
+    out << "[Desktop Entry]" << Qt::endl;
+    out << "Type=Application" << Qt::endl;
+    out << "Name=ArenaTracker" << Qt::endl;
+    out << "Comment=Hearthstone Arena Assistant" << Qt::endl;
+    out << "Exec=\"" + appImagePath + "\"" << Qt::endl;
+    out << "Icon=" + Utility::extraPath() + "/icon.png" << Qt::endl;
+    out << "Categories=Game;StrategyGame;" << Qt::endl;
 
     shortcutFile.close();
 
@@ -3081,7 +3080,7 @@ void MainWindow::updateOtherTabsTransparency()
 
     if(!mouseInApp && transparency==Transparent)
     {
-        ui->tabConfig->setAttribute(Qt::WA_NoBackground);
+        ui->tabConfig->setAttribute(Qt::WA_OpaquePaintEvent);
         ui->tabConfig->repaint();
 
         QString groupBoxCSS =
@@ -3152,7 +3151,7 @@ void MainWindow::updateOtherTabsTransparency()
     }
     else
     {
-        ui->tabConfig->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabConfig->setAttribute(Qt::WA_OpaquePaintEvent, false);
         ui->tabConfig->repaint();
 
         ui->configBoxActions->setStyleSheet("");
@@ -4376,7 +4375,7 @@ void MainWindow::loadTheme(QString theme, bool initTheme)
     if(theme == "Random")
     {
         QStringList themeList = Utility::getThemeList();
-        theme = themeList[qrand()%themeList.count()];
+        theme = themeList[QRandomGenerator::global()->bounded(themeList.count())];
     }
 
     if(ThemeHandler::loadTheme(theme))
@@ -4818,7 +4817,6 @@ void MainWindow::HAreplace(const QMap<QString, QString> &swapCodes)
     }
 
     QTextStream stream(&file);
-    stream.setCodec("UTF-8");
     QString content = stream.readAll();
     file.close();
 
@@ -4922,7 +4920,7 @@ void MainWindow::testSynergies()
 
 void MainWindow::testDelay()
 {
-    qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
+    qDebug() << Qt::endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
     // testHeroPortraits();
     testSynergies();
 
@@ -5058,7 +5056,7 @@ void MainWindow::testDelay()
 //connect(&futureFUNCION, SIGNAL(finished()), this, SLOT(finishFUNCION()));
 //void DeckHandler::startFUNCION()
 //{
-//    if(!futureFUNCION.isRunning()) futureFUNCION.setFuture(QtConcurrent::run(this, &DeckHandler::FUNCION));
+//    if(!futureFUNCION.isRunning()) futureFUNCION.setFuture(QtConcurrent::run(&DeckHandler::FUNCION, this));
 //}
 //void DeckHandler::finishFUNCION()
 //{

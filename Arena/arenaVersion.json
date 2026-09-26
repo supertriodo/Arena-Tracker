@@ -1,6 +1,13 @@
 {
-  "arenaVersion": 82,
-  "arenaSets": ["WHIZBANGS_WORKSHOP", "ISLAND_VACATION", "SPACE", "EMERALD_DREAM", "THE_LOST_CITY", "TIME_TRAVEL"],
+  "arenaVersion": 83,
+  "arenaSets": [
+    "EMERALD_DREAM",
+    "THE_LOST_CITY",
+    "TIME_TRAVEL",
+    "CATACLYSM",
+    "ESCAPEFROM_VIOLET_HOLD",
+    "EVENT"
+  ],
   "multiclassArena": false,
   "trustHA": false,
   "resetCards": 82,

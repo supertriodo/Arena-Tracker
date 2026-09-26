@@ -13,6 +13,9 @@
 #include <QPropertyAnimation>
 
 
+//Repo desde el que la app descarga sus datos (cards, arena sets, synergies, imagenes...)
+#define AT_REPO_RAW_URL "https://raw.githubusercontent.com/Inoooooor/Arena-Tracker/master"
+
 #define REMOVE_CARDS_ON_VERSION_UPDATE false
 #define REMOVE_EXTRA_AND_HISTOGRAMS_ON_VERSION_UPDATE false
 
@@ -167,6 +170,8 @@ public:
     static void setArenaSets(QStringList arenaSets);
     static void setBundlesMap(QMap<QString, QStringList> bundlesMap[]);
     static QMap<QString, QStringList> * getBundlesMap();
+    static int cvTypeFromFile(int fileType);
+    static int cvTypeToFile(int type);
     static bool createDir(const QString &pathDir);
     static void unZip(const QString &zipName, const QString &targetPath);
     static void checkTierlistsCount(const QStringList &arenaCodes);

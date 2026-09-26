@@ -41,8 +41,8 @@ public:
     static int draftedCardsCount();
     static QStringList debugCardTypeSynergies(const QString &code, const QString &text);
     static void getDirectLinkSynergies(const QString &code, const QMap<QString, QList<QString> > &directLinks, QMap<QString, int> &synergies);
-    static void getCardTypeCounters(QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap);
-    static void updateCardTypeCounters(const QString &code, QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
+    static void getCardTypeCounters(QMultiMap<QString, QString> &spellMap, QMultiMap<QString, QString> &minionMap, QMultiMap<QString, QString> &weaponMap);
+    static void updateCardTypeCounters(const QString &code, QMultiMap<QString, QString> &spellMap, QMultiMap<QString, QString> &minionMap, QMultiMap<QString, QString> &weaponMap,
                                        const QString &text, CardType cardType);
     static void getCardTypeSynergies(const QString &code, QMap<QString, QMap<QString, int> > &synergyTagMap, const QString &text, CardType cardType);
     static void getPartKeySynergies(const QString &partSynergy, QMap<QString, QMap<QString, int> > &synergyTagMap);

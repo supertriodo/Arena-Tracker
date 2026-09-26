@@ -525,7 +525,7 @@ void MinionGraphicsItem::wheelEvent(QGraphicsSceneWheelEvent *event)
 void MinionGraphicsItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
     QPointF posMouse = event->pos();
-    for(int i=std::min(3, addons.count()-1); i>=0; i--)
+    for(int i=std::min<int>(3, addons.count()-1); i>=0; i--)
     {
         QString addonCode = this->addons[i].code;
         QPoint posAddon;

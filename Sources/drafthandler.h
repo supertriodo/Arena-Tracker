@@ -86,7 +86,7 @@ private:
     //Guarda los mejores candidatos de esta iteracion
     QMap<QString, DraftCard> draftCardMaps[3];  //[Code(_premium)] --> DraftCard
     //Se crea al final de la iteracion para ordenar los candidatos por match score
-    QMap<double, QString> bestMatchesMaps[3];   //[Match] --> Code(_premium)
+    QMultiMap<double, QString> bestMatchesMaps[3];   //[Match] --> Code(_premium)
     bool cardDetected[3];
     CardClass arenaHero, arenaHeroMulticlassPower;
     int deckRatingHA;

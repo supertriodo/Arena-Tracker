@@ -677,7 +677,7 @@ void PlanHandler::enemyBoardTagChange(int id, QString code, QString tag, QString
 
 bool PlanHandler::updateInPendingTagChange(int id, QString tag, QString value)
 {
-    for(QMap<int,TagChange>::iterator it = pendingTagChanges.begin(); it != pendingTagChanges.end(); it++)
+    for(QMultiMap<int,TagChange>::iterator it = pendingTagChanges.begin(); it != pendingTagChanges.end(); it++)
     {
         if(it->id == id && it->tag == tag)
         {
@@ -877,7 +877,7 @@ void PlanHandler::addBoardTagChange(int id, bool friendly, QString tag, QString 
         }
         else
         {
-            pendingTagChanges.insertMulti(id, tagChange);
+            pendingTagChanges.insert(id, tagChange);
             emit pDebug("Tag Change Mapped: Id: " + QString::number(id) + " - " + tag + " --> " + value);
         }
     }
@@ -2501,7 +2501,7 @@ void PlanHandler::setTheme()
     font.setPixelSize(24);
     ui->planLabelTurn->setFont(font);
     QFontMetrics fm(font);
-    int textWide = fm.width("T99");
+    int textWide = fm.horizontalAdvance("T99");
     ui->planLabelTurn->setFixedWidth(textWide);
 
     ui->planGraphicsView->setTheme(false);
@@ -2731,7 +2731,7 @@ void PlanHandler::updateTransparency()
 
     if(!mouseInApp && transparency==Transparent)
     {
-        ui->tabPlan->setAttribute(Qt::WA_NoBackground);
+        ui->tabPlan->setAttribute(Qt::WA_OpaquePaintEvent);
         ui->tabPlan->repaint();
 
         //Tambien nos hacemos cargo en transparency==Transparent para que se llame a MainWindowFade al empezar y terminar un juego
@@ -2742,7 +2742,7 @@ void PlanHandler::updateTransparency()
     }
     else
     {
-        ui->tabPlan->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabPlan->setAttribute(Qt::WA_OpaquePaintEvent, false);
         ui->tabPlan->repaint();
 
         if(inTabPlan && transparency==AutoTransparent)
@@ -2800,7 +2800,7 @@ void PlanHandler::checkBomb(QString code)
     if(targets.isEmpty())   return;
 
     //Get dead probs
-    futureBombs.setFuture(QtConcurrent::run(this, &PlanHandler::bombDeads, targets, playerIn, onlyMinions, missiles, missileDamage));
+    futureBombs.setFuture(QtConcurrent::run(&PlanHandler::bombDeads, this, targets, playerIn, onlyMinions, missiles, missileDamage));
     abortFutureBombs = false;
 }
 

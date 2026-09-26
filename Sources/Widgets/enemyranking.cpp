@@ -132,7 +132,7 @@ void EnemyRanking::drawPixmap(QPixmap &canvas, QRect &targetAll)
     text = tag;
     Utility::shrinkText(font, text, pixelSize, width()*0.9);
     QFontMetrics fm = QFontMetrics(font);
-    int textWide = fm.width(text);
+    int textWide = fm.horizontalAdvance(text);
     int textHigh = fm.height();
 
     QPainterPath path;
@@ -154,7 +154,7 @@ void EnemyRanking::drawPixmap(QPixmap &canvas, QRect &targetAll)
         //Draw Rating
         text = QString::number(item.rating/1000.0, 'g', 2) + 'k';
         fm = QFontMetrics(font);
-        textWide = fm.width(text);
+        textWide = fm.horizontalAdvance(text);
         textHigh = fm.height();
         int ratingWide = textWide;
 
@@ -170,7 +170,7 @@ void EnemyRanking::drawPixmap(QPixmap &canvas, QRect &targetAll)
         //Draw Rank
         text = "#" + (item.rank>999?QString::number(item.rank/1000)+"k":QString::number(item.rank));
         fm = QFontMetrics(font);
-        textWide = fm.width(text);
+        textWide = fm.horizontalAdvance(text);
         textHigh = fm.height();
 
         path = QPainterPath();
@@ -185,7 +185,7 @@ void EnemyRanking::drawPixmap(QPixmap &canvas, QRect &targetAll)
         //Draw Region
         text = item.region;
         fm = QFontMetrics(font);
-        textWide = fm.width(text);
+        textWide = fm.horizontalAdvance(text);
         textHigh = fm.height();
 
         path = QPainterPath();

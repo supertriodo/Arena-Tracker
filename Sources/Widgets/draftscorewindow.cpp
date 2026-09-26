@@ -525,14 +525,14 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
     const QList<QString> codeList = synergyTagMap.keys();
     for(const QString &synergyTag: codeList)
     {
-        QMap<int,SynergyCard> synergyCardMap;
+        QMultiMap<int,SynergyCard> synergyCardMap;
         const QList<QString> codeList = synergyTagMap[synergyTag].keys();
         for(const QString &code: codeList)
         {
             int total = synergyTagMap[synergyTag][code];
             SynergyCard synergyCard(code);
             synergyCard.total = synergyCard.remaining = total;
-            synergyCardMap.insertMulti(synergyCard.getCost(), synergyCard);
+            synergyCardMap.insert(synergyCard.getCost(), synergyCard);
         }
 
         if(!synergyCardMap.isEmpty())   synergyCardMap.first().setSynergyTag(synergyTag);

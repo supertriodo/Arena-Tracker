@@ -467,12 +467,12 @@ void DraftMechanicsWindow::updateManaCounter(int manaIncrease, int numCards)
 }
 
 
-void DraftMechanicsWindow::updateDropCounter(QMap<QString, QString> &codeTagMap, DraftDropCounter *counter)
+void DraftMechanicsWindow::updateDropCounter(QMultiMap<QString, QString> &codeTagMap, DraftDropCounter *counter)
 {
     const QList<QString> codeList = codeTagMap.keys();
     for(const QString &code: codeList)
     {
-        QString tag = codeTagMap[code];
+        QString tag = codeTagMap.value(code);
         if(tag.isEmpty())   counter->increase(code);
         else if(tag == ".") counter->increaseExtra(code);
         else                counter->increaseExtra(code, tag);
@@ -480,12 +480,12 @@ void DraftMechanicsWindow::updateDropCounter(QMap<QString, QString> &codeTagMap,
 }
 
 
-void DraftMechanicsWindow::updateItemCounter(QMap<QString, QString> &codeTagMap, DraftItemCounter *counter)
+void DraftMechanicsWindow::updateItemCounter(QMultiMap<QString, QString> &codeTagMap, DraftItemCounter *counter)
 {
     const QList<QString> codeList = codeTagMap.keys();
     for(const QString &code: codeList)
     {
-        QString tag = codeTagMap[code];
+        QString tag = codeTagMap.value(code);
         if(tag.isEmpty())   counter->increase(code);
         else if(tag == ".") counter->increaseExtra(code);
         else                counter->increaseExtra(code, tag);
@@ -494,12 +494,12 @@ void DraftMechanicsWindow::updateItemCounter(QMap<QString, QString> &codeTagMap,
 
 
 void DraftMechanicsWindow::updateCounters(
-        QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
-        QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
-        QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
-        QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
-        QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
-        QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
+        QMultiMap<QString, QString> &spellMap, QMultiMap<QString, QString> &minionMap, QMultiMap<QString, QString> &weaponMap,
+        QMultiMap<QString, QString> &drop2Map, QMultiMap<QString, QString> &drop3Map, QMultiMap<QString, QString> &drop4Map,
+        QMultiMap<QString, QString> &aoeMap, QMultiMap<QString, QString> &tauntMap,
+        QMultiMap<QString, QString> &survivabilityMap, QMultiMap<QString, QString> &drawMap,
+        QMultiMap<QString, QString> &pingMap, QMultiMap<QString, QString> &damageMap,
+        QMultiMap<QString, QString> &destroyMap, QMultiMap<QString, QString> &reachMap,
         int manaIncrease, int numCards)
 {
     updateItemCounter(spellMap, cardTypeCounters[V_SPELL]);

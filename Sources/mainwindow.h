@@ -33,13 +33,13 @@
 #define HSR_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 #define HEARTHARENA_TIERLIST_URL "https://www.heartharena.com/tierlist"
 //#define HEARTHARENA_TIERLIST_URL "https://www.heartharena.com/tierlist/preview" //Problematico, mejor evitar
-#define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"
-#define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
-#define THEMES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Themes"
-#define HA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/HearthArena"
-#define ARENA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Arena"
-#define SYNERGIES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Synergies"
-#define CARDS_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/CardsJson"
+#define EXTRA_URL AT_REPO_RAW_URL "/Extra"
+#define IMAGES_URL AT_REPO_RAW_URL "/Images"
+#define THEMES_URL AT_REPO_RAW_URL "/Themes"
+#define HA_URL AT_REPO_RAW_URL "/HearthArena"
+#define ARENA_URL AT_REPO_RAW_URL "/Arena"
+#define SYNERGIES_URL AT_REPO_RAW_URL "/Synergies"
+#define CARDS_URL AT_REPO_RAW_URL "/CardsJson"
 #define USER_GUIDE_URL "https://triodo.gitbook.io/arena-tracker-documentation/en"
 
 
@@ -228,7 +228,7 @@ protected:
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
     void changeEvent(QEvent *event) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
-    void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
+    void enterEvent(QEnterEvent *e) Q_DECL_OVERRIDE;
     void dragEnterEvent(QDragEnterEvent *e) Q_DECL_OVERRIDE;
     void dropEvent(QDropEvent *e) Q_DECL_OVERRIDE;
 

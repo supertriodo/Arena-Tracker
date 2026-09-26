@@ -150,10 +150,10 @@ QStringList MechanicCounter::debugMechanicSynergies(const QString &code, const Q
 }
 
 
-void MechanicCounter::getMechanicCounters(QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
-                                          QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
-                                          QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
-                                          QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
+void MechanicCounter::getMechanicCounters(QMultiMap<QString, QString> &aoeMap, QMultiMap<QString, QString> &tauntMap,
+                                          QMultiMap<QString, QString> &survivabilityMap, QMultiMap<QString, QString> &drawMap,
+                                          QMultiMap<QString, QString> &pingMap, QMultiMap<QString, QString> &damageMap,
+                                          QMultiMap<QString, QString> &destroyMap, QMultiMap<QString, QString> &reachMap,
                                           QList<SynergyWeightCard> &synergyWeightCardList)
 {
     aoeMap = keySynergiesMap["aoe"]->getCodeTagMap();
@@ -169,10 +169,10 @@ void MechanicCounter::getMechanicCounters(QMap<QString, QString> &aoeMap, QMap<Q
 
 
 void MechanicCounter::updateMechanicCounters(const QString &code,
-                                             QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
-                                             QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
-                                             QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
-                                             QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
+                                             QMultiMap<QString, QString> &aoeMap, QMultiMap<QString, QString> &tauntMap,
+                                             QMultiMap<QString, QString> &survivabilityMap, QMultiMap<QString, QString> &drawMap,
+                                             QMultiMap<QString, QString> &pingMap, QMultiMap<QString, QString> &damageMap,
+                                             QMultiMap<QString, QString> &destroyMap, QMultiMap<QString, QString> &reachMap,
                                              QList<SynergyWeightCard> &synergyWeightCardList,
                                              const QJsonArray &mechanics, const QJsonArray &referencedTags,
                                              const QString &text, CardType cardType, int attack, int cost)
@@ -187,22 +187,22 @@ void MechanicCounter::updateMechanicCounters(const QString &code,
         {
             keySynergiesMap[key]->increase(code);
 
-            if(key == "aoe")                    aoeMap.insertMulti(code, "");
-            else if(key == "ping")              pingMap.insertMulti(code, "");
-            else if(key == "damageMinions")     damageMap.insertMulti(code, "");
-            else if(key == "destroy")           destroyMap.insertMulti(code, "");
-            else if(key == "reach")             reachMap.insertMulti(code, "");
+            if(key == "aoe")                    aoeMap.insert(code, "");
+            else if(key == "ping")              pingMap.insert(code, "");
+            else if(key == "damageMinions")     damageMap.insert(code, "");
+            else if(key == "destroy")           destroyMap.insert(code, "");
+            else if(key == "reach")             reachMap.insert(code, "");
             else if(key == "restoreFriendlyHero" || key == "armor")  isSurvivability = true;
             else if(key == "taunt")
             {
                 keySynergiesMap["tauntAll"]->increase(code);
-                tauntMap.insertMulti(code, "");
+                tauntMap.insert(code, "");
             }
         }
         else if(key == "taunt" && isKeyGen("tauntGen", code, referencedTags))
         {
             keySynergiesMap["tauntAll"]->increase(code);
-            tauntMap.insertMulti(code, "");
+            tauntMap.insert(code, "");
         }
         //Syn
         if(isKeySyn(key+"Syn", code))
@@ -219,12 +219,12 @@ void MechanicCounter::updateMechanicCounters(const QString &code,
     if(isDiscoverDrawGen(code, cost, mechanics, referencedTags, text))
     {
         keySynergiesMap["discoverDraw"]->increase(code);
-        drawMap.insertMulti(code, "");
+        drawMap.insert(code, "");
     }
     if(isSurvivability)
     {
         keySynergiesMap["survival"]->increase(code);
-        survivabilityMap.insertMulti(code, "");
+        survivabilityMap.insert(code, "");
     }
     if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType))     keySynergiesMap["deathrattleGoodAll"]->increase(code);
     if(isDeathrattleGoodAllSyn(code, text))                                 keySynergiesMap["deathrattleGoodAll"]->increaseSyn(code);

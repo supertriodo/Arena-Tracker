@@ -56,16 +56,16 @@ public:
     static void setSynergyCodes(QMap<QString, QList<QString> > *synergyCodes);
     static QStringList debugMechanicSynergies(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                                               const QString &text, CardType cardType, int attack, int cost);
-    static void getMechanicCounters(QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
-                                    QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
-                                    QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
-                                    QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
+    static void getMechanicCounters(QMultiMap<QString, QString> &aoeMap, QMultiMap<QString, QString> &tauntMap,
+                                    QMultiMap<QString, QString> &survivabilityMap, QMultiMap<QString, QString> &drawMap,
+                                    QMultiMap<QString, QString> &pingMap, QMultiMap<QString, QString> &damageMap,
+                                    QMultiMap<QString, QString> &destroyMap, QMultiMap<QString, QString> &reachMap,
                                     QList<SynergyWeightCard> &synergyWeightCardList);
     static void updateMechanicCounters(const QString &code,
-                                       QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
-                                       QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
-                                       QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
-                                       QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
+                                       QMultiMap<QString, QString> &aoeMap, QMultiMap<QString, QString> &tauntMap,
+                                       QMultiMap<QString, QString> &survivabilityMap, QMultiMap<QString, QString> &drawMap,
+                                       QMultiMap<QString, QString> &pingMap, QMultiMap<QString, QString> &damageMap,
+                                       QMultiMap<QString, QString> &destroyMap, QMultiMap<QString, QString> &reachMap,
                                        QList<SynergyWeightCard> &synergyWeightCardList,
                                        const QJsonArray &mechanics, const QJsonArray &referencedTags,
                                        const QString &text, CardType cardType, int attack, int cost);
